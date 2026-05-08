@@ -4,6 +4,7 @@ import './globals.css';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { QuickExit } from '@/components/quick-exit';
+import { OrganizationStructuredData, WebsiteStructuredData } from '@/components/structured-data';
 import { META_DEFAULTS, ORG } from '@/lib/constants';
 
 const inter = Inter({
@@ -36,11 +37,20 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     siteName: ORG.name,
+    images: [
+      {
+        url: '/opengraph-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Forged in the Fire - Empowering Survivors',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: META_DEFAULTS.title,
     description: META_DEFAULTS.description,
+    images: ['/opengraph-image.png'],
   },
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
@@ -65,6 +75,10 @@ export default function RootLayout({
       className={`${inter.variable} ${playfair.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        <OrganizationStructuredData />
+        <WebsiteStructuredData />
+      </head>
       <body className="min-h-screen bg-charcoal text-cream-100 antialiased">
         <div className="relative flex min-h-screen flex-col">
           <Navbar />

@@ -15,8 +15,9 @@ export default function DonatePage() {
 
   const handleDonate = () => {
     const amount = selectedAmount || Number(customAmount);
-    // Redirect to Stripe checkout would go here
-    console.log('Donating:', { amount, isRecurring });
+    // TODO: Integrate Stripe checkout here
+    // Example: stripe.redirectToCheckout({...})
+    window.alert(`Stripe integration pending. Would donate $${amount}`);
   };
 
   return (
