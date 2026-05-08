@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { FOOTER_LINKS, SOCIAL_LINKS, ORG, HOTLINES } from '@/lib/constants';
 import { cn } from '@/lib/utils';
-import { Flame, Heart, Facebook, Instagram, Twitter, Linkedin, Youtube, Mail, Phone, MapPin } from 'lucide-react';
+import { Heart, Facebook, Instagram, Twitter, Linkedin, Youtube, Mail, Phone, MapPin } from 'lucide-react';
+import Image from 'next/image';
 
 const socialIcons: Record<string, React.ComponentType<{ className?: string }>> = {
   Facebook,
@@ -47,8 +48,15 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8">
           {/* Brand Column */}
           <div className="lg:col-span-2">
-            <Link href="/" className="flex items-center gap-2 mb-6 group">
-              <Flame className="h-8 w-8 text-ember transition-transform duration-300 group-hover:scale-110" />
+            <Link href="/" className="flex items-center gap-3 mb-6 group">
+              <div className="relative w-10 h-10">
+                <Image
+                  src="/logo.svg"
+                  alt="Forged in the Fire logo"
+                  fill
+                  className="object-contain transition-transform duration-300 group-hover:scale-105"
+                />
+              </div>
               <span className="font-serif text-xl font-semibold text-cream-100">
                 {ORG.name}
               </span>

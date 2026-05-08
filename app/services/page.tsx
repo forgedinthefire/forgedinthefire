@@ -68,11 +68,7 @@ export default function ServicesPage() {
                         ))}
                       </div>
                       
-                      <Button asChild variant="outline" className="border-ember text-ember hover:bg-ember/10">
-                        <Link href={`/services/${service.id}`}>
-                          Learn More <ArrowRight className="ml-2 h-4 w-4" />
-                        </Link>
-                      </Button>
+                      {/* Service detail pages coming soon - feature list provides info for now */}
                     </div>
                   </CardContent>
                 </Card>
