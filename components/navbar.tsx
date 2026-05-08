@@ -7,7 +7,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { NAV_LINKS } from '@/lib/constants';
 import { cn } from '@/lib/utils';
-import { Menu, X, Flame, ChevronDown } from 'lucide-react';
+import { Menu, X, ChevronDown } from 'lucide-react';
+import Image from 'next/image';
 
 const reducedMotionVariants = {
   hidden: { opacity: 0 },
@@ -78,12 +79,17 @@ export function Navbar() {
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center gap-2 group"
+            className="flex items-center gap-3 group"
             aria-label="Forged in the Fire - Home"
           >
-            <div className="relative">
-              <Flame className="h-8 w-8 text-ember transition-transform duration-300 group-hover:scale-110" />
-              <div className="absolute inset-0 bg-ember/20 blur-lg rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="relative w-10 h-10">
+              <Image
+                src="/logo.svg"
+                alt="Forged in the Fire logo"
+                fill
+                className="object-contain transition-transform duration-300 group-hover:scale-105"
+                priority
+              />
             </div>
             <span className="font-serif text-xl font-semibold text-cream-100 hidden sm:block">
               Forged in the Fire

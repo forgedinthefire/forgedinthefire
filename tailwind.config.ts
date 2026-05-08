@@ -26,25 +26,8 @@ const config: Config = {
           900: '#171717',
           950: '#111111',
         },
+        // Primary Brand Color - Logo Teal
         ember: {
-          DEFAULT: '#D97706',
-          50: '#FEF3C7',
-          100: '#FDE68A',
-          200: '#FCD34D',
-          300: '#FBBF24',
-          400: '#F59E0B',
-          500: '#D97706',
-          600: '#B45309',
-          700: '#92400E',
-          800: '#78350F',
-          900: '#451A03',
-        },
-        flame: {
-          DEFAULT: '#F59E0B',
-          light: '#FCD34D',
-          dark: '#B45309',
-        },
-        healing: {
           DEFAULT: '#0F766E',
           50: '#F0FDFA',
           100: '#CCFBF1',
@@ -56,6 +39,25 @@ const config: Config = {
           700: '#0F766E',
           800: '#115E59',
           900: '#134E4A',
+        },
+        flame: {
+          DEFAULT: '#14B8A6',
+          light: '#2DD4BF',
+          dark: '#0D9488',
+        },
+        // Secondary accent - warm amber (complementary)
+        healing: {
+          DEFAULT: '#D97706',
+          50: '#FEF3C7',
+          100: '#FDE68A',
+          200: '#FCD34D',
+          300: '#FBBF24',
+          400: '#F59E0B',
+          500: '#D97706',
+          600: '#B45309',
+          700: '#92400E',
+          800: '#78350F',
+          900: '#451A03',
         },
         cream: {
           DEFAULT: '#FAF7F2',
@@ -154,13 +156,13 @@ const config: Config = {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-        'ember-glow': 'linear-gradient(135deg, rgba(217, 119, 6, 0.15) 0%, rgba(245, 158, 11, 0.05) 50%, transparent 100%)',
+        'ember-glow': 'linear-gradient(135deg, rgba(15, 118, 110, 0.15) 0%, rgba(20, 184, 166, 0.05) 50%, transparent 100%)',
         'warm-gradient': 'linear-gradient(180deg, #111111 0%, #1a1a1a 100%)',
       },
       boxShadow: {
-        'ember': '0 0 40px rgba(217, 119, 6, 0.3)',
-        'ember-sm': '0 0 20px rgba(217, 119, 6, 0.2)',
-        'glow': '0 0 60px rgba(245, 158, 11, 0.15)',
+        'ember': '0 0 40px rgba(15, 118, 110, 0.3)',
+        'ember-sm': '0 0 20px rgba(15, 118, 110, 0.2)',
+        'glow': '0 0 60px rgba(20, 184, 166, 0.15)',
       },
       transitionDuration: {
         '400': '400ms',
