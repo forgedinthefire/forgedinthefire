@@ -21,7 +21,7 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   title: META_DEFAULTS.title,
   description: META_DEFAULTS.description,
-  keywords: META_DEFAULTS.keywords,
+  keywords: [...META_DEFAULTS.keywords],
   authors: META_DEFAULTS.authors.map((name) => ({ name })),
   creator: META_DEFAULTS.creator,
   publisher: META_DEFAULTS.publisher,

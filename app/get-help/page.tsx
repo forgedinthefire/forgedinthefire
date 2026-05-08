@@ -79,9 +79,9 @@ export default function GetHelpPage() {
                       >
                         {hotline.phone}
                       </a>
-                      {hotline.sms && (
+                      {'sms' in hotline && hotline.sms && (
                         <p className="text-sm text-cream-300/70 mb-2">
-                          Text &quot;{hotline.text}&quot; to {hotline.sms}
+                          Text &quot;{'text' in hotline ? hotline.text : 'HELP'}&quot; to {hotline.sms}
                         </p>
                       )}
                       <p className="text-sm text-cream-300/60">{hotline.description}</p>

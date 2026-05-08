@@ -101,7 +101,7 @@ export function Navbar() {
                   isActive(link.href)
                     ? 'text-ember'
                     : 'text-cream-100 hover:text-ember',
-                  link.priority && 'text-ember font-semibold'
+                  'priority' in link && link.priority && 'text-ember font-semibold'
                 )}
                 aria-current={isActive(link.href) ? 'page' : undefined}
               >
