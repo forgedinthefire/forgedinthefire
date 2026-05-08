@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     siteName: ORG.name,
     images: [
       {
-        url: '/opengraph-image.png',
+        url: '/opengraph-image.jpeg',
         width: 1200,
         height: 630,
         alt: 'Forged in the Fire - Empowering Survivors',
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: META_DEFAULTS.title,
     description: META_DEFAULTS.description,
-    images: ['/opengraph-image.png'],
+    images: ['/opengraph-image.jpeg'],
   },
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
