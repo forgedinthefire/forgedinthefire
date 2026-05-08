@@ -1,0 +1,155 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 7%;
+    --foreground: 40 30% 97%;
+    --card: 0 0% 10%;
+    --card-foreground: 40 30% 97%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 40 30% 97%;
+    --primary: 32 91% 44%;
+    --primary-foreground: 40 30% 97%;
+    --secondary: 174 75% 26%;
+    --secondary-foreground: 40 30% 97%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
+    --accent: 32 91% 44%;
+    --accent-foreground: 40 30% 97%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 40 30% 97%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 32 91% 44%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-charcoal text-cream-100 antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  
+  /* Focus visible styles for accessibility */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ember;
+  }
+  
+  /* Selection styles */
+  ::selection {
+    @apply bg-ember/30 text-cream-100;
+  }
+}
+
+@layer utilities {
+  /* Typography utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  /* Gradient text */
+  .text-gradient-ember {
+    @apply bg-gradient-to-r from-ember via-flame to-ember bg-clip-text text-transparent;
+  }
+  
+  /* Ember glow effect */
+  .ember-glow {
+    box-shadow: 0 0 40px rgba(217, 119, 6, 0.3);
+  }
+  
+  /* Glass effect */
+  .glass {
+    @apply bg-charcoal/80 backdrop-blur-md;
+  }
+  
+  /* Section padding */
+  .section-padding {
+    @apply px-4 sm:px-6 lg:px-8 xl:px-16 2xl:px-24;
+  }
+  
+  /* Container max widths */
+  .container-tight {
+    @apply max-w-4xl mx-auto;
+  }
+  
+  .container-wide {
+    @apply max-w-7xl mx-auto;
+  }
+  
+  /* Ember underline animation */
+  .ember-underline {
+    @apply relative;
+  }
+  
+  .ember-underline::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-ember transition-all duration-500;
+  }
+  
+  .ember-underline:hover::after {
+    @apply w-full;
+  }
+  
+  /* Safe area padding for mobile */
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* Custom scrollbar - subtle and dark */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #404040;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #525252;
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    background: white;
+    color: black;
+  }
+}
