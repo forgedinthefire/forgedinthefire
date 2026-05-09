@@ -14,25 +14,25 @@ const RESOURCES = [
   {
     category: 'Awareness',
     items: [
-      { title: 'Human Trafficking 101', type: 'PDF', desc: 'Understanding the basics of human trafficking' },
-      { title: 'Recognizing the Signs', type: 'PDF', desc: 'How to identify potential trafficking situations' },
-      { title: 'Myths vs Facts', type: 'PDF', desc: 'Common misconceptions about trafficking' },
+      { title: 'Human Trafficking 101', type: 'PDF', desc: 'Understanding the basics of human trafficking', href: '/resources/human-trafficking-101.pdf' },
+      { title: 'Recognizing the Signs', type: 'PDF', desc: 'How to identify potential trafficking situations', href: '/resources/recognizing-the-signs.pdf' },
+      { title: 'Myths vs Facts', type: 'PDF', desc: 'Common misconceptions about trafficking', href: '/resources/myths-vs-facts-human-trafficking.pdf' },
     ],
   },
   {
     category: 'For Survivors',
     items: [
-      { title: 'Safety Planning Guide', type: 'PDF', desc: 'Creating a personalized safety plan' },
-      { title: 'Know Your Rights', type: 'PDF', desc: 'Legal rights and protections for survivors' },
-      { title: 'Healing Resources', type: 'PDF', desc: 'Self-care and trauma recovery tools' },
+      { title: 'Safety Planning Guide', type: 'PDF', desc: 'Creating a personalized safety plan', href: '/resources/safety-planning-guide.pdf' },
+      { title: 'Know Your Rights', type: 'PDF', desc: 'Legal rights and protections for survivors', href: '/resources/know-your-rights-human-trafficking-survivors.pdf' },
+      { title: 'Healing Resources', type: 'PDF', desc: 'Self-care and trauma recovery tools', href: '/resources/healing-after-trafficking.pdf' },
     ],
   },
   {
     category: 'For Professionals',
     items: [
-      { title: 'Trauma-Informed Care Guide', type: 'PDF', desc: 'Best practices for service providers' },
-      { title: 'Screening Toolkit', type: 'PDF', desc: 'Identifying trafficking in healthcare settings' },
-      { title: 'Multi-Disciplinary Team Guide', type: 'PDF', desc: 'Coordinating comprehensive response' },
+      { title: 'Trauma-Informed Care Guide', type: 'PDF', desc: 'Best practices for service providers', href: null },
+      { title: 'Screening Toolkit', type: 'PDF', desc: 'Identifying trafficking in healthcare settings', href: '/resources/human-trafficking-screening-toolkit.pdf' },
+      { title: 'Multi-Disciplinary Team Guide', type: 'PDF', desc: 'Coordinating comprehensive response', href: '/resources/multi-disciplinary-anti-trafficking-response.pdf' },
     ],
   },
 ];
@@ -80,23 +80,51 @@ export default function ResourcesPage() {
                 </h3>
                 <div className="grid md:grid-cols-3 gap-4">
                   {section.items.map((item) => (
-                    <Card key={item.title} className="bg-charcoal-800/50 border-steel-700 hover:border-ember/30 transition-colors group">
-                      <CardContent className="p-5">
-                        <div className="flex items-start gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-ember/10 flex items-center justify-center shrink-0">
-                            <FileText className="h-5 w-5 text-ember" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-semibold text-cream-100 mb-1 group-hover:text-ember transition-colors">{item.title}</h4>
-                            <p className="text-sm text-cream-300/70 mb-3">{item.desc}</p>
-                            <div className="flex items-center gap-2 text-xs text-ember">
-                              <Download className="h-3 w-3" />
-                              <span>{item.type}</span>
+                    item.href ? (
+                      <a
+                        key={item.title}
+                        href={item.href}
+                        download
+                        className="block group"
+                        aria-label={`Download ${item.title} PDF`}
+                      >
+                        <Card className="h-full bg-charcoal-800/50 border-steel-700 hover:border-ember/30 transition-colors group">
+                          <CardContent className="p-5">
+                            <div className="flex items-start gap-3">
+                              <div className="w-10 h-10 rounded-lg bg-ember/10 flex items-center justify-center shrink-0">
+                                <FileText className="h-5 w-5 text-ember" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <h4 className="font-semibold text-cream-100 mb-1 group-hover:text-ember transition-colors">{item.title}</h4>
+                                <p className="text-sm text-cream-300/70 mb-3">{item.desc}</p>
+                                <div className="flex items-center gap-2 text-xs text-ember">
+                                  <Download className="h-3 w-3" />
+                                  <span>{item.type}</span>
+                                </div>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </a>
+                    ) : (
+                      <Card key={item.title} className="bg-charcoal-800/50 border-steel-700 opacity-60 cursor-not-allowed">
+                        <CardContent className="p-5">
+                          <div className="flex items-start gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-ember/10 flex items-center justify-center shrink-0">
+                              <FileText className="h-5 w-5 text-ember" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-semibold text-cream-100 mb-1">{item.title}</h4>
+                              <p className="text-sm text-cream-300/70 mb-3">{item.desc}</p>
+                              <div className="flex items-center gap-2 text-xs text-cream-300/40">
+                                <Download className="h-3 w-3" />
+                                <span>Coming Soon</span>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </CardContent>
-                    </Card>
+                        </CardContent>
+                      </Card>
+                    )
                   ))}
                 </div>
               </div>

@@ -59,3 +59,16 @@ logs
 .cache
 .parcel-cache
 .next/cache
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Pipeline scripts (local tooling only)
+produce_pdfs.py
+run_pdf_pipeline.sh
+audit_ht_master.py
+split_ht_master.py
+extract_papers.py
+AUDIT_REPORT.txt
