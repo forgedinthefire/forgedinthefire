@@ -34,70 +34,82 @@ export function HeroAnimation({ children }: HeroAnimationProps) {
 
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Phase 1-4: Background Transition - Dark to Warm */}
+      {/* Phase 1-4: Cinematic Dark Background - Hero Section */}
       <motion.div
         className="absolute inset-0"
-        initial={{ backgroundColor: '#141414' }}
-        animate={{
-          backgroundColor: phase >= 4 ? '#FAF7F2' : phase >= 2 ? '#1F1F1F' : '#141414',
+        style={{
+          background: 'linear-gradient(180deg, #1E1714 0%, #241B18 50%, #2A1F1A 100%)',
         }}
-        transition={{ duration: 2, ease: 'easeInOut' }}
+        initial={{ opacity: 0.8 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.5, ease: 'easeOut' }}
       />
 
-      {/* Phase 2-4: Ambient Fog/Embers Layer */}
+      {/* Phase 1-5: Cinematic Teal Ambient Overlay */}
       <motion.div
         className="absolute inset-0 pointer-events-none"
         initial={{ opacity: 0 }}
-        animate={{ opacity: phase >= 2 ? 0.4 : 0 }}
+        animate={{ opacity: phase >= 1 ? 1 : 0 }}
+        transition={{ duration: 2, ease: 'easeOut' }}
+        style={{
+          background: 'radial-gradient(circle at center, rgba(30, 107, 115, 0.14) 0%, rgba(30, 107, 115, 0.04) 45%, transparent 70%)',
+        }}
+      />
+
+      {/* Phase 2-4: Warm Ember Particles */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: phase >= 2 ? 0.5 : 0 }}
         transition={{ duration: 2, ease: 'easeOut' }}
       >
-        {/* Subtle ember particles - floating dots */}
-        {[...Array(6)].map((_, i) => (
+        {/* Floating ember particles */}
+        {[...Array(8)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute rounded-full"
             style={{
-              width: Math.random() * 3 + 1,
-              height: Math.random() * 3 + 1,
-              background: 'radial-gradient(circle, rgba(200, 164, 107, 0.6) 0%, transparent 70%)',
-              left: `${20 + i * 12}%`,
-              top: `${30 + (i % 3) * 20}%`,
+              width: Math.random() * 2 + 1,
+              height: Math.random() * 2 + 1,
+              background: 'radial-gradient(circle, rgba(200, 164, 107, 0.5) 0%, transparent 70%)',
+              left: `${15 + i * 10}%`,
+              top: `${25 + (i % 4) * 15}%`,
             }}
             animate={{
-              y: [0, -30, 0],
-              opacity: [0.3, 0.6, 0.3],
+              y: [0, -25, 0],
+              opacity: [0.2, 0.5, 0.2],
             }}
             transition={{
-              duration: 4 + i,
+              duration: 5 + i * 0.8,
               repeat: Infinity,
               ease: 'easeInOut',
-              delay: i * 0.5,
+              delay: i * 0.6,
             }}
           />
         ))}
       </motion.div>
 
-      {/* Phase 3-4: Torch Glow Layer */}
+      {/* Phase 3-4: Torch Ignition Glow Layer */}
       <motion.div
         className="absolute inset-0 pointer-events-none"
         initial={{ opacity: 0 }}
         animate={{ opacity: phase >= 3 ? 1 : 0 }}
         transition={{ duration: 1.5, ease: 'easeOut' }}
       >
-        {/* Central teal glow behind logo */}
+        {/* Central teal flame glow behind logo */}
         <div 
           className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full"
           style={{
-            background: 'radial-gradient(circle, rgba(30, 107, 115, 0.15) 0%, rgba(30, 107, 115, 0.05) 40%, transparent 70%)',
-            filter: 'blur(40px)',
+            background: 'radial-gradient(circle, rgba(30, 107, 115, 0.18) 0%, rgba(30, 107, 115, 0.06) 40%, transparent 70%)',
+            filter: 'blur(50px)',
           }}
         />
         
-        {/* Warm bronze glow layer */}
+        {/* Warm bronze edge lighting */}
         <div 
           className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full"
           style={{
-            background: 'radial-gradient(circle, rgba(139, 94, 60, 0.1) 0%, transparent 60%)',
+            background: 'radial-gradient(circle, rgba(139, 94, 60, 0.12) 0%, transparent 60%)',
             filter: 'blur(60px)',
           }}
         />
@@ -205,14 +217,14 @@ export function HeroAnimation({ children }: HeroAnimationProps) {
         </motion.div>
       </div>
 
-      {/* Phase 4: Ambient Light Spread - Bottom gradient */}
+      {/* Phase 4: Ambient Light Spread - Warm safety glow */}
       <motion.div
         className="absolute bottom-0 left-0 right-0 h-1/3 pointer-events-none"
         initial={{ opacity: 0 }}
         animate={{ opacity: phase >= 4 ? 1 : 0 }}
         transition={{ duration: 1.5, ease: 'easeOut' }}
         style={{
-          background: 'linear-gradient(to top, rgba(30, 107, 115, 0.05) 0%, transparent 100%)',
+          background: 'linear-gradient(to top, rgba(139, 94, 60, 0.08) 0%, transparent 100%)',
         }}
       />
     </div>

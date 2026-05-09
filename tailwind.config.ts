@@ -62,6 +62,27 @@ const config: Config = {
           amber: '#D4A574',      // Warm Amber
         },
         
+        // ============================================
+        // CINEMATIC DARK PALETTE - Section Flow System
+        // ============================================
+        
+        // Deep darkness - Main site background
+        deep: {
+          DEFAULT: '#1E1714',
+          50: '#3A2A24',   // Elevated surfaces
+          100: '#2A1F1A',  // Alternate section
+          200: '#241B18',  // Secondary section
+          300: '#1E1714',  // Main background
+          400: '#181210',  // Footer/Nav
+        },
+        
+        // Warm text colors for dark backgrounds
+        text: {
+          primary: '#F6F0E8',   // Main text
+          secondary: '#CDBDAF', // Secondary text
+          muted: '#B8A89A',     // Muted text
+        },
+        
         // UTILITY: Charcoal for text
         charcoal: {
           DEFAULT: '#1F1F1F',

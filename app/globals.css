@@ -4,26 +4,26 @@
 
 @layer base {
   :root {
-    /* Warm Brand Color System */
-    --background: 40 33% 97%;           /* warm-ivory #FAF7F2 */
-    --foreground: 0 0% 12%;               /* charcoal-800 #1F1F1F */
-    --card: 40 30% 95%;                   /* warm-cream #F6F2EC */
-    --card-foreground: 0 0% 12%;
-    --popover: 40 33% 97%;
-    --popover-foreground: 0 0% 12%;
-    --primary: 184 57% 29%;               /* forge-600 #1E6B73 */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 30 20% 92%;              /* warm-sand tones */
-    --secondary-foreground: 0 0% 12%;
-    --muted: 30 15% 90%;
-    --muted-foreground: 30 10% 40%;
-    --accent: 25 40% 40%;                 /* bronze-500 #8B5E3C */
-    --accent-foreground: 0 0% 100%;
+    /* Cinematic Dark Brand System */
+    --background: 15 18% 10%;           /* deep-300 #1E1714 */
+    --foreground: 35 30% 94%;           /* text-primary #F6F0E8 */
+    --card: 15 20% 13%;                /* deep-100 #2A1F1A */
+    --card-foreground: 35 30% 94%;
+    --popover: 15 18% 10%;
+    --popover-foreground: 35 30% 94%;
+    --primary: 184 57% 29%;             /* forge-600 #1E6B73 */
+    --primary-foreground: 35 30% 94%;
+    --secondary: 15 20% 14%;            /* deep-200 #241B18 */
+    --secondary-foreground: 35 30% 94%;
+    --muted: 15 18% 12%;
+    --muted-foreground: 30 20% 72%;     /* text-muted #B8A89A */
+    --accent: 25 40% 40%;               /* bronze-500 #8B5E3C */
+    --accent-foreground: 35 30% 94%;
     --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 30 20% 85%;
-    --input: 30 20% 85%;
-    --ring: 184 57% 29%;                  /* forge-600 */
+    --destructive-foreground: 35 30% 94%;
+    --border: 25 20% 25%;
+    --input: 25 20% 25%;
+    --ring: 184 57% 29%;                /* forge-600 */
     --radius: 0.75rem;
   }
 }
@@ -38,8 +38,8 @@
   }
   
   body {
-    background-color: #FAF7F2;
-    color: #1F1F1F;
+    background-color: #1E1714;
+    color: #F6F0E8;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-feature-settings: "rlig" 1, "calt" 1;
@@ -174,23 +174,23 @@
   }
 }
 
-/* Custom scrollbar - warm and subtle */
+/* Custom scrollbar - dark cinematic */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #F6F2EC;
+  background: #241B18;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #D8CBBE;
+  background: #3A2A24;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #B8A89C;
+  background: #4A2F22;
 }
 
 /* Print styles */
