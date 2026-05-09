@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { HOTLINES } from '@/lib/constants';
-import { Phone, MessageSquare, Clock, AlertTriangle, Shield, ChevronRight, Send, ExternalLink } from 'lucide-react';
+import { Phone, MessageSquare, Clock, AlertTriangle, Shield, ChevronRight, Send, ExternalLink, Globe, HeartPulse, MapPin, Users, Baby, Brain } from 'lucide-react';
 
 export default function GetHelpPage() {
   const [formState, setFormState] = useState({
@@ -142,16 +142,413 @@ export default function GetHelpPage() {
         </div>
       </section>
 
+      {/* External Resources */}
+      <section className="py-24" style={{ background: '#1E1714' }}>
+        <div className="container-wide section-padding">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <span className="font-medium mb-4 block" style={{ color: '#4C9AA3' }}>Additional Support</span>
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold mb-4" style={{ color: '#F6F0E8' }}>
+              Additional Resources
+            </h2>
+            <p style={{ color: '#CDBDAF' }}>
+              Trusted organizations and support services available nationwide.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {/* National Human Trafficking Hotline */}
+            <Card 
+              className="border-0 h-full transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.35)]"
+              style={{ background: '#3A2A24', boxShadow: '0 8px 30px rgba(0,0,0,0.3)' }}
+            >
+              <CardContent className="p-6 flex flex-col h-full">
+                <div className="flex items-start gap-3 mb-4">
+                  <div 
+                    className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
+                    style={{ background: 'rgba(30,107,115,0.2)' }}
+                  >
+                    <Globe className="h-5 w-5 text-[#4C9AA3]" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg" style={{ color: '#F6F0E8' }}>
+                      National Human Trafficking Hotline
+                    </h3>
+                  </div>
+                </div>
+                <p className="text-sm mb-4 flex-1" style={{ color: '#CDBDAF' }}>
+                  24/7 confidential support, crisis intervention, safety planning, and referrals for victims and survivors of trafficking.
+                </p>
+                <div className="space-y-2">
+                  <Button 
+                    asChild 
+                    size="sm" 
+                    className="w-full bg-[#1E6B73] hover:bg-[#4C9AA3] text-[#F6F0E8]"
+                  >
+                    <a 
+                      href="https://humantraffickinghotline.org" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      aria-label="Visit National Human Trafficking Hotline website"
+                    >
+                      <ExternalLink className="mr-2 h-4 w-4" />
+                      Visit Website
+                    </a>
+                  </Button>
+                  <div className="flex gap-2">
+                    <Button 
+                      asChild 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex-1 border-[#8B5E3C] text-[#C8A46B] hover:bg-[#8B5E3C]/14"
+                    >
+                      <a href="tel:18883737888" aria-label="Call National Human Trafficking Hotline">
+                        <Phone className="mr-2 h-4 w-4" />
+                        Call
+                      </a>
+                    </Button>
+                    <Button 
+                      asChild 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex-1 border-[#8B5E3C] text-[#C8A46B] hover:bg-[#8B5E3C]/14"
+                    >
+                      <a href="sms:233733?body=BEFREE" aria-label="Text National Human Trafficking Hotline">
+                        <MessageSquare className="mr-2 h-4 w-4" />
+                        Text
+                      </a>
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Emergency Services */}
+            <Card 
+              className="border-0 h-full transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.35)]"
+              style={{ background: '#3A2A24', boxShadow: '0 8px 30px rgba(0,0,0,0.3)' }}
+            >
+              <CardContent className="p-6 flex flex-col h-full">
+                <div className="flex items-start gap-3 mb-4">
+                  <div 
+                    className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
+                    style={{ background: 'rgba(200,164,107,0.15)' }}
+                  >
+                    <AlertTriangle className="h-5 w-5 text-[#C8A46B]" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg" style={{ color: '#F6F0E8' }}>
+                      Emergency Assistance
+                    </h3>
+                  </div>
+                </div>
+                <p className="text-sm mb-4 flex-1" style={{ color: '#CDBDAF' }}>
+                  If you are in immediate danger or need urgent emergency assistance, call emergency services immediately.
+                </p>
+                <Button 
+                  asChild 
+                  size="lg" 
+                  className="w-full bg-[#8B5E3C] hover:bg-[#A67C52] text-[#F6F0E8]"
+                >
+                  <a href="tel:911" aria-label="Call 911 for emergency assistance">
+                    <Phone className="mr-2 h-5 w-5" />
+                    Call 911
+                  </a>
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Ohio Attorney General */}
+            <Card 
+              className="border-0 h-full transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.35)]"
+              style={{ background: '#3A2A24', boxShadow: '0 8px 30px rgba(0,0,0,0.3)' }}
+            >
+              <CardContent className="p-6 flex flex-col h-full">
+                <div className="flex items-start gap-3 mb-4">
+                  <div 
+                    className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
+                    style={{ background: 'rgba(30,107,115,0.2)' }}
+                  >
+                    <MapPin className="h-5 w-5 text-[#4C9AA3]" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg" style={{ color: '#F6F0E8' }}>
+                      Ohio Human Trafficking Resources
+                    </h3>
+                  </div>
+                </div>
+                <p className="text-sm mb-4 flex-1" style={{ color: '#CDBDAF' }}>
+                  State-level trafficking awareness, reporting, victim assistance, and prevention resources.
+                </p>
+                <Button 
+                  asChild 
+                  size="sm" 
+                  className="w-full bg-[#1E6B73] hover:bg-[#4C9AA3] text-[#F6F0E8]"
+                >
+                  <a 
+                    href="https://www.ohioattorneygeneral.gov/Individuals-and-Families/Victims/Human-Trafficking" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    aria-label="Visit Ohio Attorney General Human Trafficking resources"
+                  >
+                    <ExternalLink className="mr-2 h-4 w-4" />
+                    Visit Website
+                  </a>
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* RAINN */}
+            <Card 
+              className="border-0 h-full transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.35)]"
+              style={{ background: '#3A2A24', boxShadow: '0 8px 30px rgba(0,0,0,0.3)' }}
+            >
+              <CardContent className="p-6 flex flex-col h-full">
+                <div className="flex items-start gap-3 mb-4">
+                  <div 
+                    className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
+                    style={{ background: 'rgba(200,164,107,0.15)' }}
+                  >
+                    <HeartPulse className="h-5 w-5 text-[#C8A46B]" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg" style={{ color: '#F6F0E8' }}>
+                      RAINN Sexual Assault Support
+                    </h3>
+                  </div>
+                </div>
+                <p className="text-sm mb-4 flex-1" style={{ color: '#CDBDAF' }}>
+                  Confidential crisis support and resources for survivors of sexual violence and abuse.
+                </p>
+                <div className="space-y-2">
+                  <Button 
+                    asChild 
+                    size="sm" 
+                    className="w-full bg-[#1E6B73] hover:bg-[#4C9AA3] text-[#F6F0E8]"
+                  >
+                    <a 
+                      href="https://www.rainn.org" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      aria-label="Visit RAINN website"
+                    >
+                      <ExternalLink className="mr-2 h-4 w-4" />
+                      Visit Website
+                    </a>
+                  </Button>
+                  <Button 
+                    asChild 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full border-[#8B5E3C] text-[#C8A46B] hover:bg-[#8B5E3C]/14"
+                  >
+                    <a href="tel:18006564673" aria-label="Call RAINN National Sexual Assault Hotline">
+                      <Phone className="mr-2 h-4 w-4" />
+                      Hotline: 1-800-656-4673
+                    </a>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* SAMHSA */}
+            <Card 
+              className="border-0 h-full transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.35)]"
+              style={{ background: '#3A2A24', boxShadow: '0 8px 30px rgba(0,0,0,0.3)' }}
+            >
+              <CardContent className="p-6 flex flex-col h-full">
+                <div className="flex items-start gap-3 mb-4">
+                  <div 
+                    className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
+                    style={{ background: 'rgba(30,107,115,0.2)' }}
+                  >
+                    <Brain className="h-5 w-5 text-[#4C9AA3]" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg" style={{ color: '#F6F0E8' }}>
+                      Mental Health & Crisis Support
+                    </h3>
+                  </div>
+                </div>
+                <p className="text-sm mb-4 flex-1" style={{ color: '#CDBDAF' }}>
+                  Mental health, substance use, and emotional crisis support resources available nationwide.
+                </p>
+                <Button 
+                  asChild 
+                  size="sm" 
+                  className="w-full bg-[#1E6B73] hover:bg-[#4C9AA3] text-[#F6F0E8]"
+                >
+                  <a 
+                    href="https://www.samhsa.gov" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    aria-label="Visit SAMHSA website"
+                  >
+                    <ExternalLink className="mr-2 h-4 w-4" />
+                    Visit SAMHSA
+                  </a>
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* 988 Crisis Lifeline */}
+            <Card 
+              className="border-0 h-full transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.35)]"
+              style={{ background: '#3A2A24', boxShadow: '0 8px 30px rgba(0,0,0,0.3)' }}
+            >
+              <CardContent className="p-6 flex flex-col h-full">
+                <div className="flex items-start gap-3 mb-4">
+                  <div 
+                    className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
+                    style={{ background: 'rgba(200,164,107,0.15)' }}
+                  >
+                    <HeartPulse className="h-5 w-5 text-[#C8A46B]" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg" style={{ color: '#F6F0E8' }}>
+                      988 Crisis Lifeline
+                    </h3>
+                  </div>
+                </div>
+                <p className="text-sm mb-4 flex-1" style={{ color: '#CDBDAF' }}>
+                  24/7 emotional crisis support for anyone experiencing emotional distress or mental health crisis.
+                </p>
+                <div className="space-y-2">
+                  <Button 
+                    asChild 
+                    size="sm" 
+                    className="w-full bg-[#8B5E3C] hover:bg-[#A67C52] text-[#F6F0E8]"
+                  >
+                    <a href="tel:988" aria-label="Call or text 988 Crisis Lifeline">
+                      <Phone className="mr-2 h-4 w-4" />
+                      Call or Text 988
+                    </a>
+                  </Button>
+                  <Button 
+                    asChild 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full border-[#8B5E3C] text-[#C8A46B] hover:bg-[#8B5E3C]/14"
+                  >
+                    <a 
+                      href="https://988lifeline.org" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      aria-label="Visit 988 Lifeline website"
+                    >
+                      <ExternalLink className="mr-2 h-4 w-4" />
+                      Visit Website
+                    </a>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Domestic Violence Hotline */}
+            <Card 
+              className="border-0 h-full transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.35)]"
+              style={{ background: '#3A2A24', boxShadow: '0 8px 30px rgba(0,0,0,0.3)' }}
+            >
+              <CardContent className="p-6 flex flex-col h-full">
+                <div className="flex items-start gap-3 mb-4">
+                  <div 
+                    className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
+                    style={{ background: 'rgba(30,107,115,0.2)' }}
+                  >
+                    <Users className="h-5 w-5 text-[#4C9AA3]" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg" style={{ color: '#F6F0E8' }}>
+                      National Domestic Violence Hotline
+                    </h3>
+                  </div>
+                </div>
+                <p className="text-sm mb-4 flex-1" style={{ color: '#CDBDAF' }}>
+                  Support, safety planning, and confidential help for individuals experiencing abuse or violence.
+                </p>
+                <div className="space-y-2">
+                  <Button 
+                    asChild 
+                    size="sm" 
+                    className="w-full bg-[#1E6B73] hover:bg-[#4C9AA3] text-[#F6F0E8]"
+                  >
+                    <a 
+                      href="https://www.thehotline.org" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      aria-label="Visit National Domestic Violence Hotline website"
+                    >
+                      <ExternalLink className="mr-2 h-4 w-4" />
+                      Visit Website
+                    </a>
+                  </Button>
+                  <Button 
+                    asChild 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full border-[#8B5E3C] text-[#C8A46B] hover:bg-[#8B5E3C]/14"
+                  >
+                    <a href="tel:18007997233" aria-label="Call National Domestic Violence Hotline">
+                      <Phone className="mr-2 h-4 w-4" />
+                      1-800-799-7233
+                    </a>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Missing & Exploited Children */}
+            <Card 
+              className="border-0 h-full transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.35)]"
+              style={{ background: '#3A2A24', boxShadow: '0 8px 30px rgba(0,0,0,0.3)' }}
+            >
+              <CardContent className="p-6 flex flex-col h-full">
+                <div className="flex items-start gap-3 mb-4">
+                  <div 
+                    className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
+                    style={{ background: 'rgba(200,164,107,0.15)' }}
+                  >
+                    <Baby className="h-5 w-5 text-[#C8A46B]" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg" style={{ color: '#F6F0E8' }}>
+                      Missing & Exploited Children Resources
+                    </h3>
+                  </div>
+                </div>
+                <p className="text-sm mb-4 flex-1" style={{ color: '#CDBDAF' }}>
+                  Support and reporting resources related to child exploitation and trafficking concerns.
+                </p>
+                <Button 
+                  asChild 
+                  size="sm" 
+                  className="w-full bg-[#1E6B73] hover:bg-[#4C9AA3] text-[#F6F0E8]"
+                >
+                  <a 
+                    href="https://www.missingkids.org" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    aria-label="Visit Missing and Exploited Children website"
+                  >
+                    <ExternalLink className="mr-2 h-4 w-4" />
+                    Visit Website
+                  </a>
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* Contact Form */}
-      <section className="py-24 bg-charcoal-900">
+      <section className="py-24" style={{ background: '#2A1F1A' }}>
         <div className="container-wide section-padding">
           <div className="max-w-2xl mx-auto">
             <div className="text-center mb-12">
-              <span className="text-ember font-medium mb-4 block">Reach Out</span>
-              <h2 className="font-serif text-4xl font-bold text-cream-100 mb-4">
+              <span className="font-medium mb-4 block" style={{ color: '#C8A46B' }}>Reach Out</span>
+              <h2 className="font-serif text-4xl font-bold mb-4" style={{ color: '#F6F0E8' }}>
                 Contact Our Team
               </h2>
-              <p className="text-cream-300/80">
+              <p style={{ color: '#CDBDAF' }}>
                 Fill out this form and a member of our team will reach out to you within 24 hours.
                 All communications are confidential.
               </p>
