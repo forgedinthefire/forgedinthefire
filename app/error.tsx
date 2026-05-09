@@ -18,9 +18,9 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-cream px-4">
+    <div className="min-h-screen flex items-center justify-center bg-warm-ivory px-4">
       <div className="max-w-md w-full text-center">
-        <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+        <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
           <AlertTriangle className="w-8 h-8 text-red-500" />
         </div>
         
@@ -34,12 +34,12 @@ export default function Error({
         </p>
         
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Button onClick={reset} variant="outline" className="border-teal-600 text-teal-600 hover:bg-teal-50">
+          <Button onClick={reset} variant="outline" className="border-forge-500 text-forge-600 hover:bg-forge-50 transition-all">
             <RefreshCw className="w-4 h-4 mr-2" />
             Try again
           </Button>
           
-          <Button asChild className="bg-teal-600 hover:bg-teal-700 text-white">
+          <Button asChild className="bg-forge-600 hover:bg-forge-700 text-white shadow-warm hover:shadow-warm-lg transition-all">
             <Link href="/">
               <Home className="w-4 h-4 mr-2" />
               Go home

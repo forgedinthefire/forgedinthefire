@@ -65,8 +65,8 @@ export function Navbar() {
       className={cn(
         'fixed top-0 left-0 right-0 z-40 transition-all duration-300',
         isScrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-soft border-b border-teal-100'
-          : 'bg-white/80 backdrop-blur-sm'
+          ? 'bg-warm-ivory/95 backdrop-blur-md shadow-warm border-b border-forge-100'
+          : 'bg-warm-ivory/80 backdrop-blur-sm'
       )}
       role="banner"
     >
@@ -82,14 +82,14 @@ export function Navbar() {
             className="flex items-center gap-3 group"
             aria-label="Forged in the Fire - Home"
           >
-            <div className="relative w-10 h-10 overflow-hidden">
+            <div className="relative w-11 h-11 overflow-hidden">
               <Image
-                src="/logo.png"
-                alt="Forged in the Fire logo"
+                src="/logo-main.png"
+                alt="Forged in the Fire"
                 fill
-                className="object-contain transition-all duration-500 ease-out group-hover:scale-110 group-hover:brightness-110"
+                className="object-contain transition-all duration-500 ease-out group-hover:scale-105"
                 priority
-                sizes="40px"
+                sizes="44px"
               />
             </div>
             <span className="font-serif text-xl font-semibold text-charcoal-800 hidden sm:block">
@@ -106,9 +106,9 @@ export function Navbar() {
                 className={cn(
                   'relative px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-md',
                   isActive(link.href)
-                    ? 'text-teal-600'
-                    : 'text-charcoal-700 hover:text-teal-600',
-                  'priority' in link && link.priority && 'text-teal-600 font-semibold'
+                    ? 'text-forge-600'
+                    : 'text-charcoal-700 hover:text-forge-600',
+                  'priority' in link && link.priority && 'text-forge-600 font-semibold'
                 )}
                 aria-current={isActive(link.href) ? 'page' : undefined}
               >
@@ -116,7 +116,7 @@ export function Navbar() {
                 {isActive(link.href) && (
                   <motion.span
                     layoutId="activeNav"
-                    className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-teal-500 rounded-full"
+                    className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-forge-500 rounded-full"
                     transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                   />
                 )}
@@ -130,7 +130,7 @@ export function Navbar() {
               asChild
               variant="ghost"
               size="sm"
-              className="text-charcoal-700 hover:text-teal-600"
+              className="text-charcoal-700 hover:text-forge-600"
             >
               <Link href="/get-help">Get Help</Link>
             </Button>
@@ -138,7 +138,7 @@ export function Navbar() {
               asChild
               variant="default"
               size="sm"
-              className="bg-teal-600 hover:bg-teal-700 text-white"
+              className="bg-forge-600 hover:bg-forge-700 text-white shadow-warm hover:shadow-warm-lg"
             >
               <Link href="/donate">Donate</Link>
             </Button>
@@ -147,7 +147,7 @@ export function Navbar() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden p-2 text-charcoal-700 hover:text-teal-600 transition-colors"
+            className="lg:hidden p-2 text-charcoal-700 hover:text-forge-600 transition-colors"
             aria-expanded={isOpen}
             aria-controls="mobile-menu"
             aria-label={isOpen ? 'Close menu' : 'Open menu'}
@@ -174,7 +174,7 @@ export function Navbar() {
             className="fixed inset-0 top-20 z-30 lg:hidden"
           >
             <div
-              className="absolute inset-0 bg-white/98 backdrop-blur-lg"
+              className="absolute inset-0 bg-warm-ivory/98 backdrop-blur-lg"
               onClick={() => setIsOpen(false)}
             />
             <nav
@@ -195,8 +195,8 @@ export function Navbar() {
                       className={cn(
                         'block px-4 py-4 text-lg font-medium rounded-lg transition-colors',
                         isActive(link.href)
-                          ? 'bg-teal-50 text-teal-700'
-                          : 'text-charcoal-700 hover:bg-teal-50/50 hover:text-teal-600'
+                          ? 'bg-forge-50 text-forge-700'
+                          : 'text-charcoal-700 hover:bg-forge-50/50 hover:text-forge-600'
                       )}
                       aria-current={isActive(link.href) ? 'page' : undefined}
                       onClick={() => setIsOpen(false)}
@@ -208,13 +208,13 @@ export function Navbar() {
               </div>
 
               {/* Mobile CTA Section */}
-              <div className="mt-8 pt-8 border-t border-steel-700">
+              <div className="mt-8 pt-8 border-t border-forge-100">
                 <div className="flex flex-col gap-3">
                   <Button
                     asChild
                     variant="outline"
                     size="lg"
-                    className="w-full border-teal-600 text-teal-600 hover:bg-teal-50"
+                    className="w-full border-forge-500 text-forge-600 hover:bg-forge-50"
                   >
                     <Link href="/get-help" onClick={() => setIsOpen(false)}>
                       Get Help Now
@@ -224,7 +224,7 @@ export function Navbar() {
                     asChild
                     variant="default"
                     size="lg"
-                    className="w-full bg-teal-600 hover:bg-teal-700 text-white"
+                    className="w-full bg-forge-600 hover:bg-forge-700 text-white shadow-warm"
                   >
                     <Link href="/donate" onClick={() => setIsOpen(false)}>
                       Donate Today
@@ -233,13 +233,13 @@ export function Navbar() {
                 </div>
 
                 {/* Emergency Info */}
-                <div className="mt-6 p-4 bg-teal-50 rounded-lg border border-teal-100">
+                <div className="mt-6 p-4 bg-bronze-50 rounded-lg border border-bronze-100">
                   <p className="text-sm text-charcoal-700 font-medium mb-2">
                     National Human Trafficking Hotline
                   </p>
                   <a
                     href="tel:1-888-373-7888"
-                    className="text-lg font-bold text-teal-600 hover:text-teal-700"
+                    className="text-lg font-bold text-bronze-600 hover:text-bronze-700"
                   >
                     1-888-373-7888
                   </a>

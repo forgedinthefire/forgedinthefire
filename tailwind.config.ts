@@ -11,94 +11,140 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Brand Colors - Deep Teal System matching new logo
+        // ============================================
+        // NEW BRAND SYSTEM - "Forged from hardship into hope"
+        // ============================================
+        
+        // PRIMARY: Forge Teal Family
+        forge: {
+          DEFAULT: '#1E6B73',
+          50: '#F0F7F7',
+          100: '#D4E8E9',
+          200: '#B8D9DB',
+          300: '#8FC0C3',
+          400: '#5FA0A5',
+          500: '#3D858B',
+          600: '#1E6B73',  // Primary brand color
+          700: '#18565C',
+          800: '#0F4F57',  // Deep Flame Teal
+          900: '#0A3A40',
+          950: '#052629',
+        },
+        
+        // WARM ACCENTS: Burnished Bronze & Walnut
+        bronze: {
+          DEFAULT: '#8B5E3C',
+          50: '#F9F6F3',
+          100: '#EDE4DB',
+          200: '#DECCB8',
+          300: '#CBAE8E',
+          400: '#B88A6E',
+          500: '#8B5E3C',  // Burnished Bronze
+          600: '#6E4B3A',  // Ember Brown
+          700: '#5B3A29',  // Warm Walnut
+          800: '#4A2F22',
+          900: '#382319',
+        },
+        
+        // NEUTRALS: Warm & Inviting
+        warm: {
+          ivory: '#FAF7F2',      // Warm Ivory
+          cream: '#F6F2EC',      // Soft Cream
+          sand: '#D8CBBE',       // Muted Sand
+          stone: '#A89B8C',      // Warm Stone
+          earth: '#6B5D4D',      // Earth Brown
+        },
+        
+        // SPECIAL HIGHLIGHTS
+        highlight: {
+          gold: '#C8A46B',       // Soft Gold Highlight
+          rose: '#B88A7A',       // Gentle Rose Clay
+          amber: '#D4A574',      // Warm Amber
+        },
+        
+        // UTILITY: Charcoal for text
         charcoal: {
-          DEFAULT: '#0D3D39',
-          50: '#F0FDFC',
-          100: '#CCFBF6',
-          200: '#99F6ED',
-          300: '#5EEADF',
-          400: '#2DD4C4',
-          500: '#14B8A8',
-          600: '#0D9488',
-          700: '#0F766E',
-          800: '#115E59',
-          900: '#134E4A',
-          950: '#042F2E',
+          DEFAULT: '#1F1F1F',
+          50: '#F5F5F5',
+          100: '#E5E5E5',
+          200: '#D4D4D4',
+          300: '#A3A3A3',
+          400: '#737373',
+          500: '#525252',
+          600: '#404040',
+          700: '#2D2D2D',
+          800: '#1F1F1F',  // Main text
+          900: '#141414',
         },
-        // Primary Brand Color - Deep Teal from Logo
+        
+        // LEGACY COMPATIBILITY (mapped to new system)
         ember: {
-          DEFAULT: '#0D9488',
-          50: '#F0FDFC',
-          100: '#CCFBF6',
-          200: '#99F6ED',
-          300: '#5EEADF',
-          400: '#2DD4C4',
-          500: '#14B8A8',
-          600: '#0D9488',
-          700: '#0F766E',
-          800: '#115E59',
-          900: '#134E4A',
+          DEFAULT: '#1E6B73',
+          50: '#F0F7F7',
+          100: '#D4E8E9',
+          200: '#B8D9DB',
+          300: '#8FC0C3',
+          400: '#5FA0A5',
+          500: '#3D858B',
+          600: '#1E6B73',
+          700: '#18565C',
+          800: '#0F4F57',
+          900: '#0A3A40',
         },
-        // Soft Teal Gradient Accents
         flame: {
-          DEFAULT: '#14B8A8',
-          light: '#2DD4C4',
-          dark: '#0F766E',
-          soft: '#99F6ED',
+          DEFAULT: '#3D858B',
+          light: '#5FA0A5',
+          dark: '#18565C',
+          soft: '#B8D9DB',
         },
-        // Warm brown/amber accent - complements teal beautifully
         healing: {
-          DEFAULT: '#92400E',
-          50: '#FEF7F0',
-          100: '#FEEBD6',
-          200: '#FBD0A5',
-          300: '#F5B06C',
-          400: '#E88A3D',
-          500: '#D97706',
-          600: '#B45309',
-          700: '#92400E',
-          800: '#78350F',
-          900: '#451A03',
+          DEFAULT: '#8B5E3C',
+          50: '#F9F6F3',
+          100: '#EDE4DB',
+          200: '#DECCB8',
+          300: '#CBAE8E',
+          400: '#B88A6E',
+          500: '#8B5E3C',
+          600: '#6E4B3A',
+          700: '#5B3A29',
+          800: '#4A2F22',
+          900: '#382319',
         },
-        // Clean White/Off-white System
         cream: {
-          DEFAULT: '#FFFFFF',
+          DEFAULT: '#FAF7F2',
           50: '#FFFFFF',
-          100: '#FAFAFA',
-          200: '#F5F5F5',
-          300: '#E5E5E5',
+          100: '#FAF7F2',
+          200: '#F6F2EC',
+          300: '#EDE4DB',
           warm: '#FDF8F6',
         },
-        // Soft Gray System
         steel: {
-          DEFAULT: '#4B5563',
-          50: '#F9FAFB',
-          100: '#F3F4F6',
-          200: '#E5E7EB',
-          300: '#D1D5DB',
-          400: '#9CA3AF',
-          500: '#6B7280',
-          600: '#4B5563',
-          700: '#374151',
-          800: '#1F2937',
-          900: '#111827',
+          DEFAULT: '#6B5D4D',
+          50: '#F9F6F3',
+          100: '#EDE4DB',
+          200: '#D8CBBE',
+          300: '#C4B5A5',
+          400: '#A89B8C',
+          500: '#8B7D6D',
+          600: '#6B5D4D',
+          700: '#52463B',
+          800: '#3D352C',
+          900: '#28241E',
         },
-        // Deep Teal for backgrounds
         teal: {
-          DEFAULT: '#0F766E',
-          50: '#F0FDFC',
-          100: '#CCFBF6',
-          200: '#99F6ED',
-          300: '#5EEADF',
-          400: '#2DD4C4',
-          500: '#14B8A8',
-          600: '#0D9488',
-          700: '#0F766E',
-          800: '#115E59',
-          900: '#134E4A',
-          950: '#042F2E',
-          deep: '#0D3D39',
+          DEFAULT: '#1E6B73',
+          50: '#F0F7F7',
+          100: '#D4E8E9',
+          200: '#B8D9DB',
+          300: '#8FC0C3',
+          400: '#5FA0A5',
+          500: '#3D858B',
+          600: '#1E6B73',
+          700: '#18565C',
+          800: '#0F4F57',
+          900: '#0A3A40',
+          950: '#052629',
+          deep: '#0F4F57',
         },
         // ShadCN UI colors
         border: 'hsl(var(--border))',
@@ -177,17 +223,23 @@ const config: Config = {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-        'teal-glow': 'linear-gradient(135deg, rgba(15, 118, 110, 0.08) 0%, rgba(20, 184, 166, 0.03) 50%, transparent 100%)',
-        'soft-teal-gradient': 'linear-gradient(180deg, #FFFFFF 0%, #F0FDFC 100%)',
-        'teal-radial': 'radial-gradient(circle at 50% 50%, rgba(15, 118, 110, 0.05) 0%, transparent 70%)',
+        // Brand gradients
+        'forge-glow': 'linear-gradient(135deg, rgba(30, 107, 115, 0.08) 0%, rgba(61, 133, 139, 0.03) 50%, transparent 100%)',
+        'bronze-glow': 'linear-gradient(135deg, rgba(139, 94, 60, 0.08) 0%, rgba(184, 138, 110, 0.03) 50%, transparent 100%)',
+        'warm-ivory': 'linear-gradient(180deg, #FAF7F2 0%, #F6F2EC 100%)',
+        'forge-radial': 'radial-gradient(circle at 50% 50%, rgba(30, 107, 115, 0.06) 0%, transparent 70%)',
+        'ember-ambient': 'radial-gradient(ellipse at 30% 20%, rgba(139, 94, 60, 0.04) 0%, transparent 50%), radial-gradient(ellipse at 70% 80%, rgba(30, 107, 115, 0.04) 0%, transparent 50%)',
       },
       boxShadow: {
-        'teal': '0 0 40px rgba(15, 118, 110, 0.2)',
-        'teal-sm': '0 0 20px rgba(15, 118, 110, 0.15)',
-        'glow': '0 0 60px rgba(20, 184, 166, 0.1)',
-        'soft': '0 4px 20px rgba(0, 0, 0, 0.06)',
-        'soft-lg': '0 8px 40px rgba(0, 0, 0, 0.08)',
-        'card': '0 2px 12px rgba(15, 118, 110, 0.08)',
+        'forge': '0 0 40px rgba(30, 107, 115, 0.15)',
+        'forge-sm': '0 0 20px rgba(30, 107, 115, 0.1)',
+        'bronze': '0 0 40px rgba(139, 94, 60, 0.12)',
+        'warm': '0 4px 20px rgba(107, 93, 77, 0.06)',
+        'warm-lg': '0 8px 40px rgba(107, 93, 77, 0.08)',
+        'card': '0 2px 12px rgba(30, 107, 115, 0.06)',
+        'card-hover': '0 8px 30px rgba(30, 107, 115, 0.1)',
+        'soft': '0 4px 20px rgba(0, 0, 0, 0.04)',
+        'soft-lg': '0 8px 40px rgba(0, 0, 0, 0.06)',
       },
       transitionDuration: {
         '400': '400ms',

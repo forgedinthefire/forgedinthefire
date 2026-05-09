@@ -16,7 +16,7 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-charcoal-50 border-t border-teal-100" role="contentinfo">
+    <footer className="bg-warm-cream border-t border-forge-100" role="contentinfo">
       {/* Emergency Banner */}
       <div className="bg-healing-50 border-b border-healing-100">
         <div className="container-wide section-padding py-4">
@@ -49,13 +49,13 @@ export function Footer() {
           {/* Brand Column */}
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-3 mb-6 group">
-              <div className="relative w-10 h-10 overflow-hidden">
+              <div className="relative w-12 h-12 overflow-hidden">
                 <Image
-                  src="/logo.png"
-                  alt="Forged in the Fire logo"
+                  src="/logo-main.png"
+                  alt="Forged in the Fire"
                   fill
-                  className="object-contain transition-all duration-500 ease-out group-hover:scale-110 group-hover:brightness-110"
-                  sizes="40px"
+                  className="object-contain transition-all duration-300 ease-out group-hover:scale-105"
+                  sizes="48px"
                 />
               </div>
               <span className="font-serif text-xl font-semibold text-charcoal-800">
@@ -70,14 +70,14 @@ export function Footer() {
             <div className="space-y-3">
               <a
                 href={`mailto:${ORG.email}`}
-                className="flex items-center gap-3 text-charcoal-600 hover:text-teal-600 transition-colors"
+                className="flex items-center gap-3 text-charcoal-600 hover:text-forge-600 transition-colors"
               >
                 <Mail className="h-4 w-4" />
                 <span className="text-sm">{ORG.email}</span>
               </a>
               <a
                 href={`tel:${ORG.phone.replace(/\D/g, '')}`}
-                className="flex items-center gap-3 text-charcoal-600 hover:text-teal-600 transition-colors"
+                className="flex items-center gap-3 text-charcoal-600 hover:text-forge-600 transition-colors"
               >
                 <Phone className="h-4 w-4" />
                 <span className="text-sm">{ORG.phone}</span>
@@ -98,7 +98,7 @@ export function Footer() {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-2 text-charcoal-500 hover:text-teal-600 hover:bg-teal-50 rounded-full transition-all"
+                    className="p-2 text-charcoal-500 hover:text-forge-600 hover:bg-forge-50 rounded-full transition-all"
                     aria-label={`Follow us on ${social.name}`}
                   >
                     <Icon className="h-5 w-5" />
@@ -118,7 +118,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-charcoal-600 hover:text-teal-600 transition-colors"
+                    className="text-sm text-charcoal-600 hover:text-forge-600 transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -137,7 +137,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-charcoal-600 hover:text-teal-600 transition-colors"
+                    className="text-sm text-charcoal-600 hover:text-forge-600 transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -156,7 +156,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-charcoal-600 hover:text-teal-600 transition-colors"
+                    className="text-sm text-charcoal-600 hover:text-forge-600 transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -168,7 +168,7 @@ export function Footer() {
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-teal-100">
+      <div className="border-t border-forge-100">
         <div className="container-wide section-padding py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-charcoal-500">
@@ -176,7 +176,7 @@ export function Footer() {
                 <span key={link.href} className="flex items-center gap-4">
                   <Link
                     href={link.href}
-                    className="hover:text-teal-600 transition-colors"
+                    className="hover:text-forge-600 transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -189,7 +189,7 @@ export function Footer() {
             <p className="text-sm text-charcoal-500 text-center md:text-right">
               &copy; {currentYear} {ORG.name}. All rights reserved.
               <span className="inline-flex items-center gap-1 ml-2">
-                Made with <Heart className="h-3 w-3 text-teal-500 fill-teal-500" /> for survivors
+                Made with <Heart className="h-3 w-3 text-forge-500 fill-forge-500" /> for survivors
               </span>
             </p>
           </div>

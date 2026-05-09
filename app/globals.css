@@ -4,25 +4,26 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 174 84% 15%;
-    --card: 0 0% 100%;
-    --card-foreground: 174 84% 15%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 174 84% 15%;
-    --primary: 174 84% 38%;
+    /* Warm Brand Color System */
+    --background: 40 33% 97%;           /* warm-ivory #FAF7F2 */
+    --foreground: 0 0% 12%;               /* charcoal-800 #1F1F1F */
+    --card: 40 30% 95%;                   /* warm-cream #F6F2EC */
+    --card-foreground: 0 0% 12%;
+    --popover: 40 33% 97%;
+    --popover-foreground: 0 0% 12%;
+    --primary: 184 57% 29%;               /* forge-600 #1E6B73 */
     --primary-foreground: 0 0% 100%;
-    --secondary: 174 84% 95%;
-    --secondary-foreground: 174 84% 25%;
-    --muted: 174 20% 96%;
-    --muted-foreground: 174 20% 40%;
-    --accent: 174 84% 38%;
+    --secondary: 30 20% 92%;              /* warm-sand tones */
+    --secondary-foreground: 0 0% 12%;
+    --muted: 30 15% 90%;
+    --muted-foreground: 30 10% 40%;
+    --accent: 25 40% 40%;                 /* bronze-500 #8B5E3C */
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 174 30% 90%;
-    --input: 174 30% 90%;
-    --ring: 174 84% 38%;
+    --border: 30 20% 85%;
+    --input: 30 20% 85%;
+    --ring: 184 57% 29%;                  /* forge-600 */
     --radius: 0.75rem;
   }
 }
@@ -37,7 +38,10 @@
   }
   
   body {
-    @apply bg-cream text-charcoal-800 antialiased;
+    background-color: #FAF7F2;
+    color: #1F1F1F;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
   
@@ -55,21 +59,38 @@
   
   /* Focus visible styles for accessibility */
   :focus-visible {
-    @apply outline-2 outline-offset-2 outline-teal-500;
+    @apply outline-2 outline-offset-2 outline-forge-500;
   }
   
   /* Selection styles */
   ::selection {
-    @apply bg-teal-100 text-teal-900;
+    @apply bg-forge-100 text-forge-900;
   }
   
-  /* Warm accent utilities */
-  .text-warm-accent {
-    @apply text-healing-600;
+  /* Brand accent utilities */
+  .text-forge {
+    @apply text-forge-600;
   }
   
-  .bg-warm-accent {
-    @apply bg-healing-50;
+  .text-bronze {
+    @apply text-bronze-500;
+  }
+  
+  .bg-forge-subtle {
+    @apply bg-forge-50;
+  }
+  
+  .bg-bronze-subtle {
+    @apply bg-bronze-50;
+  }
+  
+  /* Gradient text utilities */
+  .text-gradient-forge {
+    @apply bg-gradient-to-r from-forge-600 via-forge-500 to-forge-600 bg-clip-text text-transparent;
+  }
+  
+  .text-gradient-bronze {
+    @apply bg-gradient-to-r from-bronze-500 via-bronze-400 to-bronze-500 bg-clip-text text-transparent;
   }
 }
 
@@ -79,19 +100,26 @@
     text-wrap: balance;
   }
   
-  /* Gradient text - soft teal */
-  .text-gradient-teal {
-    @apply bg-gradient-to-r from-teal-600 via-teal-500 to-teal-600 bg-clip-text text-transparent;
+  /* Forge glow effect */
+  .forge-glow {
+    box-shadow: 0 0 40px rgba(30, 107, 115, 0.2);
   }
   
-  /* Teal glow effect */
-  .teal-glow {
-    box-shadow: 0 0 40px rgba(15, 118, 110, 0.25);
+  /* Bronze glow effect */
+  .bronze-glow {
+    box-shadow: 0 0 40px rgba(139, 94, 60, 0.15);
   }
   
-  /* Glass effect - light */
+  /* Glass effect - warm */
   .glass {
-    @apply bg-white/80 backdrop-blur-md;
+    background-color: rgba(250, 247, 242, 0.9);
+    backdrop-filter: blur(12px);
+  }
+  
+  /* Glass forge variant */
+  .glass-forge {
+    background-color: rgba(240, 247, 247, 0.8);
+    backdrop-filter: blur(12px);
   }
   
   /* Section padding */
@@ -108,17 +136,31 @@
     @apply max-w-7xl mx-auto;
   }
   
-  /* Teal underline animation */
-  .teal-underline {
+  /* Forge underline animation */
+  .forge-underline {
     @apply relative;
   }
   
-  .teal-underline::after {
+  .forge-underline::after {
     content: '';
-    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-teal-600 transition-all duration-500;
+    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-forge-600 transition-all duration-500;
   }
   
-  .teal-underline:hover::after {
+  .forge-underline:hover::after {
+    @apply w-full;
+  }
+  
+  /* Bronze underline animation */
+  .bronze-underline {
+    @apply relative;
+  }
+  
+  .bronze-underline::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-bronze-500 transition-all duration-500;
+  }
+  
+  .bronze-underline:hover::after {
     @apply w-full;
   }
   
@@ -132,23 +174,23 @@
   }
 }
 
-/* Custom scrollbar - subtle and dark */
+/* Custom scrollbar - warm and subtle */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #1a1a1a;
+  background: #F6F2EC;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #404040;
+  background: #D8CBBE;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #525252;
+  background: #B8A89C;
 }
 
 /* Print styles */
@@ -159,6 +201,26 @@
   
   body {
     background: white;
-    color: black;
+    color: #1F1F1F;
+  }
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
