@@ -7,7 +7,7 @@ export function OrganizationStructuredData() {
     name: ORG.name,
     description: ORG.description,
     url: 'https://forgedinthefire.com',
-    logo: 'https://forgedinthefire.com/logo.svg',
+    logo: 'https://forgedinthefire.com/logo.png',
     email: ORG.email,
     telephone: ORG.phone,
     address: {

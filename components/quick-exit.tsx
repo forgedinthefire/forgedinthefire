@@ -62,9 +62,8 @@ export function QuickExit() {
     >
       <Button
         onClick={handleExit}
-        variant="emergency"
         size="lg"
-        className="group shadow-lg hover:shadow-xl transition-all duration-300"
+        className="group shadow-soft-lg hover:shadow-soft-xl transition-all duration-300 bg-healing-600 hover:bg-healing-700 text-white border-0"
         aria-label="Quick Exit - Leave this site immediately"
       >
         <LogOut className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
@@ -77,7 +76,7 @@ export function QuickExit() {
       
       {/* Tooltip for keyboard shortcut */}
       <div className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap">
-        <span className="text-xs text-cream-300/60 bg-charcoal-800 px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+        <span className="text-xs text-charcoal-600 bg-white shadow-soft px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
           Ctrl+Esc to exit
         </span>
       </div>

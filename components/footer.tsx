@@ -16,26 +16,26 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-charcoal-900 border-t border-steel-800" role="contentinfo">
+    <footer className="bg-charcoal-50 border-t border-teal-100" role="contentinfo">
       {/* Emergency Banner */}
-      <div className="bg-healing/10 border-b border-healing/20">
+      <div className="bg-healing-50 border-b border-healing-100">
         <div className="container-wide section-padding py-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
             <div>
-              <p className="text-sm text-cream-300">
-                <span className="font-semibold text-healing">Need immediate help?</span>{' '}
+              <p className="text-sm text-charcoal-700">
+                <span className="font-semibold text-healing-600">Need immediate help?</span>{' '}
                 Contact the National Human Trafficking Hotline
               </p>
             </div>
             <div className="flex items-center gap-4">
               <a
                 href={`tel:${HOTLINES[0].phone.replace(/\D/g, '')}`}
-                className="text-lg font-bold text-healing hover:text-healing-400 transition-colors"
+                className="text-lg font-bold text-healing-600 hover:text-healing-700 transition-colors"
               >
                 {HOTLINES[0].phone}
               </a>
-              <span className="text-cream-300/50 text-sm">|</span>
-              <span className="text-sm text-cream-300">
+              <span className="text-charcoal-400 text-sm">|</span>
+              <span className="text-sm text-charcoal-600">
                 Text &quot;BEFREE&quot; to {HOTLINES[0].sms}
               </span>
             </div>
@@ -49,19 +49,20 @@ export function Footer() {
           {/* Brand Column */}
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-3 mb-6 group">
-              <div className="relative w-10 h-10">
+              <div className="relative w-10 h-10 overflow-hidden">
                 <Image
-                  src="/logo.svg"
+                  src="/logo.png"
                   alt="Forged in the Fire logo"
                   fill
-                  className="object-contain transition-transform duration-300 group-hover:scale-105"
+                  className="object-contain transition-all duration-500 ease-out group-hover:scale-110 group-hover:brightness-110"
+                  sizes="40px"
                 />
               </div>
-              <span className="font-serif text-xl font-semibold text-cream-100">
+              <span className="font-serif text-xl font-semibold text-charcoal-800">
                 {ORG.name}
               </span>
             </Link>
-            <p className="text-cream-300/80 mb-6 max-w-sm leading-relaxed">
+            <p className="text-charcoal-600 mb-6 max-w-sm leading-relaxed">
               {ORG.description}
             </p>
             
@@ -69,19 +70,19 @@ export function Footer() {
             <div className="space-y-3">
               <a
                 href={`mailto:${ORG.email}`}
-                className="flex items-center gap-3 text-cream-300 hover:text-ember transition-colors"
+                className="flex items-center gap-3 text-charcoal-600 hover:text-teal-600 transition-colors"
               >
                 <Mail className="h-4 w-4" />
                 <span className="text-sm">{ORG.email}</span>
               </a>
               <a
                 href={`tel:${ORG.phone.replace(/\D/g, '')}`}
-                className="flex items-center gap-3 text-cream-300 hover:text-ember transition-colors"
+                className="flex items-center gap-3 text-charcoal-600 hover:text-teal-600 transition-colors"
               >
                 <Phone className="h-4 w-4" />
                 <span className="text-sm">{ORG.phone}</span>
               </a>
-              <div className="flex items-center gap-3 text-cream-300/70">
+              <div className="flex items-center gap-3 text-charcoal-500">
                 <MapPin className="h-4 w-4" />
                 <span className="text-sm">{ORG.location}</span>
               </div>
@@ -97,7 +98,7 @@ export function Footer() {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-2 text-cream-300 hover:text-ember hover:bg-ember/10 rounded-full transition-all"
+                    className="p-2 text-charcoal-500 hover:text-teal-600 hover:bg-teal-50 rounded-full transition-all"
                     aria-label={`Follow us on ${social.name}`}
                   >
                     <Icon className="h-5 w-5" />
@@ -109,7 +110,7 @@ export function Footer() {
 
           {/* Services Links */}
           <div>
-            <h3 className="font-serif text-lg font-semibold text-cream-100 mb-4">
+            <h3 className="font-serif text-lg font-semibold text-charcoal-800 mb-4">
               Services
             </h3>
             <ul className="space-y-3">
@@ -117,7 +118,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-cream-300/80 hover:text-ember transition-colors"
+                    className="text-sm text-charcoal-600 hover:text-teal-600 transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -128,7 +129,7 @@ export function Footer() {
 
           {/* Organization Links */}
           <div>
-            <h3 className="font-serif text-lg font-semibold text-cream-100 mb-4">
+            <h3 className="font-serif text-lg font-semibold text-charcoal-800 mb-4">
               Organization
             </h3>
             <ul className="space-y-3">
@@ -136,7 +137,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-cream-300/80 hover:text-ember transition-colors"
+                    className="text-sm text-charcoal-600 hover:text-teal-600 transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -147,7 +148,7 @@ export function Footer() {
 
           {/* Resources Links */}
           <div>
-            <h3 className="font-serif text-lg font-semibold text-cream-100 mb-4">
+            <h3 className="font-serif text-lg font-semibold text-charcoal-800 mb-4">
               Resources
             </h3>
             <ul className="space-y-3">
@@ -155,7 +156,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-cream-300/80 hover:text-ember transition-colors"
+                    className="text-sm text-charcoal-600 hover:text-teal-600 transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -167,15 +168,15 @@ export function Footer() {
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-steel-800">
+      <div className="border-t border-teal-100">
         <div className="container-wide section-padding py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-cream-300/60">
+            <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-charcoal-500">
               {FOOTER_LINKS.legal.map((link, index) => (
                 <span key={link.href} className="flex items-center gap-4">
                   <Link
                     href={link.href}
-                    className="hover:text-ember transition-colors"
+                    className="hover:text-teal-600 transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -185,10 +186,10 @@ export function Footer() {
                 </span>
               ))}
             </div>
-            <p className="text-sm text-cream-300/60 text-center md:text-right">
+            <p className="text-sm text-charcoal-500 text-center md:text-right">
               &copy; {currentYear} {ORG.name}. All rights reserved.
               <span className="inline-flex items-center gap-1 ml-2">
-                Made with <Heart className="h-3 w-3 text-ember fill-ember" /> for survivors
+                Made with <Heart className="h-3 w-3 text-teal-500 fill-teal-500" /> for survivors
               </span>
             </p>
           </div>

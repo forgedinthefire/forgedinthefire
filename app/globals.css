@@ -4,26 +4,26 @@
 
 @layer base {
   :root {
-    --background: 0 0% 7%;
-    --foreground: 40 30% 97%;
-    --card: 0 0% 10%;
-    --card-foreground: 40 30% 97%;
-    --popover: 0 0% 10%;
-    --popover-foreground: 40 30% 97%;
-    --primary: 174 84% 29%;
-    --primary-foreground: 40 30% 97%;
-    --secondary: 35 92% 33%;
-    --secondary-foreground: 40 30% 97%;
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 65%;
-    --accent: 174 84% 29%;
-    --accent-foreground: 40 30% 97%;
+    --background: 0 0% 100%;
+    --foreground: 174 84% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 174 84% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 174 84% 15%;
+    --primary: 174 84% 38%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 174 84% 95%;
+    --secondary-foreground: 174 84% 25%;
+    --muted: 174 20% 96%;
+    --muted-foreground: 174 20% 40%;
+    --accent: 174 84% 38%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
-    --destructive-foreground: 40 30% 97%;
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 174 84% 29%;
-    --radius: 0.5rem;
+    --destructive-foreground: 0 0% 100%;
+    --border: 174 30% 90%;
+    --input: 174 30% 90%;
+    --ring: 174 84% 38%;
+    --radius: 0.75rem;
   }
 }
 
@@ -37,7 +37,7 @@
   }
   
   body {
-    @apply bg-charcoal text-cream-100 antialiased;
+    @apply bg-cream text-charcoal-800 antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
   
@@ -55,12 +55,21 @@
   
   /* Focus visible styles for accessibility */
   :focus-visible {
-    @apply outline-2 outline-offset-2 outline-ember;
+    @apply outline-2 outline-offset-2 outline-teal-500;
   }
   
   /* Selection styles */
   ::selection {
-    @apply bg-ember/30 text-cream-100;
+    @apply bg-teal-100 text-teal-900;
+  }
+  
+  /* Warm accent utilities */
+  .text-warm-accent {
+    @apply text-healing-600;
+  }
+  
+  .bg-warm-accent {
+    @apply bg-healing-50;
   }
 }
 
@@ -70,19 +79,19 @@
     text-wrap: balance;
   }
   
-  /* Gradient text */
-  .text-gradient-ember {
-    @apply bg-gradient-to-r from-ember via-flame to-ember bg-clip-text text-transparent;
+  /* Gradient text - soft teal */
+  .text-gradient-teal {
+    @apply bg-gradient-to-r from-teal-600 via-teal-500 to-teal-600 bg-clip-text text-transparent;
   }
   
-  /* Ember glow effect */
-  .ember-glow {
-    box-shadow: 0 0 40px rgba(217, 119, 6, 0.3);
+  /* Teal glow effect */
+  .teal-glow {
+    box-shadow: 0 0 40px rgba(15, 118, 110, 0.25);
   }
   
-  /* Glass effect */
+  /* Glass effect - light */
   .glass {
-    @apply bg-charcoal/80 backdrop-blur-md;
+    @apply bg-white/80 backdrop-blur-md;
   }
   
   /* Section padding */
@@ -99,17 +108,17 @@
     @apply max-w-7xl mx-auto;
   }
   
-  /* Ember underline animation */
-  .ember-underline {
+  /* Teal underline animation */
+  .teal-underline {
     @apply relative;
   }
   
-  .ember-underline::after {
+  .teal-underline::after {
     content: '';
-    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-ember transition-all duration-500;
+    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-teal-600 transition-all duration-500;
   }
   
-  .ember-underline:hover::after {
+  .teal-underline:hover::after {
     @apply w-full;
   }
   

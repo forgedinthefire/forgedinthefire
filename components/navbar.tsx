@@ -65,8 +65,8 @@ export function Navbar() {
       className={cn(
         'fixed top-0 left-0 right-0 z-40 transition-all duration-300',
         isScrolled
-          ? 'bg-charcoal/95 backdrop-blur-md shadow-lg'
-          : 'bg-transparent'
+          ? 'bg-white/95 backdrop-blur-md shadow-soft border-b border-teal-100'
+          : 'bg-white/80 backdrop-blur-sm'
       )}
       role="banner"
     >
@@ -82,16 +82,17 @@ export function Navbar() {
             className="flex items-center gap-3 group"
             aria-label="Forged in the Fire - Home"
           >
-            <div className="relative w-10 h-10">
+            <div className="relative w-10 h-10 overflow-hidden">
               <Image
-                src="/logo.svg"
+                src="/logo.png"
                 alt="Forged in the Fire logo"
                 fill
-                className="object-contain transition-transform duration-300 group-hover:scale-105"
+                className="object-contain transition-all duration-500 ease-out group-hover:scale-110 group-hover:brightness-110"
                 priority
+                sizes="40px"
               />
             </div>
-            <span className="font-serif text-xl font-semibold text-cream-100 hidden sm:block">
+            <span className="font-serif text-xl font-semibold text-charcoal-800 hidden sm:block">
               Forged in the Fire
             </span>
           </Link>
@@ -105,9 +106,9 @@ export function Navbar() {
                 className={cn(
                   'relative px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-md',
                   isActive(link.href)
-                    ? 'text-ember'
-                    : 'text-cream-100 hover:text-ember',
-                  'priority' in link && link.priority && 'text-ember font-semibold'
+                    ? 'text-teal-600'
+                    : 'text-charcoal-700 hover:text-teal-600',
+                  'priority' in link && link.priority && 'text-teal-600 font-semibold'
                 )}
                 aria-current={isActive(link.href) ? 'page' : undefined}
               >
@@ -115,7 +116,7 @@ export function Navbar() {
                 {isActive(link.href) && (
                   <motion.span
                     layoutId="activeNav"
-                    className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-ember rounded-full"
+                    className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-teal-500 rounded-full"
                     transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                   />
                 )}
@@ -129,7 +130,7 @@ export function Navbar() {
               asChild
               variant="ghost"
               size="sm"
-              className="text-cream-100 hover:text-ember"
+              className="text-charcoal-700 hover:text-teal-600"
             >
               <Link href="/get-help">Get Help</Link>
             </Button>
@@ -137,7 +138,7 @@ export function Navbar() {
               asChild
               variant="default"
               size="sm"
-              className="bg-ember hover:bg-ember-600"
+              className="bg-teal-600 hover:bg-teal-700 text-white"
             >
               <Link href="/donate">Donate</Link>
             </Button>
@@ -146,7 +147,7 @@ export function Navbar() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden p-2 text-cream-100 hover:text-ember transition-colors"
+            className="lg:hidden p-2 text-charcoal-700 hover:text-teal-600 transition-colors"
             aria-expanded={isOpen}
             aria-controls="mobile-menu"
             aria-label={isOpen ? 'Close menu' : 'Open menu'}
@@ -173,7 +174,7 @@ export function Navbar() {
             className="fixed inset-0 top-20 z-30 lg:hidden"
           >
             <div
-              className="absolute inset-0 bg-charcoal/98 backdrop-blur-lg"
+              className="absolute inset-0 bg-white/98 backdrop-blur-lg"
               onClick={() => setIsOpen(false)}
             />
             <nav
@@ -194,8 +195,8 @@ export function Navbar() {
                       className={cn(
                         'block px-4 py-4 text-lg font-medium rounded-lg transition-colors',
                         isActive(link.href)
-                          ? 'bg-ember/10 text-ember'
-                          : 'text-cream-100 hover:bg-cream-100/5 hover:text-ember'
+                          ? 'bg-teal-50 text-teal-700'
+                          : 'text-charcoal-700 hover:bg-teal-50/50 hover:text-teal-600'
                       )}
                       aria-current={isActive(link.href) ? 'page' : undefined}
                       onClick={() => setIsOpen(false)}
@@ -213,7 +214,7 @@ export function Navbar() {
                     asChild
                     variant="outline"
                     size="lg"
-                    className="w-full border-ember text-ember hover:bg-ember/10"
+                    className="w-full border-teal-600 text-teal-600 hover:bg-teal-50"
                   >
                     <Link href="/get-help" onClick={() => setIsOpen(false)}>
                       Get Help Now
@@ -223,7 +224,7 @@ export function Navbar() {
                     asChild
                     variant="default"
                     size="lg"
-                    className="w-full bg-ember hover:bg-ember-600"
+                    className="w-full bg-teal-600 hover:bg-teal-700 text-white"
                   >
                     <Link href="/donate" onClick={() => setIsOpen(false)}>
                       Donate Today
@@ -232,17 +233,17 @@ export function Navbar() {
                 </div>
 
                 {/* Emergency Info */}
-                <div className="mt-6 p-4 bg-healing/10 rounded-lg border border-healing/20">
-                  <p className="text-sm text-cream-300 font-medium mb-2">
+                <div className="mt-6 p-4 bg-teal-50 rounded-lg border border-teal-100">
+                  <p className="text-sm text-charcoal-700 font-medium mb-2">
                     National Human Trafficking Hotline
                   </p>
                   <a
                     href="tel:1-888-373-7888"
-                    className="text-lg font-bold text-healing hover:text-healing-400"
+                    className="text-lg font-bold text-teal-600 hover:text-teal-700"
                   >
                     1-888-373-7888
                   </a>
-                  <p className="text-xs text-cream-300/70 mt-1">
+                  <p className="text-xs text-charcoal-600/70 mt-1">
                     Text &quot;BEFREE&quot; to 233733
                   </p>
                 </div>
