@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -176,18 +177,123 @@ export function HomeContent() {
               </Button>
             </div>
             <div className="relative">
-              <div className="aspect-square rounded-2xl bg-gradient-to-br from-[#1E6B73]/20 via-[#3A2A24] to-[#8B5E3C]/20 p-1">
-                <div className="w-full h-full rounded-xl bg-[#241B18] flex items-center justify-center shadow-[0_12px_40px_rgba(0,0,0,0.35)]">
-                  <div className="text-center p-8">
-                    <Flame className="h-24 w-24 text-[#C8A46B] mx-auto mb-6" />
-                    <p className="font-serif text-2xl text-[#F6F0E8] italic">
+              {/* Localized cinematic quote card - SCOPED STYLES ONLY */}
+              <div 
+                className="aspect-square rounded-2xl p-1"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(30,107,115,0.25) 0%, rgba(58,42,36,0.8) 50%, rgba(139,94,60,0.25) 100%)',
+                }}
+              >
+                <div 
+                  className="w-full h-full rounded-xl flex items-center justify-center relative overflow-hidden"
+                  style={{
+                    background: '#241B18',
+                    boxShadow: '0 20px 60px rgba(0,0,0,0.45), inset 0 1px 0 rgba(200,164,107,0.1)',
+                  }}
+                >
+                  {/* Localized ambient glow layers - INSIDE CARD ONLY */}
+                  <div 
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                      background: 'radial-gradient(circle at 30% 30%, rgba(30,107,115,0.15) 0%, transparent 50%)',
+                    }}
+                  />
+                  <div 
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                      background: 'radial-gradient(circle at 70% 70%, rgba(139,94,60,0.12) 0%, transparent 45%)',
+                    }}
+                  />
+                  
+                  <div className="text-center p-8 relative z-10">
+                    {/* Logo with localized cinematic animation */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 15, scale: 0.95 }}
+                      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ 
+                        duration: 1.2, 
+                        ease: [0.25, 0.1, 0.25, 1],
+                        delay: 0.2 
+                      }}
+                      className="relative mb-6"
+                    >
+                      {/* Localized glow behind logo */}
+                      <motion.div
+                        className="absolute inset-0 -m-4 pointer-events-none"
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 1.5, delay: 0.5 }}
+                      >
+                        <div 
+                          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full"
+                          style={{
+                            background: 'radial-gradient(circle, rgba(30,107,115,0.25) 0%, rgba(200,164,107,0.1) 40%, transparent 70%)',
+                            filter: 'blur(20px)',
+                          }}
+                        />
+                      </motion.div>
+                      
+                      {/* Logo image */}
+                      <motion.div
+                        animate={{ 
+                          opacity: [0.9, 1, 0.9],
+                        }}
+                        transition={{
+                          duration: 4,
+                          repeat: Infinity,
+                          ease: 'easeInOut',
+                        }}
+                        className="relative w-28 h-28 mx-auto"
+                      >
+                        <Image
+                          src="/herologo.png"
+                          alt="Forged in the Fire"
+                          fill
+                          className="object-contain drop-shadow-2xl"
+                        />
+                      </motion.div>
+                    </motion.div>
+                    
+                    {/* Quote with localized fade animation */}
+                    <motion.p
+                      initial={{ opacity: 0, y: 10 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ 
+                        duration: 0.8, 
+                        ease: [0.25, 0.1, 0.25, 1],
+                        delay: 0.8 
+                      }}
+                      className="font-serif text-2xl italic"
+                      style={{ color: '#F6F0E8' }}
+                    >
                       &ldquo;The fire that forges us also frees us.&rdquo;
-                    </p>
+                    </motion.p>
                   </div>
                 </div>
               </div>
-              <div className="absolute -top-4 -right-4 w-24 h-24 bg-[#C8A46B]/20 rounded-full blur-2xl" />
-              <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-[#1E6B73]/20 rounded-full blur-2xl" />
+              
+              {/* Localized external glow effects - CARD ONLY */}
+              <motion.div 
+                className="absolute -top-4 -right-4 w-24 h-24 rounded-full pointer-events-none"
+                style={{
+                  background: 'radial-gradient(circle, rgba(200,164,107,0.25) 0%, transparent 70%)',
+                  filter: 'blur(20px)',
+                }}
+                animate={{ opacity: [0.6, 0.9, 0.6] }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+              />
+              <motion.div 
+                className="absolute -bottom-4 -left-4 w-32 h-32 rounded-full pointer-events-none"
+                style={{
+                  background: 'radial-gradient(circle, rgba(30,107,115,0.2) 0%, transparent 70%)',
+                  filter: 'blur(25px)',
+                }}
+                animate={{ opacity: [0.5, 0.8, 0.5] }}
+                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+              />
             </div>
           </div>
         </div>
