@@ -69,8 +69,8 @@ export function HeroAnimation({ children }: HeroAnimationProps) {
             key={i}
             className="absolute rounded-full"
             style={{
-              width: Math.random() * 2 + 1,
-              height: Math.random() * 2 + 1,
+              width: (i % 3) + 1,
+              height: (i % 3) + 1,
               background: 'radial-gradient(circle, rgba(200, 164, 107, 0.5) 0%, transparent 70%)',
               left: `${15 + i * 10}%`,
               top: `${25 + (i % 4) * 15}%`,
@@ -151,7 +151,7 @@ export function HeroAnimation({ children }: HeroAnimationProps) {
       <div className="relative z-10 flex flex-col items-center">
         {/* Phase 2: Logo Fade Into Existence */}
         <motion.div
-          className="relative"
+          className="relative flex justify-center w-full"
           initial={{ 
             opacity: 0, 
             y: 20,
@@ -196,22 +196,23 @@ export function HeroAnimation({ children }: HeroAnimationProps) {
           </motion.div>
 
           {/* Logo Image */}
-          <div className="relative w-56 h-56 sm:w-64 sm:h-64 lg:w-72 lg:h-72">
+          <div className="relative w-[480px] max-w-[85vw] sm:w-[660px] sm:max-w-[72vw] lg:w-[800px] lg:max-w-[64vw] aspect-square mt-10 mb-10 mx-auto">
             <Image
               src="/herologo.png"
               alt="Forged in the Fire"
               fill
+              sizes="(max-width: 640px) 85vw, (max-width: 1024px) 72vw, 64vw"
               className="object-contain drop-shadow-2xl"
               priority
             />
           </div>
         </motion.div>
 
-        {/* Children (Headline, Subheadline, CTAs) - Phase 4 Animation */}
+        {/* Children (Headline, Subheadline, CTAs) */}
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: phase >= 4 ? 1 : 0 }}
-          transition={{ duration: 1, ease: 'easeOut', delay: 0.3 }}
+          animate={{ opacity: phase >= 1 ? 1 : 0 }}
+          transition={{ duration: 1, ease: 'easeOut' }}
         >
           {children}
         </motion.div>

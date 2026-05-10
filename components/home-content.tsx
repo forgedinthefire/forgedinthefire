@@ -48,7 +48,7 @@ export function HomeContent() {
       {/* Hero Section - Cinematic Animation */}
       <section className="relative min-h-screen">
         <HeroAnimation>
-          <div className="container-wide section-padding pt-8 pb-20">
+          <div className="container-wide section-padding pt-0 pb-20">
             <div className="max-w-4xl mx-auto text-center">
               {/* Tagline Badge - Staggered Fade Up */}
               <motion.div

@@ -20,6 +20,7 @@ import { LogOut } from 'lucide-react';
 export function QuickExit() {
   const [isVisible, setIsVisible] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -63,8 +64,20 @@ export function QuickExit() {
       <Button
         onClick={handleExit}
         size="lg"
-        className="group shadow-[0_8px_30px_rgba(0,0,0,0.4)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.5)] transition-all duration-300 bg-[#8B5E3C] hover:bg-[#C8A46B] text-[#F6F0E8] border-0"
+        variant="destructive"
+        className="group border-0"
         aria-label="Quick Exit - Leave this site immediately"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        style={{
+          backgroundColor: isHovered ? '#9D0208' : '#C1121F',
+          color: '#ffffff',
+          animation: isHovered ? 'none' : 'quickExitPulse 1.6s ease-in-out infinite',
+          boxShadow: isHovered
+            ? '0 12px 40px rgba(0,0,0,0.5)'
+            : '0 8px 30px rgba(0,0,0,0.4)',
+          transition: 'background-color 0.2s ease, box-shadow 0.2s ease',
+        }}
       >
         <LogOut className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
         <span className="font-semibold">Quick Exit</span>
