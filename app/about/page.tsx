@@ -424,9 +424,9 @@ export default function AboutPage() {
                 variant="outline"
                 className="border-[#8B5E3C] text-[#C8A46B] hover:bg-[#8B5E3C]/14 px-8 py-6 text-base transition-all duration-300"
               >
-                <Link href="/donate">
+                <a href="https://www.zeffy.com/en-US/donation-form/donate-to-change-lives-13754" target="_blank" rel="noopener noreferrer">
                   Support Our Mission <Heart className="ml-2 h-5 w-5" />
-                </Link>
+                </a>
               </Button>
             </div>
           </div>

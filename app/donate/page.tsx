@@ -13,11 +13,12 @@ export default function DonatePage() {
   const [customAmount, setCustomAmount] = useState('');
   const [isRecurring, setIsRecurring] = useState(false);
 
+  const ZEFFY_URL = 'https://www.zeffy.com/en-US/donation-form/donate-to-change-lives-13754';
+
   const handleDonate = () => {
     const amount = selectedAmount || Number(customAmount);
-    // TODO: Integrate Stripe checkout here
-    // Example: stripe.redirectToCheckout({...})
-    window.alert(`Stripe integration pending. Would donate $${amount}`);
+    const url = amount ? `${ZEFFY_URL}?amount=${amount}` : ZEFFY_URL;
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -158,7 +159,7 @@ export default function DonatePage() {
                 <Heart className="ml-2 h-4 w-4" />
               </Button>
               <p className="text-sm text-cream-300/60 mt-4">
-                Secure payment processed by Stripe. Tax-deductible receipt provided.
+                Secure donation processed by Zeffy — 0% platform fees. Tax-deductible receipt provided.
               </p>
             </div>
           </div>
@@ -189,8 +190,8 @@ export default function DonatePage() {
               <Card className="bg-charcoal-800/50 border-steel-700 text-center">
                 <CardContent className="p-6">
                   <Lock className="h-10 w-10 text-healing mx-auto mb-4" />
-                  <h3 className="font-semibold text-cream-100 mb-2">Secure Payment</h3>
-                  <p className="text-sm text-cream-300/70">Bank-level encryption protects your data</p>
+                  <h3 className="font-semibold text-cream-100 mb-2">0% Platform Fees</h3>
+                  <p className="text-sm text-cream-300/70">Powered by Zeffy — every dollar reaches survivors</p>
                 </CardContent>
               </Card>
               <Card className="bg-charcoal-800/50 border-steel-700 text-center">
