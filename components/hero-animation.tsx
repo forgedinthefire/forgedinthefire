@@ -19,10 +19,10 @@ export function HeroAnimation({ children }: HeroAnimationProps) {
     // Phase 4: Ambient Lighting (4-5s)
     // Phase 5: Idle State (5s+)
     
-    const timer1 = setTimeout(() => setPhase(1), 1000);
-    const timer2 = setTimeout(() => setPhase(2), 3000);
-    const timer3 = setTimeout(() => setPhase(3), 4000);
-    const timer4 = setTimeout(() => setPhase(4), 5000);
+    const timer1 = setTimeout(() => setPhase(1), 400);
+    const timer2 = setTimeout(() => setPhase(2), 1150);
+    const timer3 = setTimeout(() => setPhase(3), 1700);
+    const timer4 = setTimeout(() => setPhase(4), 2300);
 
     return () => {
       clearTimeout(timer1);
@@ -33,12 +33,12 @@ export function HeroAnimation({ children }: HeroAnimationProps) {
   }, []);
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <div className="relative min-h-[100svh] flex flex-col items-center overflow-hidden">
       {/* Phase 1-4: Cinematic Dark Background - Hero Section */}
       <motion.div
         className="absolute inset-0"
         style={{
-          background: 'linear-gradient(180deg, #1E1714 0%, #241B18 50%, #2A1F1A 100%)',
+          background: 'linear-gradient(180deg, #000000 0%, #000000 40%, #0D0B09 55%, #1E1714 70%, #241B18 85%, #2A1F1A 100%)',
         }}
         initial={{ opacity: 0.8 }}
         animate={{ opacity: 1 }}
@@ -52,7 +52,7 @@ export function HeroAnimation({ children }: HeroAnimationProps) {
         animate={{ opacity: phase >= 1 ? 1 : 0 }}
         transition={{ duration: 2, ease: 'easeOut' }}
         style={{
-          background: 'radial-gradient(circle at center, rgba(30, 107, 115, 0.14) 0%, rgba(30, 107, 115, 0.04) 45%, transparent 70%)',
+          background: 'radial-gradient(ellipse at 50% 35%, rgba(30, 107, 115, 0.12) 0%, rgba(30, 107, 115, 0.04) 40%, transparent 65%)',
         }}
       />
 
@@ -148,7 +148,7 @@ export function HeroAnimation({ children }: HeroAnimationProps) {
       )}
 
       {/* Logo Container with All Phases */}
-      <div className="relative z-10 flex flex-col items-center">
+      <div className="relative z-10 flex flex-col items-center w-full pt-16 sm:pt-20">
         {/* Phase 2: Logo Fade Into Existence */}
         <motion.div
           className="relative flex justify-center w-full"
@@ -162,9 +162,10 @@ export function HeroAnimation({ children }: HeroAnimationProps) {
             y: phase >= 2 ? 0 : 20,
             scale: phase >= 2 ? 1 : 0.97,
           }}
+          style={{ willChange: 'transform, opacity' }}
           transition={{
-            duration: 2,
-            ease: [0.25, 0.1, 0.25, 1], // Cinematic easing
+            duration: 1.1,
+            ease: [0.25, 0.1, 0.25, 1],
           }}
         >
           {/* Phase 3-5: Torch Glow Behind Logo */}
@@ -196,12 +197,18 @@ export function HeroAnimation({ children }: HeroAnimationProps) {
           </motion.div>
 
           {/* Logo Image */}
-          <div className="relative w-[480px] max-w-[85vw] sm:w-[660px] sm:max-w-[72vw] lg:w-[800px] lg:max-w-[64vw] aspect-square mt-10 mb-10 mx-auto">
+          <div
+            className="relative mx-auto mt-0 mb-3"
+            style={{
+              width: 'clamp(220px, 28vw, 320px)',
+              aspectRatio: '1024 / 1536',
+            }}
+          >
             <Image
-              src="/herologo.png"
-              alt="Forged in the Fire"
+              src="/forged-logo.png"
+              alt="Forged in the Fire — Empowering Survivors of Sex Trafficking"
               fill
-              sizes="(max-width: 640px) 85vw, (max-width: 1024px) 72vw, 64vw"
+              sizes="(max-width: 640px) 72vw, (max-width: 1024px) 50vw, 340px"
               className="object-contain drop-shadow-2xl"
               priority
             />

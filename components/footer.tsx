@@ -49,13 +49,13 @@ export function Footer() {
           {/* Brand Column */}
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-3 mb-6 group">
-              <div className="relative w-12 h-12 overflow-hidden">
+              <div className="relative w-8 h-12 overflow-hidden">
                 <Image
-                  src="/logo-main.png"
+                  src="/forged-logo.png"
                   alt="Forged in the Fire"
                   fill
                   className="object-contain transition-all duration-300 ease-out group-hover:scale-105"
-                  sizes="48px"
+                  sizes="32px"
                 />
               </div>
               <span className="font-serif text-xl font-semibold text-[#F6F0E8]">

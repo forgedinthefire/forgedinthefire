@@ -280,7 +280,6 @@ export const NAV_LINKS = [
   { href: '/donate', label: 'Donate' },
   { href: '/volunteer', label: 'Volunteer' },
   { href: '/resources', label: 'Resources' },
-  { href: '/events', label: 'Events' },
   { href: '/contact', label: 'Contact' },
 ] as const;
 

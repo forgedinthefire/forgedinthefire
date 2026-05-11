@@ -79,7 +79,7 @@ export default function RootLayout({
         <OrganizationStructuredData />
         <WebsiteStructuredData />
       </head>
-      <body className="min-h-screen bg-charcoal text-cream-100 antialiased">
+      <body className="min-h-screen bg-charcoal text-cream-100 antialiased" suppressHydrationWarning>
         <div className="relative flex min-h-screen flex-col">
           <Navbar />
           <main className="flex-1" id="main-content">

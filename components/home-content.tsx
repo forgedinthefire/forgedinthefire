@@ -48,15 +48,15 @@ export function HomeContent() {
       {/* Hero Section - Cinematic Animation */}
       <section className="relative min-h-screen">
         <HeroAnimation>
-          <div className="container-wide section-padding pt-0 pb-20">
+          <div className="container-wide section-padding pt-0 pb-8">
             <div className="max-w-4xl mx-auto text-center">
               {/* Tagline Badge - Staggered Fade Up */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+                transition={{ duration: 0.55, delay: 1.5, ease: [0.25, 0.1, 0.25, 1] }}
               >
-                <span className="inline-flex items-center gap-2 px-5 py-2.5 mb-6 text-sm font-medium text-[#C8A46B] bg-[#3A2A24]/80 rounded-full border border-[#8B5E3C]/30 backdrop-blur-sm">
+                <span className="inline-flex items-center gap-2 px-5 py-2.5 mb-4 text-sm font-medium text-[#C8A46B] bg-[#3A2A24]/80 rounded-full border border-[#8B5E3C]/30 backdrop-blur-sm">
                   <Flame className="w-4 h-4" />
                   Empowering Survivors Since 2020
                 </span>
@@ -66,8 +66,8 @@ export function HomeContent() {
               <motion.h1
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, delay: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
-                className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-[#F6F0E8] mb-6 tracking-tight leading-tight"
+                transition={{ duration: 0.7, delay: 1.7, ease: [0.25, 0.1, 0.25, 1] }}
+                className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-[#F6F0E8] mb-3 tracking-tight leading-tight"
               >
                 Restoring Hope.
                 <br />
@@ -78,8 +78,8 @@ export function HomeContent() {
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.9, ease: [0.25, 0.1, 0.25, 1] }}
-                className="text-lg sm:text-xl text-[#CDBDAF] mb-10 max-w-2xl mx-auto leading-relaxed"
+                transition={{ duration: 0.65, delay: 1.9, ease: [0.25, 0.1, 0.25, 1] }}
+                className="text-lg sm:text-xl text-[#CDBDAF] mb-5 max-w-2xl mx-auto leading-relaxed"
               >
                 {ORG.mission}
               </motion.p>
@@ -88,7 +88,7 @@ export function HomeContent() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 1.1, ease: [0.25, 0.1, 0.25, 1] }}
+                transition={{ duration: 0.65, delay: 2.1, ease: [0.25, 0.1, 0.25, 1] }}
                 className="flex flex-col sm:flex-row items-center justify-center gap-4"
               >
                 <Button asChild size="lg" className="bg-[#1E6B73] hover:bg-[#4C9AA3] text-[#F6F0E8] px-8 py-6 text-base shadow-[0_12px_40px_rgba(0,0,0,0.35)] hover:shadow-[0_12px_40px_rgba(30,107,115,0.25)] transition-all duration-300">
@@ -107,8 +107,8 @@ export function HomeContent() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 0.8, delay: 1.3 }}
-                className="mt-12 flex flex-wrap items-center justify-center gap-6 text-sm text-[#B8A89A]"
+                transition={{ duration: 0.6, delay: 2.4 }}
+                className="mt-6 flex flex-wrap items-center justify-center gap-6 text-sm text-[#B8A89A]"
               >
                 <span className="flex items-center gap-1.5">
                   <Shield className="w-4 h-4 text-[#4C9AA3]" />
@@ -245,10 +245,11 @@ export function HomeContent() {
                           repeat: Infinity,
                           ease: 'easeInOut',
                         }}
-                        className="relative w-28 h-28 mx-auto"
+                        className="relative mx-auto"
+                        style={{ width: '7rem', height: '10.5rem' }}
                       >
                         <Image
-                          src="/herologo.png"
+                          src="/forged-logo.png"
                           alt="Forged in the Fire"
                           fill
                           className="object-contain drop-shadow-2xl"

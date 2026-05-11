@@ -82,14 +82,14 @@ export function Navbar() {
             className="flex items-center gap-3 group"
             aria-label="Forged in the Fire - Home"
           >
-            <div className="relative w-11 h-11 overflow-hidden">
+            <div className="relative w-8 h-12 overflow-hidden">
               <Image
-                src="/logo-main.png"
+                src="/forged-logo.png"
                 alt="Forged in the Fire"
                 fill
                 className="object-contain transition-all duration-500 ease-out group-hover:scale-105"
                 priority
-                sizes="44px"
+                sizes="32px"
               />
             </div>
             <span className="font-serif text-xl font-semibold text-[#F6F0E8] hidden sm:block">
@@ -126,14 +126,6 @@ export function Navbar() {
 
           {/* Desktop CTA Buttons */}
           <div className="hidden lg:flex items-center gap-3">
-            <Button
-              asChild
-              variant="ghost"
-              size="sm"
-              className="text-[#CDBDAF] hover:text-[#4C9AA3]"
-            >
-              <Link href="/get-help">Get Help</Link>
-            </Button>
             <Button
               asChild
               variant="default"
