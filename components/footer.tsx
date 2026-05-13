@@ -82,9 +82,9 @@ export function Footer() {
                 <Phone className="h-4 w-4" />
                 <span className="text-sm">{ORG.phone}</span>
               </a>
-              <div className="flex items-center gap-3 text-[#B8A89A]">
-                <MapPin className="h-4 w-4" />
-                <span className="text-sm">{ORG.location}</span>
+              <div className="flex items-start gap-3 text-[#B8A89A]">
+                <MapPin className="h-4 w-4 mt-0.5" />
+                <span className="text-sm">{ORG.address}</span>
               </div>
             </div>
 

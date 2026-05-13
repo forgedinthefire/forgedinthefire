@@ -87,8 +87,8 @@ export default function ContactPage() {
                     <MapPin className="h-6 w-6 text-ember" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-cream-100 mb-1">Location</h3>
-                    <p className="text-cream-300/80">{ORG.location}</p>
+                    <h3 className="font-semibold text-cream-100 mb-1">Address</h3>
+                    <p className="text-cream-300/80">{ORG.address}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">

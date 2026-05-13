@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import { generateMetaTags } from '@/lib/utils';
+import { ORG } from '@/lib/constants';
 
 export const metadata: Metadata = generateMetaTags({
   title: 'Accessibility',
@@ -37,7 +38,7 @@ export default function AccessibilityPage() {
             <h2 className="text-2xl font-semibold text-cream-100 mt-8 mb-4">Feedback</h2>
             <p className="text-cream-300/80">
               We welcome your feedback on accessibility. Contact us at 
-              bsalsbury@forgedinthefirellc.org
+              {ORG.email}
             </p>
           </div>
         </div>

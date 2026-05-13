@@ -12,6 +12,10 @@ export function OrganizationStructuredData() {
     telephone: ORG.phone,
     address: {
       '@type': 'PostalAddress',
+      streetAddress: '15728 Lorain Ave, Unit 146',
+      addressLocality: 'Cleveland',
+      addressRegion: 'OH',
+      postalCode: '44111-5542',
       addressCountry: 'US',
     },
     sameAs: [

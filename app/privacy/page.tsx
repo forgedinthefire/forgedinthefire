@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import { generateMetaTags } from '@/lib/utils';
+import { ORG } from '@/lib/constants';
 
 export const metadata: Metadata = generateMetaTags({
   title: 'Privacy Policy',
@@ -35,7 +36,7 @@ export default function PrivacyPage() {
             <h2 className="text-2xl font-semibold text-cream-100 mt-8 mb-4">Contact Us</h2>
             <p className="text-cream-300/80">
               If you have questions about our privacy practices, please contact us at 
-              bsalsbury@forgedinthefirellc.org
+              {ORG.email}
             </p>
           </div>
         </div>

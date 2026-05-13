@@ -10,8 +10,9 @@ export const ORG = {
     'A world where every survivor of commercial sex trafficking has the opportunity to heal, reclaim their freedom, and live with dignity and purpose.',
   founded: 2020,
   location: 'United States',
-  email: 'bsalsbury@forgedinthefirellc.org',
-  phone: '(555) 123-4567',
+  address: '15728 Lorain Ave, Unit 146, Cleveland, OH 44111-5542',
+  email: 'tracys@forgedinthefireohio.org',
+  phone: '1 216-202-0786',
 } as const;
 
 // Core Values
