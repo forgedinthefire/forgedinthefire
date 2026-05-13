@@ -4,7 +4,8 @@ import { ORG } from '@/lib/constants';
 
 export const metadata: Metadata = generateMetaTags({
   title: 'Terms of Use',
-  description: 'Terms of use for the Forged in the Fire website.',
+  description:
+    'Terms of use for the Forged in the Fire website. Information about accessing human trafficking survivor resources and victim advocacy services in Cleveland, Ohio.',
 });
 
 export default function TermsPage() {

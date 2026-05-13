@@ -186,12 +186,15 @@ export function Footer() {
                 </span>
               ))}
             </div>
-            <p className="text-sm text-[#B8A89A] text-center md:text-right">
-              &copy; {currentYear} {ORG.name}. All rights reserved.
-              <span className="inline-flex items-center gap-1 ml-2">
-                Made with <Heart className="h-3 w-3 text-[#1E6B73] fill-[#1E6B73]" /> for survivors
-              </span>
-            </p>
+            <div className="text-sm text-[#B8A89A] text-center md:text-right">
+              <p className="mb-1">Serving Cleveland, Cuyahoga County, and Northeast Ohio</p>
+              <p>
+                &copy; {currentYear} {ORG.name}. All rights reserved.
+                <span className="inline-flex items-center gap-1 ml-2">
+                  Made with <Heart className="h-3 w-3 text-[#1E6B73] fill-[#1E6B73]" /> for survivors
+                </span>
+              </p>
+            </div>
           </div>
         </div>
       </div>

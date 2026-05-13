@@ -62,17 +62,27 @@ export function HomeContent() {
                 </span>
               </motion.div>
               
-              {/* Headline - Staggered Fade Up */}
+              {/* SEO H1 - Primary Heading */}
               <motion.h1
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 1.7, ease: [0.25, 0.1, 0.25, 1] }}
                 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-[#F6F0E8] mb-3 tracking-tight leading-tight"
               >
+                Human Trafficking Victim Advocacy in Cleveland, Ohio
+              </motion.h1>
+
+              {/* Brand Headline - Visual Emphasis */}
+              <motion.p
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 1.85, ease: [0.25, 0.1, 0.25, 1] }}
+                className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#F6F0E8] mb-3 tracking-tight leading-tight"
+              >
                 Restoring Hope.
                 <br />
                 <span className="text-[#4C9AA3]">Rebuilding Lives.</span>
-              </motion.h1>
+              </motion.p>
               
               {/* Mission Statement - Staggered Fade Up */}
               <motion.p
@@ -154,6 +164,24 @@ export function HomeContent() {
         </div>
       </section>
 
+      {/* Local SEO Section - Serving Cleveland and Northeast Ohio */}
+      <section className="py-20 bg-[#2A1F1A] border-y border-[#3A2A24]">
+        <div className="container-wide section-padding">
+          <div className="max-w-3xl mx-auto text-center">
+            <span className="text-[#C8A46B] font-medium mb-4 block tracking-wide uppercase text-sm">Our Community</span>
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#F6F0E8] mb-6 leading-tight">
+              Serving Cleveland, Cuyahoga County, and Northeast Ohio
+            </h2>
+            <p className="text-lg text-[#CDBDAF] leading-relaxed">
+              Forged in the Fire is based in Cleveland, Ohio and provides trauma-informed victim 
+              advocacy and survivor support throughout Cuyahoga County and the greater Northeast 
+              Ohio region. We are committed to meeting survivors where they are and walking 
+              alongside them on their journey toward healing, safety, and independence.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Mission Section - Warm Human Connection */}
       <section className="py-24 bg-[#241B18]">
         <div className="container-wide section-padding">
@@ -172,9 +200,14 @@ export function HomeContent() {
                 Every service we provide is rooted in trauma-informed care, recognizing that healing 
                 is not linear and that each survivor&apos;s path is unique.
               </p>
-              <Button asChild variant="outline" className="border-[#1E6B73] text-[#4C9AA3] hover:bg-[#1E6B73]/20 transition-all duration-300">
-                <Link href="/about">Learn Our Story <ChevronRight className="ml-2 h-4 w-4" /></Link>
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button asChild variant="outline" className="border-[#1E6B73] text-[#4C9AA3] hover:bg-[#1E6B73]/20 transition-all duration-300">
+                  <Link href="/about">Learn Our Story <ChevronRight className="ml-2 h-4 w-4" /></Link>
+                </Button>
+                <Button asChild variant="ghost" className="text-[#CDBDAF] hover:text-[#4C9AA3] hover:bg-[#1E6B73]/10 transition-all duration-300">
+                  <Link href="/services/victim-advocacy">Explore Victim Advocacy Services</Link>
+                </Button>
+              </div>
             </div>
             <div className="relative">
               <MissionMomentCardV2 />

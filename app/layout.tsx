@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   creator: META_DEFAULTS.creator,
   publisher: META_DEFAULTS.publisher,
   robots: META_DEFAULTS.robots,
-  metadataBase: new URL('https://forgedinthefire.com'),
+  metadataBase: new URL('https://forgedinthefireohio.org'),
   alternates: {
     canonical: '/',
   },
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
         url: '/opengraph-image.jpeg',
         width: 1200,
         height: 630,
-        alt: 'Forged in the Fire - Empowering Survivors',
+        alt: 'Forged in the Fire - Human Trafficking Victim Advocacy in Cleveland Ohio',
       },
     ],
   },

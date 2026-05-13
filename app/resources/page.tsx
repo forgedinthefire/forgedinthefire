@@ -6,8 +6,9 @@ import { generateMetaTags } from '@/lib/utils';
 import { BookOpen, Download, FileText, Video, ExternalLink, ChevronRight } from 'lucide-react';
 
 export const metadata: Metadata = generateMetaTags({
-  title: 'Resources & Education',
-  description: 'Educational resources, downloadable guides, and information about human trafficking awareness and survivor support.',
+  title: 'Human Trafficking Resources Cleveland Ohio',
+  description:
+    'Free human trafficking resources for Cleveland and Northeast Ohio, including survivor support information, awareness education, prevention materials, and trusted hotline links.',
 });
 
 const RESOURCES = [
@@ -53,11 +54,12 @@ export default function ResourcesPage() {
           <div className="max-w-4xl mx-auto text-center">
             <span className="text-ember font-medium mb-4 block">Knowledge is Power</span>
             <h1 className="font-serif text-5xl sm:text-6xl font-bold text-cream-100 mb-6">
-              Resources & Education
+              Human Trafficking Resources for Cleveland and Northeast Ohio
             </h1>
             <p className="text-xl text-cream-300/80 leading-relaxed max-w-2xl mx-auto">
               Access educational materials, downloadable guides, and trusted external 
-              resources to support awareness and healing.
+              resources for human trafficking awareness and survivor support in Cleveland 
+              and Northeast Ohio.
             </p>
           </div>
         </div>

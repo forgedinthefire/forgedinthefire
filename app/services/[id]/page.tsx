@@ -3,6 +3,7 @@ import { SERVICES, ORG } from '@/lib/constants';
 import { generateMetaTags } from '@/lib/utils';
 import { notFound } from 'next/navigation';
 import ServicePageContent from './ServicePageContent';
+import { ServiceStructuredData, BreadcrumbStructuredData } from '@/components/structured-data';
 
 interface ServicePageProps {
   params: Promise<{ id: string }>;
@@ -234,7 +235,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: ServicePageProps): Promise<Metadata> {
   const { id } = await params;
   const service = SERVICES.find((s) => s.id === id);
-  
+
   if (!service) {
     return generateMetaTags({
       title: 'Service Not Found',
@@ -243,8 +244,8 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
   }
 
   return generateMetaTags({
-    title: `${service.title} | ${ORG.name}`,
-    description: service.description,
+    title: `${service.title} in Cleveland Ohio | Forged in the Fire`,
+    description: `${service.description} Available in Cleveland, Ohio and Northeast Ohio through Forged in the Fire.`,
   });
 }
 
@@ -264,5 +265,21 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
     icon: service.icon,
   };
 
-  return <ServicePageContent service={serviceData} content={content} />;
+  return (
+    <>
+      <ServiceStructuredData
+        name={service.title}
+        description={service.description}
+        url={`/services/${service.id}`}
+      />
+      <BreadcrumbStructuredData
+        items={[
+          { name: 'Home', url: '/' },
+          { name: 'Services', url: '/services' },
+          { name: service.title, url: `/services/${service.id}` },
+        ]}
+      />
+      <ServicePageContent service={serviceData} content={content} />
+    </>
+  );
 }

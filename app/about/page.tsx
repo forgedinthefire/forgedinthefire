@@ -16,8 +16,9 @@ import {
 } from 'lucide-react';
 
 export const metadata: Metadata = generateMetaTags({
-  title: 'About Us',
-  description: `Learn about ${ORG.name}'s mission, founder Tracy Springford, and our survivor-centered approach to supporting survivors of commercial sex trafficking.`,
+  title: 'About Forged in the Fire | Anti Trafficking Nonprofit Cleveland Ohio',
+  description:
+    "Meet Forged in the Fire, a Cleveland based anti human trafficking nonprofit serving survivors in Northeast Ohio through advocacy, education, mentorship, and survivor centered support.",
 });
 
 const CREDENTIALS = [
@@ -75,7 +76,7 @@ export default function AboutPage() {
               About Us
             </span>
             <h1 className="font-serif text-5xl sm:text-6xl font-bold text-[#F6F0E8] mb-6 leading-tight">
-              About Forged in the Fire
+              About Forged in the Fire: Cleveland Anti Trafficking Nonprofit
             </h1>
             <p className="text-xl text-[#CDBDAF] leading-relaxed max-w-2xl mx-auto mb-4">
               Restoring hope. Rebuilding lives. Empowering survivors.
@@ -120,6 +121,31 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* ── Our Location & Service Area ── */}
+      <section className="py-24 bg-[#241B18] border-y border-[#3A2A24]">
+        <div className="container-wide section-padding">
+          <div className="text-center max-w-3xl mx-auto">
+            <span className="inline-block text-[#C8A46B] font-medium mb-4 tracking-wide uppercase text-sm">
+              Our Location
+            </span>
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#F6F0E8] mb-6">
+              Cleveland Based, Northeast Ohio Focused
+            </h2>
+            <p className="text-lg text-[#CDBDAF] leading-relaxed mb-6">
+              Forged in the Fire operates from Cleveland, Ohio, serving survivors and communities 
+              throughout Cuyahoga County and the greater Northeast Ohio region. Our location allows 
+              us to respond to the unique needs of urban, suburban, and rural communities facing 
+              human trafficking and commercial sexual exploitation.
+            </p>
+            <p className="text-lg text-[#B8A89A] leading-relaxed">
+              Through our collaboration with the Northeast Ohio Human Trafficking Task Force and 
+              partnerships with local law enforcement, health systems, and community organizations, 
+              we bring coordinated, survivor-centered care to those who need it most.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* ── Founder & Executive Leadership ── */}
       <section id="team" className="py-24 bg-[#181210]">
         <div className="container-wide section-padding">
@@ -146,7 +172,7 @@ export default function AboutPage() {
                     <div className="relative w-48 lg:w-56 rounded-2xl overflow-hidden shadow-[0_8px_40px_rgba(0,0,0,0.5)] border border-[#3A2A24]" style={{ aspectRatio: '1024 / 1536' }}>
                       <Image
                         src="/Founder-headshot.png"
-                        alt="Tracy Springford, Founder, President & CEO of Forged in the Fire"
+                        alt="Tracy Springford, Founder, President & CEO of Forged in the Fire, Cleveland victim advocate"
                         fill
                         className="object-cover object-top"
                         sizes="(max-width: 1024px) 192px, 224px"
