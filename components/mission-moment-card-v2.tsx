@@ -2,7 +2,7 @@
 
 import { motion, useReducedMotion, useAnimation, Variants, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 
 // Production timing - precise narrative beats
 const TIMING = {
@@ -65,8 +65,12 @@ export function MissionMomentCardV2() {
   const [phase, setPhase] = useState(0);
   const [sparkWords, setSparkWords] = useState<string[]>([]);
   const [missionWords, setMissionWords] = useState<string[]>([]);
+  const [sequenceKey, setSequenceKey] = useState(0);
+  const [showBurst, setShowBurst] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
   const controls = useAnimation();
   const containerRef = useRef<HTMLDivElement>(null);
+  const hasAnimatedRef = useRef(false);
 
   // Split text for word animation
   useEffect(() => {
@@ -74,7 +78,36 @@ export function MissionMomentCardV2() {
     setMissionWords("Now we stand resolute, to bring what's in darkness to light.".split(' '));
   }, []);
 
-  // Sequence timing
+  // Scroll-triggered restart using IntersectionObserver
+  useEffect(() => {
+    if (prefersReducedMotion || !containerRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+            // Card is 50%+ visible - restart animation
+            if (hasAnimatedRef.current) {
+              // Restart sequence
+              setPhase(0);
+              setShowBurst(false);
+              setSequenceKey(prev => prev + 1);
+            }
+            hasAnimatedRef.current = true;
+          }
+        });
+      },
+      {
+        threshold: [0, 0.5, 1],
+        rootMargin: '-10% 0px -10% 0px',
+      }
+    );
+
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, [prefersReducedMotion]);
+
+  // Sequence timing - restarted by sequenceKey change
   useEffect(() => {
     if (prefersReducedMotion) {
       setPhase(4);
@@ -83,12 +116,18 @@ export function MissionMomentCardV2() {
     }
 
     const sequence = async () => {
+      // Reset
+      setPhase(0);
+      setShowBurst(false);
+      
       // Spark line appears
+      await new Promise(r => setTimeout(r, 100));
       setPhase(1);
       await new Promise(r => setTimeout(r, TIMING.sparkHold));
       
       // Spark fades, logo ignites
       setPhase(2);
+      setShowBurst(true);
       await new Promise(r => setTimeout(r, TIMING.logoIgnite - TIMING.sparkHold));
       
       // Mission line appears
@@ -103,7 +142,26 @@ export function MissionMomentCardV2() {
     };
 
     sequence();
-  }, [prefersReducedMotion, controls]);
+  }, [prefersReducedMotion, controls, sequenceKey]);
+
+  // Mouse-reactive glow tracking
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current || prefersReducedMotion) return;
+    
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+    
+    // Clamp to 0-1 range with padding for edge effects
+    setMousePos({
+      x: Math.max(0.1, Math.min(0.9, x)),
+      y: Math.max(0.1, Math.min(0.9, y)),
+    });
+  }, [prefersReducedMotion]);
+
+  const handleMouseLeave = useCallback(() => {
+    setMousePos({ x: 0.5, y: 0.5 });
+  }, []);
 
   if (prefersReducedMotion) {
     return <ReducedMotionCard />;
@@ -112,7 +170,9 @@ export function MissionMomentCardV2() {
   return (
     <div 
       ref={containerRef}
-      className="aspect-square rounded-2xl p-1 relative"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="aspect-square rounded-2xl p-1 relative cursor-default"
       style={{
         background: 'linear-gradient(135deg, rgba(30,107,115,0.25) 0%, rgba(58,42,36,0.8) 50%, rgba(139,94,60,0.25) 100%)',
       }}
@@ -124,7 +184,7 @@ export function MissionMomentCardV2() {
           boxShadow: '0 20px 60px rgba(0,0,0,0.45), inset 0 1px 0 rgba(200,164,107,0.1)',
         }}
       >
-        {/* Vignette overlay for cinematic depth */}
+        {/* Vignette overlay */}
         <div 
           className="absolute inset-0 pointer-events-none z-[1]"
           style={{
@@ -132,13 +192,19 @@ export function MissionMomentCardV2() {
           }}
         />
 
+        {/* Mouse-reactive ambient glow */}
+        <MouseReactiveGlow mousePos={mousePos} phase={phase} />
+
         {/* Ambient glow layers */}
         <AmbientGlow phase={phase} />
 
-        {/* Ember particles - subtle */}
+        {/* Ember particles */}
         <EmberParticles />
 
-        {/* Content container with glass backdrop */}
+        {/* Particle burst on logo ignition */}
+        <ParticleBurst show={showBurst && phase === 2} />
+
+        {/* Content container */}
         <div className="text-center px-6 py-8 relative z-10 flex flex-col items-center justify-center h-full max-w-[280px]">
           
           {/* Glass morphism text backdrop */}
@@ -153,11 +219,11 @@ export function MissionMomentCardV2() {
             }}
           />
 
-          {/* Phase 1: Spark Line - Word by word reveal */}
+          {/* Phase 1: Spark Line */}
           <AnimatePresence mode="wait">
             {phase === 1 && (
               <motion.div
-                key="spark"
+                key={`spark-${sequenceKey}`}
                 className="relative z-10"
                 initial="hidden"
                 animate="visible"
@@ -181,7 +247,7 @@ export function MissionMomentCardV2() {
             )}
           </AnimatePresence>
 
-          {/* Phase 2 & 3 & 4: Logo with continuous breathing */}
+          {/* Phase 2 & 3 & 4: Logo with breathing */}
           <motion.div
             initial={{ opacity: 0, scale: 0.85 }}
             animate={{ 
@@ -192,7 +258,7 @@ export function MissionMomentCardV2() {
             className="relative my-4"
             style={{ width: '7.5rem', height: '11.25rem' }}
           >
-            <LogoGlow phase={phase} />
+            <LogoGlow phase={phase} mousePos={mousePos} />
             
             <motion.div
               animate={phase >= 4 ? {
@@ -220,7 +286,7 @@ export function MissionMomentCardV2() {
           <AnimatePresence mode="wait">
             {phase === 3 && (
               <motion.div
-                key="mission"
+                key={`mission-${sequenceKey}`}
                 variants={lineVariants}
                 initial="hidden"
                 animate="visible"
@@ -236,11 +302,11 @@ export function MissionMomentCardV2() {
             )}
           </AnimatePresence>
 
-          {/* Phase 4: Final Tagline - Premium typography */}
+          {/* Phase 4: Final Tagline */}
           <AnimatePresence mode="wait">
             {phase >= 4 && (
               <motion.div
-                key="tagline"
+                key={`tagline-${sequenceKey}`}
                 initial={{ opacity: 0, y: 15, filter: 'blur(6px)' }}
                 animate={{ 
                   opacity: 1, 
@@ -269,6 +335,21 @@ export function MissionMomentCardV2() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Mouse-reactive glow that follows cursor
+function MouseReactiveGlow({ mousePos, phase }: { mousePos: { x: number; y: number }; phase: number }) {
+  return (
+    <motion.div
+      className="absolute inset-0 pointer-events-none"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: phase >= 1 ? 0.5 : 0 }}
+      transition={{ duration: 1 }}
+      style={{
+        background: `radial-gradient(circle at ${mousePos.x * 100}% ${mousePos.y * 100}%, rgba(30,107,115,0.25) 0%, transparent 50%)`,
+      }}
+    />
   );
 }
 
@@ -326,16 +407,24 @@ function AmbientGlow({ phase }: { phase: number }) {
   );
 }
 
-// Logo glow with pulsing heart center
-function LogoGlow({ phase }: { phase: number }) {
+// Logo glow with pulsing heart center - enhanced with mouse reactivity
+function LogoGlow({ phase, mousePos }: { phase: number; mousePos: { x: number; y: number } }) {
+  // Subtle parallax offset based on mouse
+  const parallaxX = (mousePos.x - 0.5) * 10;
+  const parallaxY = (mousePos.y - 0.5) * 10;
+
   return (
     <>
-      {/* Outer aura */}
+      {/* Outer aura with parallax */}
       <motion.div
         className="absolute inset-0 -m-8 pointer-events-none"
         initial={{ opacity: 0 }}
-        animate={{ opacity: phase >= 2 ? 0.6 : 0 }}
-        transition={{ duration: 1.2 }}
+        animate={{ 
+          opacity: phase >= 2 ? 0.6 : 0,
+          x: parallaxX,
+          y: parallaxY,
+        }}
+        transition={{ opacity: { duration: 1.2 }, x: { duration: 0.3 }, y: { duration: 0.3 } }}
       >
         <motion.div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full rounded-full"
@@ -355,13 +444,15 @@ function LogoGlow({ phase }: { phase: number }) {
         />
       </motion.div>
 
-      {/* Heart/core pulse */}
+      {/* Heart/core pulse with parallax */}
       <motion.div
         className="absolute top-[35%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 pointer-events-none"
         initial={{ opacity: 0 }}
         animate={{ 
           opacity: phase >= 2 ? 1 : 0,
           scale: phase >= 2 ? [1, 1.2, 1] : 1,
+          x: parallaxX * 1.5,
+          y: parallaxY * 1.5,
         }}
         transition={{
           opacity: { duration: 0.8 },
@@ -370,6 +461,8 @@ function LogoGlow({ phase }: { phase: number }) {
             repeat: Infinity,
             ease: 'easeInOut',
           },
+          x: { duration: 0.3 },
+          y: { duration: 0.3 },
         }}
         style={{
           background: 'radial-gradient(circle, rgba(30,107,115,0.5) 0%, rgba(76,154,163,0.25) 50%, transparent 70%)',
@@ -377,6 +470,55 @@ function LogoGlow({ phase }: { phase: number }) {
         }}
       />
     </>
+  );
+}
+
+// Particle burst on logo ignition
+function ParticleBurst({ show }: { show: boolean }) {
+  const particles = [...Array(12)].map((_, i) => ({
+    id: i,
+    angle: (i / 12) * 360 + Math.random() * 30,
+    distance: 40 + Math.random() * 40,
+    size: 2 + Math.random() * 3,
+    duration: 0.6 + Math.random() * 0.4,
+    delay: Math.random() * 0.1,
+  }));
+
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden flex items-center justify-center">
+      <AnimatePresence>
+        {show && particles.map((p) => (
+          <motion.div
+            key={p.id}
+            className="absolute rounded-full"
+            initial={{ 
+              opacity: 0,
+              scale: 0,
+              x: 0,
+              y: 0,
+            }}
+            animate={{ 
+              opacity: [0, 1, 0],
+              scale: [0, 1, 0.5],
+              x: Math.cos((p.angle * Math.PI) / 180) * p.distance,
+              y: Math.sin((p.angle * Math.PI) / 180) * p.distance,
+            }}
+            exit={{ opacity: 0 }}
+            transition={{
+              duration: p.duration,
+              delay: p.delay,
+              ease: [0.25, 0.1, 0.25, 1],
+            }}
+            style={{
+              width: p.size,
+              height: p.size,
+              background: `radial-gradient(circle, rgba(${200 + Math.random() * 55}, ${160 + Math.random() * 40}, ${100 + Math.random() * 50}, 0.9) 0%, transparent 70%)`,
+              boxShadow: `0 0 ${p.size * 2}px rgba(200, 164, 107, 0.6)`,
+            }}
+          />
+        ))}
+      </AnimatePresence>
+    </div>
   );
 }
 
