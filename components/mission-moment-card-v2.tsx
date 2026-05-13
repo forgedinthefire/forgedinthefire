@@ -4,59 +4,62 @@ import { motion, useReducedMotion, useAnimation, Variants, AnimatePresence } fro
 import Image from 'next/image';
 import { useEffect, useState, useRef, useCallback } from 'react';
 
-// Production timing - slower, more deliberate pacing
+// Smooth, flowing timing with gentle overlaps
 const TIMING = {
   sparkIn: 0,
-  sparkHold: 2500,      // Slower: 2.5s to read spark line
-  sparkOut: 3200,         // Graceful exit
-  logoIgnite: 3800,     // Logo appears after spark fades
-  missionIn: 6000,      // Hold on logo before mission line
-  missionHold: 8500,    // Longer hold on mission line
-  missionOut: 9200,     // Graceful exit
-  taglineIn: 10000,     // Final tagline with clean entrance
-  sequenceComplete: 13000, // Complete sequence
+  sparkHold: 2800,      // Comfortable reading pace
+  sparkOut: 3500,       // Smooth exit overlap with logo
+  logoIgnite: 4000,     // Logo emerges as spark fades
+  missionIn: 6500,      // Pause to appreciate logo
+  missionHold: 9500,    // Contemplative hold
+  missionOut: 10500,    // Gentle fade
+  taglineIn: 11500,     // Graceful finale
+  sequenceComplete: 15000, // Settled, complete
 };
 
-// Premium easing curves
+// Silky smooth easing - more organic motion
 const EASE = {
-  cinematic: [0.25, 0.1, 0.25, 1],
-  dramatic: [0.16, 1, 0.3, 1],
-  soft: [0.4, 0, 0.2, 1],
-  elastic: { type: 'spring', stiffness: 100, damping: 15 },
+  cinematic: [0.22, 0.61, 0.36, 1],      // Smooth deceleration
+  dramatic: [0.165, 0.84, 0.44, 1],     // Elegant power
+  soft: [0.4, 0, 0.2, 1],               // Gentle ease
+  silk: [0.25, 0.46, 0.45, 0.94],        // Buttery smooth
+  breathe: { type: 'spring', stiffness: 80, damping: 20, mass: 1.2 },
 };
 
-// Word animation variants
+// Silky word animation - slower, more elegant
 const wordVariants: Variants = {
-  hidden: { opacity: 0, y: 8, filter: 'blur(4px)' },
+  hidden: { opacity: 0, y: 10, filter: 'blur(6px)' },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
     filter: 'blur(0px)',
     transition: {
-      delay: i * 0.08,
-      duration: 0.5,
-      ease: EASE.cinematic,
+      delay: i * 0.1,
+      duration: 0.7,
+      ease: EASE.silk,
     },
   }),
   exit: {
     opacity: 0,
-    y: -6,
-    filter: 'blur(2px)',
-    transition: { duration: 0.4, ease: EASE.soft },
+    y: -8,
+    filter: 'blur(4px)',
+    transition: { duration: 0.6, ease: EASE.soft },
   },
 };
 
 const lineVariants: Variants = {
-  hidden: { opacity: 0, y: 12 },
+  hidden: { opacity: 0, y: 16, filter: 'blur(8px)' },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.7, ease: EASE.cinematic },
+    filter: 'blur(0px)',
+    transition: { duration: 0.9, ease: EASE.cinematic },
   },
   exit: {
     opacity: 0,
-    y: -8,
-    transition: { duration: 0.5, ease: EASE.soft },
+    y: -12,
+    filter: 'blur(4px)',
+    transition: { duration: 0.7, ease: EASE.soft },
   },
 };
 
@@ -247,14 +250,15 @@ export function MissionMomentCardV2() {
             )}
           </AnimatePresence>
 
-          {/* Phase 2 & 3 & 4: Logo with breathing */}
+          {/* Phase 2 & 3 & 4: Logo with silk-smooth breathing */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.85 }}
+            initial={{ opacity: 0, scale: 0.9, filter: 'blur(4px)' }}
             animate={{ 
               opacity: phase >= 2 ? 1 : 0,
-              scale: phase >= 2 ? 1 : 0.85,
+              scale: phase >= 2 ? 1 : 0.9,
+              filter: phase >= 2 ? 'blur(0px)' : 'blur(4px)',
             }}
-            transition={{ duration: 1, ease: EASE.dramatic }}
+            transition={{ duration: 1.4, ease: EASE.cinematic }}
             className="relative my-4"
             style={{ width: '7.5rem', height: '11.25rem' }}
           >
@@ -262,11 +266,11 @@ export function MissionMomentCardV2() {
             
             <motion.div
               animate={phase >= 4 ? {
-                scale: [1, 1.015, 1],
-                opacity: [0.95, 1, 0.95],
+                scale: [1, 1.012, 1],
+                opacity: [0.98, 1, 0.98],
               } : {}}
               transition={{
-                duration: 5,
+                duration: 6,
                 repeat: Infinity,
                 ease: 'easeInOut',
               }}
@@ -302,27 +306,26 @@ export function MissionMomentCardV2() {
             )}
           </AnimatePresence>
 
-          {/* Phase 4: Final Tagline - Clean single color */}
+          {/* Phase 4: Final Tagline - Silky smooth entrance */}
           <AnimatePresence mode="wait">
             {phase >= 4 && (
               <motion.div
                 key={`tagline-${sequenceKey}`}
-                initial={{ opacity: 0, y: 20, filter: 'blur(8px)', scale: 0.98 }}
+                initial={{ opacity: 0, y: 24, filter: 'blur(10px)' }}
                 animate={{ 
                   opacity: 1, 
                   y: 0,
                   filter: 'blur(0px)',
-                  scale: 1,
                 }}
                 transition={{ 
-                  duration: 1.2, 
-                  ease: EASE.dramatic,
+                  duration: 1.4, 
+                  ease: EASE.silk,
                 }}
                 className="relative z-10"
               >
                 <p 
-                  className="font-serif text-2xl italic text-[#F6F0E8] leading-tight"
-                  style={{ textShadow: '0 2px 24px rgba(30,107,115,0.25)' }}
+                  className="font-serif text-2xl italic text-[#F6F0E8] leading-relaxed tracking-tight"
+                  style={{ textShadow: '0 4px 30px rgba(30,107,115,0.2)' }}
                 >
                   "The fire that forges us
                   <br />
@@ -472,15 +475,15 @@ function LogoGlow({ phase, mousePos }: { phase: number; mousePos: { x: number; y
   );
 }
 
-// Particle burst on logo ignition
+// Silk-smooth particle burst on logo ignition
 function ParticleBurst({ show }: { show: boolean }) {
-  const particles = [...Array(12)].map((_, i) => ({
+  const particles = [...Array(10)].map((_, i) => ({
     id: i,
-    angle: (i / 12) * 360 + Math.random() * 30,
-    distance: 40 + Math.random() * 40,
-    size: 2 + Math.random() * 3,
-    duration: 0.6 + Math.random() * 0.4,
-    delay: Math.random() * 0.1,
+    angle: (i / 10) * 360 + Math.random() * 25,
+    distance: 35 + Math.random() * 30,
+    size: 2 + Math.random() * 2,
+    duration: 0.8 + Math.random() * 0.5,
+    delay: Math.random() * 0.08,
   }));
 
   return (
@@ -497,8 +500,8 @@ function ParticleBurst({ show }: { show: boolean }) {
               y: 0,
             }}
             animate={{ 
-              opacity: [0, 1, 0],
-              scale: [0, 1, 0.5],
+              opacity: [0, 0.9, 0],
+              scale: [0, 1, 0.3],
               x: Math.cos((p.angle * Math.PI) / 180) * p.distance,
               y: Math.sin((p.angle * Math.PI) / 180) * p.distance,
             }}
@@ -506,13 +509,13 @@ function ParticleBurst({ show }: { show: boolean }) {
             transition={{
               duration: p.duration,
               delay: p.delay,
-              ease: [0.25, 0.1, 0.25, 1],
+              ease: EASE.silk,
             }}
             style={{
               width: p.size,
               height: p.size,
-              background: `radial-gradient(circle, rgba(${200 + Math.random() * 55}, ${160 + Math.random() * 40}, ${100 + Math.random() * 50}, 0.9) 0%, transparent 70%)`,
-              boxShadow: `0 0 ${p.size * 2}px rgba(200, 164, 107, 0.6)`,
+              background: `radial-gradient(circle, rgba(${210 + Math.random() * 30}, ${170 + Math.random() * 25}, ${120 + Math.random() * 30}, 0.85) 0%, transparent 70%)`,
+              boxShadow: `0 0 ${p.size * 2.5}px rgba(200, 164, 107, 0.5)`,
             }}
           />
         ))}
@@ -521,31 +524,31 @@ function ParticleBurst({ show }: { show: boolean }) {
   );
 }
 
-// Subtle ember particles
+// Elegant floating ember particles
 function EmberParticles() {
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden">
-      {[...Array(6)].map((_, i) => (
+      {[...Array(5)].map((_, i) => (
         <motion.div
           key={i}
           className="absolute rounded-full"
           style={{
-            width: 2 + (i % 2),
-            height: 2 + (i % 2),
-            background: 'radial-gradient(circle, rgba(200, 164, 107, 0.6) 0%, transparent 70%)',
-            left: `${20 + i * 12}%`,
-            top: `${30 + (i % 3) * 20}%`,
+            width: 1.5 + (i % 2) * 0.5,
+            height: 1.5 + (i % 2) * 0.5,
+            background: 'radial-gradient(circle, rgba(200, 164, 107, 0.5) 0%, transparent 70%)',
+            left: `${25 + i * 11}%`,
+            top: `${35 + (i % 3) * 18}%`,
           }}
           animate={{
-            y: [0, -30, 0],
-            opacity: [0, 0.5, 0],
-            x: [0, (i % 2 === 0 ? 10 : -10), 0],
+            y: [0, -25, 0],
+            opacity: [0, 0.4, 0],
+            x: [0, (i % 2 === 0 ? 8 : -8), 0],
           }}
           transition={{
-            duration: 6 + i,
+            duration: 7 + i * 1.5,
             repeat: Infinity,
             ease: 'easeInOut',
-            delay: i * 1.2,
+            delay: i * 2,
           }}
         />
       ))}
