@@ -4,17 +4,17 @@ import { motion, useReducedMotion, useAnimation, Variants, AnimatePresence } fro
 import Image from 'next/image';
 import { useEffect, useState, useRef, useCallback } from 'react';
 
-// Production timing - precise narrative beats
+// Production timing - slower, more deliberate pacing
 const TIMING = {
   sparkIn: 0,
-  sparkHold: 1800,
-  sparkOut: 2200,
-  logoIgnite: 2600,
-  missionIn: 4200,
-  missionHold: 5800,
-  missionOut: 6400,
-  taglineIn: 7000,
-  sequenceComplete: 9000,
+  sparkHold: 2500,      // Slower: 2.5s to read spark line
+  sparkOut: 3200,         // Graceful exit
+  logoIgnite: 3800,     // Logo appears after spark fades
+  missionIn: 6000,      // Hold on logo before mission line
+  missionHold: 8500,    // Longer hold on mission line
+  missionOut: 9200,     // Graceful exit
+  taglineIn: 10000,     // Final tagline with clean entrance
+  sequenceComplete: 13000, // Complete sequence
 };
 
 // Premium easing curves
@@ -302,32 +302,31 @@ export function MissionMomentCardV2() {
             )}
           </AnimatePresence>
 
-          {/* Phase 4: Final Tagline */}
+          {/* Phase 4: Final Tagline - Clean single color */}
           <AnimatePresence mode="wait">
             {phase >= 4 && (
               <motion.div
                 key={`tagline-${sequenceKey}`}
-                initial={{ opacity: 0, y: 15, filter: 'blur(6px)' }}
+                initial={{ opacity: 0, y: 20, filter: 'blur(8px)', scale: 0.98 }}
                 animate={{ 
                   opacity: 1, 
                   y: 0,
                   filter: 'blur(0px)',
+                  scale: 1,
                 }}
                 transition={{ 
-                  duration: 0.9, 
+                  duration: 1.2, 
                   ease: EASE.dramatic,
-                  delay: phase === 4 ? 0.3 : 0,
                 }}
                 className="relative z-10"
               >
                 <p 
                   className="font-serif text-2xl italic text-[#F6F0E8] leading-tight"
-                  style={{ textShadow: '0 2px 20px rgba(30,107,115,0.3)' }}
+                  style={{ textShadow: '0 2px 24px rgba(30,107,115,0.25)' }}
                 >
-                  "The fire that
-                  <span className="text-[#C8A46B]"> forges</span> us
+                  "The fire that forges us
                   <br />
-                  also <span className="text-[#4C9AA3]">frees</span> us."
+                  also frees us."
                 </p>
               </motion.div>
             )}
@@ -596,9 +595,9 @@ function ReducedMotionCard() {
           </div>
 
           <p className="font-serif text-2xl italic text-[#F6F0E8] leading-tight">
-            "The fire that <span className="text-[#C8A46B]">forges</span> us
+            "The fire that forges us
             <br />
-            also <span className="text-[#4C9AA3]">frees</span> us."
+            also frees us."
           </p>
         </div>
       </div>
