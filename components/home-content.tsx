@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { HeroAnimation } from '@/components/hero-animation';
-import { MissionMomentCard } from '@/components/mission-moment-card';
+import { MissionMomentCardV2 } from '@/components/mission-moment-card-v2';
 import { ORG, CORE_VALUES, SERVICES, IMPACT_STATS } from '@/lib/constants';
 import { 
   ArrowRight, 
@@ -177,7 +177,7 @@ export function HomeContent() {
               </Button>
             </div>
             <div className="relative">
-              <MissionMomentCard />
+              <MissionMomentCardV2 />
               
               {/* External glow effects - CARD ONLY */}
               <motion.div 
