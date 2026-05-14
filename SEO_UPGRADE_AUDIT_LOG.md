@@ -1033,10 +1033,20 @@ The Forged in the Fire SEO upgrade has been successfully completed across 8 phas
 
 ## 8. Final Sitemap List
 
-Total URLs: **16**
+Total URLs: **16**  
+Sitemap URL: `https://forgedinthefireohio.org/sitemap.xml`  
+Strategy Document: `SITEMAP_STRATEGY.md`
 
-1. `https://forgedinthefireohio.org/` - priority: 1.0, weekly
-2. `https://forgedinthefireohio.org/about` - priority: 0.8, monthly
+### Enhanced Sitemap Features (Post-Audit):
+- ✅ Static lastmod dates (more accurate than dynamic dates)
+- ✅ Image sitemap extensions for key pages (homepage, about)
+- ✅ Comprehensive documentation of priority hierarchy
+- ✅ Google Search Console submission instructions
+
+### URL Listing:
+
+1. `https://forgedinthefireohio.org/` - priority: 1.0, weekly, +images
+2. `https://forgedinthefireohio.org/about` - priority: 0.8, monthly, +images
 3. `https://forgedinthefireohio.org/services` - priority: 0.9, monthly
 4. `https://forgedinthefireohio.org/services/victim-advocacy` - priority: 0.8, monthly
 5. `https://forgedinthefireohio.org/services/workforce-development` - priority: 0.8, monthly
@@ -1051,6 +1061,17 @@ Total URLs: **16**
 14. `https://forgedinthefireohio.org/privacy` - priority: 0.3, yearly
 15. `https://forgedinthefireohio.org/terms` - priority: 0.3, yearly
 16. `https://forgedinthefireohio.org/accessibility` - priority: 0.3, yearly
+
+### Sitemap Best Practices Applied:
+| Practice | Implementation |
+|----------|----------------|
+| URL Coverage | All 16 important pages included |
+| Priority Hierarchy | Tiered 1.0 → 0.3 based on importance |
+| Change Frequency | Weekly (dynamic), Monthly (content), Yearly (legal) |
+| Image Extensions | Homepage & About pages |
+| Canonical URLs | All use https://forgedinthefireohio.org |
+| Lastmod Strategy | Static dates (more reliable for Google) |
+| Size Limits | 16 URLs (well under 50,000 limit) |
 
 ---
 
