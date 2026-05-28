@@ -149,34 +149,27 @@ ON CONFLICT (email) DO UPDATE
 -- 3. Enable RLS
 ALTER TABLE admin_users ENABLE ROW LEVEL SECURITY;
 
--- 4. Add policies
+-- 4. Drop existing policies to avoid conflicts
 DROP POLICY IF EXISTS "Allow public to check admin status" ON admin_users;
 DROP POLICY IF EXISTS "Allow admin full access on admin_users" ON admin_users;
+DROP POLICY IF EXISTS "Allow owner full access on admin_users" ON admin_users;
+DROP POLICY IF EXISTS "Enable read access for authenticated users" ON admin_users;
 
-CREATE POLICY "Allow public to check admin status"
+-- 5. Create policy for owner (full access, no recursion)
+-- Owner is identified by hardcoded email to avoid recursion
+CREATE POLICY "Allow owner full access on admin_users"
+  ON admin_users FOR ALL
+  TO authenticated
+  USING (email = 'salsbury.law@icloud.com')
+  WITH CHECK (email = 'salsbury.law@icloud.com');
+
+-- 6. Create policy for all authenticated users to read (for auth checks)
+CREATE POLICY "Enable read access for authenticated users"
   ON admin_users FOR SELECT
   TO authenticated
   USING (true);
 
-CREATE POLICY "Allow admin full access on admin_users"
-  ON admin_users FOR ALL
-  TO authenticated
-  USING (
-    EXISTS (
-      SELECT 1 FROM admin_users 
-      WHERE admin_users.email = auth.jwt() ->> 'email' 
-      AND admin_users.role IN ('admin', 'owner')
-    )
-  )
-  WITH CHECK (
-    EXISTS (
-      SELECT 1 FROM admin_users 
-      WHERE admin_users.email = auth.jwt() ->> 'email' 
-      AND admin_users.role IN ('admin', 'owner')
-    )
-  );
-
--- 5. Verify
+-- 7. Verify
 SELECT * FROM admin_users;`
   }
 
