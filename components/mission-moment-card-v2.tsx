@@ -7,14 +7,14 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 // Slower, calmer timing for elegance
 const TIMING = {
   sparkIn: 0,
-  sparkHold: 3500,      // Slower, more contemplative
-  sparkOut: 4500,       // Gentler overlap
-  logoIgnite: 5500,     // Slower emergence
-  missionIn: 9000,      // Longer pause to appreciate
-  missionHold: 14000,   // Extended contemplative hold
-  missionOut: 15500,    // Slower fade
-  taglineIn: 17000,     // Graceful, unhurried finale
-  sequenceComplete: 22000, // Calm, settled
+  sparkHold: 4000,      // More contemplative
+  sparkOut: 5200,       // Gentler overlap
+  logoIgnite: 6500,     // Slower emergence
+  missionIn: 10500,     // Longer pause to appreciate
+  missionHold: 16500,   // Extended contemplative hold
+  missionOut: 18200,    // Slower fade
+  taglineIn: 20000,     // Graceful, unhurried finale
+  sequenceComplete: 26000, // Calm, settled
 };
 
 // Silky smooth easing - more organic motion
@@ -23,7 +23,7 @@ const EASE = {
   dramatic: [0.165, 0.84, 0.44, 1],     // Elegant power
   soft: [0.4, 0, 0.2, 1],               // Gentle ease
   silk: [0.25, 0.46, 0.45, 0.94],        // Buttery smooth
-  breathe: { type: 'spring', stiffness: 80, damping: 20, mass: 1.2 },
+  breathe: { type: 'spring', stiffness: 60, damping: 25, mass: 1.5 },
 };
 
 // Silky word animation - slower, more elegant
@@ -272,11 +272,11 @@ export function MissionMomentCardV2() {
             
             <motion.div
               animate={phase >= 4 ? {
-                scale: [1, 1.005, 1],
-                opacity: [0.99, 1, 0.99],
+                scale: [1, 1.003, 1],
+                opacity: [0.995, 1, 0.995],
               } : {}}
               transition={{
-                duration: 8,
+                duration: 10,
                 repeat: Infinity,
                 ease: 'easeInOut',
               }}
@@ -397,11 +397,11 @@ function AmbientGlow({ phase }: { phase: number }) {
         <motion.div
           className="w-44 h-44 rounded-full"
           animate={phase >= 2 ? {
-            opacity: [0.25, 0.4, 0.25],
-            scale: [1, 1.04, 1],
+            opacity: [0.3, 0.38, 0.3],
+            scale: [1, 1.025, 1],
           } : {}}
           transition={{
-            duration: 6,
+            duration: 8,
             repeat: Infinity,
             ease: 'easeInOut',
           }}
@@ -437,11 +437,11 @@ function LogoGlow({ phase, mousePos }: { phase: number; mousePos: { x: number; y
         <motion.div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full rounded-full"
           animate={phase >= 2 ? {
-            opacity: [0.25, 0.4, 0.25],
-            scale: [0.98, 1.015, 0.98],
+            opacity: [0.3, 0.38, 0.3],
+            scale: [0.99, 1.01, 0.99],
           } : {}}
           transition={{
-            duration: 5,
+            duration: 7,
             repeat: Infinity,
             ease: 'easeInOut',
           }}
@@ -457,20 +457,20 @@ function LogoGlow({ phase, mousePos }: { phase: number; mousePos: { x: number; y
         className="absolute top-[35%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 pointer-events-none"
         initial={{ opacity: 0 }}
         animate={{ 
-          opacity: phase >= 2 ? 0.8 : 0,
-          scale: phase >= 2 ? [1, 1.1, 1] : 1,
+          opacity: phase >= 2 ? 0.75 : 0,
+          scale: phase >= 2 ? [1, 1.06, 1] : 1,
           x: parallaxX * 1.2,
           y: parallaxY * 1.2,
         }}
         transition={{
-          opacity: { duration: 1.2 },
+          opacity: { duration: 1.5 },
           scale: {
-            duration: 3.5,
+            duration: 5,
             repeat: Infinity,
             ease: 'easeInOut',
           },
-          x: { duration: 0.4 },
-          y: { duration: 0.4 },
+          x: { duration: 0.5 },
+          y: { duration: 0.5 },
         }}
         style={{
           background: 'radial-gradient(circle, rgba(30,107,115,0.4) 0%, rgba(76,154,163,0.2) 50%, transparent 70%)',

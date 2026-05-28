@@ -216,20 +216,20 @@ export function HomeContent() {
               <motion.div 
                 className="absolute -top-3 -right-3 w-20 h-20 rounded-full pointer-events-none"
                 style={{
-                  background: 'radial-gradient(circle, rgba(200,164,107,0.2) 0%, transparent 70%)',
+                  background: 'radial-gradient(circle, rgba(200,164,107,0.18) 0%, transparent 70%)',
                   filter: 'blur(16px)',
                 }}
-                animate={{ opacity: [0.5, 0.75, 0.5] }}
-                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                animate={{ opacity: [0.45, 0.65, 0.45] }}
+                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
               />
               <motion.div 
                 className="absolute -bottom-3 -left-3 w-24 h-24 rounded-full pointer-events-none"
                 style={{
-                  background: 'radial-gradient(circle, rgba(30,107,115,0.15) 0%, transparent 70%)',
+                  background: 'radial-gradient(circle, rgba(30,107,115,0.12) 0%, transparent 70%)',
                   filter: 'blur(20px)',
                 }}
-                animate={{ opacity: [0.4, 0.65, 0.4] }}
-                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+                animate={{ opacity: [0.35, 0.55, 0.35] }}
+                transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
               />
             </div>
           </div>
