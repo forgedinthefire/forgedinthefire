@@ -18,7 +18,7 @@ interface DebugInfo {
   allAdminUsers: Array<{email: string, role: string}> | null
 }
 
-const EXPECTED_OWNER_EMAIL = 'salsbury.law@icloud.com'
+const EXPECTED_OWNER_EMAILS = ['salsbury.law@icloud.com', 'tracys@forgedinthefireohio.org']
 
 function normalizeEmail(email: string | null | undefined): string {
   return (email || '').trim().toLowerCase()
@@ -75,10 +75,9 @@ export default function AdminSetupCheck() {
       .from('admin_users')
       .select('email, role')
 
-    // Find owner by normalized email comparison
-    const normalizedExpected = normalizeEmail(EXPECTED_OWNER_EMAIL)
+    // Find owner by normalized email comparison (supports multiple owner emails)
     const ownerRecord = allAdminUsers?.find(
-      u => normalizeEmail(u.email) === normalizedExpected && normalizeEmail(u.role) === 'owner'
+      u => EXPECTED_OWNER_EMAILS.includes(normalizeEmail(u.email)) && normalizeEmail(u.role) === 'owner'
     )
 
     // Find current user's admin record
@@ -88,7 +87,7 @@ export default function AdminSetupCheck() {
 
     // Set debug info
     setDebugInfo({
-      expectedOwnerEmail: EXPECTED_OWNER_EMAIL,
+      expectedOwnerEmail: EXPECTED_OWNER_EMAILS.join(', '),
       signedInEmail: signedInEmail || null,
       matchedRole: userAdminRecord?.role || null,
       allAdminUsers: allAdminUsers?.map(u => ({ email: u.email, role: u.role })) || null
@@ -98,7 +97,7 @@ export default function AdminSetupCheck() {
     if (ownerRecord) {
       updateCheck(2, 'success', `Owner: ${ownerRecord.email}`, `Role: ${ownerRecord.role}`)
     } else {
-      updateCheck(2, 'error', 'No owner account found', `${EXPECTED_OWNER_EMAIL} needs to be added as owner`)
+      updateCheck(2, 'error', 'No owner account found', `${EXPECTED_OWNER_EMAILS.join(' or ')} needs to be added as owner`)
       setSqlScript(generateSQLScript())
     }
 
@@ -137,49 +136,44 @@ CREATE TABLE IF NOT EXISTS admin_users (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Step 2: Temporarily disable RLS to ensure insert works
+-- Step 2: Temporarily disable RLS to ensure inserts work
 ALTER TABLE admin_users DISABLE ROW LEVEL SECURITY;
 
--- Step 3: Delete any existing entries for this email (clean slate)
-DELETE FROM admin_users WHERE email = 'salsbury.law@icloud.com';
+-- Step 3: Insert BOTH owners (clean slate approach)
+DELETE FROM admin_users WHERE email IN ('salsbury.law@icloud.com', 'tracys@forgedinthefireohio.org');
 
--- Step 4: Insert owner (guaranteed to work with RLS disabled)
-INSERT INTO admin_users (id, email, role, created_at, updated_at)
-VALUES (
-  gen_random_uuid(),
-  'salsbury.law@icloud.com',
-  'owner',
-  NOW(),
-  NOW()
-);
+INSERT INTO admin_users (id, email, role, created_at, updated_at) VALUES
+  (gen_random_uuid(), 'salsbury.law@icloud.com', 'owner', NOW(), NOW()),
+  (gen_random_uuid(), 'tracys@forgedinthefireohio.org', 'owner', NOW(), NOW());
 
--- Step 5: Re-enable RLS
+-- Step 4: Re-enable RLS
 ALTER TABLE admin_users ENABLE ROW LEVEL SECURITY;
 
--- Step 6: Drop ALL existing policies
+-- Step 5: Drop ALL existing policies
 DROP POLICY IF EXISTS "Allow public to check admin status" ON admin_users;
 DROP POLICY IF EXISTS "Allow admin full access on admin_users" ON admin_users;
 DROP POLICY IF EXISTS "Allow owner full access on admin_users" ON admin_users;
 DROP POLICY IF EXISTS "Enable read access for authenticated users" ON admin_users;
 DROP POLICY IF EXISTS "Allow select for auth" ON admin_users;
+DROP POLICY IF EXISTS "Allow owner modify" ON admin_users;
 DROP POLICY IF EXISTS "anon_can_read_admin_users" ON admin_users;
 DROP POLICY IF EXISTS "auth_can_read_admin_users" ON admin_users;
 
--- Step 7: Create simple SELECT policy (allows auth users to read)
+-- Step 6: Create SELECT policy (all authenticated users can read)
 CREATE POLICY "Allow select for auth"
   ON admin_users FOR SELECT
   TO authenticated
   USING (true);
 
--- Step 8: Create UPDATE/INSERT/DELETE policy for owner only
-CREATE POLICY "Allow owner modify"
+-- Step 7: Create MODIFY policy for BOTH owners
+CREATE POLICY "Allow owners modify"
   ON admin_users FOR ALL
   TO authenticated
-  USING (email = 'salsbury.law@icloud.com')
-  WITH CHECK (email = 'salsbury.law@icloud.com');
+  USING (email IN ('salsbury.law@icloud.com', 'tracys@forgedinthefireohio.org'))
+  WITH CHECK (email IN ('salsbury.law@icloud.com', 'tracys@forgedinthefireohio.org'));
 
--- Step 9: Verify the insert worked
-SELECT * FROM admin_users WHERE email = 'salsbury.law@icloud.com';`
+-- Step 8: Verify both owners exist
+SELECT email, role, created_at FROM admin_users ORDER BY email;`
   }
 
   const getIcon = (status: CheckResult['status']) => {
