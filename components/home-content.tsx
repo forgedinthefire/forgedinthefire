@@ -120,9 +120,12 @@ export function HomeContent() {
                 transition={{ duration: 0.6, delay: 2.4 }}
                 className="mt-6 flex flex-wrap items-center justify-center gap-6 text-sm text-[#B8A89A]"
               >
-                <span className="flex items-center gap-1.5">
-                  <Shield className="w-4 h-4 text-[#4C9AA3]" />
-                  501(c)(3) Nonprofit
+                <span className="flex flex-col items-center gap-0">
+                  <span className="flex items-center gap-1.5">
+                    <Shield className="w-4 h-4 text-[#4C9AA3]" />
+                    501(c)(3) Nonprofit
+                  </span>
+                  <span className="text-xs text-[#8B5E3C]/70"># 39-3438993</span>
                 </span>
                 <span className="w-1 h-1 rounded-full bg-[#8B5E3C]/40" />
                 <span className="flex items-center gap-1.5">
