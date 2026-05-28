@@ -70,7 +70,7 @@ export default function LoginPage() {
       return
     }
 
-    // User is authenticated and is an admin - redirect to admin
+    // User is authenticated and is an admin - redirect to admin dashboard
     router.push('/admin')
     router.refresh()
   }
