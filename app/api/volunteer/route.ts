@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import { createClient } from '@/lib/supabase/server';
 
 const volunteerSchema = z.object({
   name: z.string().min(2),
@@ -14,8 +15,34 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const validated = volunteerSchema.parse(body);
 
-    // Here you would integrate with your email service
-    console.log('Volunteer application:', validated);
+    // Save to Supabase
+    const supabase = await createClient();
+    if (!supabase) {
+      return NextResponse.json(
+        { success: false, error: 'Database not configured' },
+        { status: 503 }
+      );
+    }
+
+    const { error } = await supabase
+      .from('volunteer_applications')
+      .insert({
+        name: validated.name.trim(),
+        email: validated.email.toLowerCase().trim(),
+        phone: validated.phone || null,
+        role: validated.role,
+        message: validated.message,
+        status: 'new',
+        created_at: new Date().toISOString(),
+      });
+
+    if (error) {
+      console.error('Volunteer application save error:', error);
+      return NextResponse.json(
+        { success: false, error: 'Failed to save application' },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json(
       { success: true, message: 'Application received' },

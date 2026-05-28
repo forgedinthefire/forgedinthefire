@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import { createClient } from '@/lib/supabase/server';
 
 const contactSchema = z.object({
   name: z.string().optional(),
@@ -15,18 +16,35 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const validated = contactSchema.parse(body);
 
-    // Here you would integrate with Resend or another email service
-    // Example:
-    // await resend.emails.send({
-    //   from: 'contact@forgedinthefire.org',
-    //   to: 'help@forgedinthefire.org',
-    //   subject: validated.isSurvivor ? '[SURVIVOR] New Contact Form' : 'New Contact Form',
-    //   text: validated.message,
-    //   reply_to: validated.email,
-    // });
+    // Save to Supabase
+    const supabase = await createClient();
+    if (!supabase) {
+      return NextResponse.json(
+        { success: false, error: 'Database not configured' },
+        { status: 503 }
+      );
+    }
 
-    // For now, just log and return success
-    console.log('Contact form submission:', validated);
+    const { error } = await supabase
+      .from('contact_submissions')
+      .insert({
+        name: validated.name || null,
+        email: validated.email.toLowerCase().trim(),
+        phone: validated.phone || null,
+        subject: validated.subject || 'General Inquiry',
+        message: validated.message,
+        is_survivor: validated.isSurvivor,
+        status: 'new',
+        created_at: new Date().toISOString(),
+      });
+
+    if (error) {
+      console.error('Contact form save error:', error);
+      return NextResponse.json(
+        { success: false, error: 'Failed to save submission' },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json(
       { success: true, message: 'Message received' },
