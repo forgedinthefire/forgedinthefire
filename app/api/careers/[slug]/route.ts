@@ -10,6 +10,13 @@ export async function GET(
     const { slug } = await params
     const supabase = await createClient()
     
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Service temporarily unavailable' },
+        { status: 503 }
+      )
+    }
+    
     const { data: position, error } = await supabase
       .from('job_positions')
       .select('*')

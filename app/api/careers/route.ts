@@ -6,6 +6,13 @@ export async function GET() {
   try {
     const supabase = await createClient()
     
+    if (!supabase) {
+      return NextResponse.json(
+        { error: 'Service temporarily unavailable' },
+        { status: 503 }
+      )
+    }
+    
     const { data: positions, error } = await supabase
       .from('job_positions')
       .select('*')

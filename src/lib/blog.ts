@@ -14,6 +14,12 @@ export async function getBlogPosts(
 ): Promise<ContentItem[]> {
   const supabase = await createClient()
   
+  // If Supabase client is null (env vars missing), return empty array gracefully
+  if (!supabase) {
+    console.warn('Supabase client unavailable - returning empty blog posts')
+    return []
+  }
+  
   let query = supabase
     .from('content')
     .select('*')
@@ -52,6 +58,12 @@ export async function getBlogPosts(
 export async function getBlogPost(slug: string): Promise<ContentItem | null> {
   const supabase = await createClient()
   
+  // If Supabase client is null, return null gracefully
+  if (!supabase) {
+    console.warn('Supabase client unavailable - cannot fetch blog post')
+    return null
+  }
+  
   const { data, error } = await supabase
     .from('content')
     .select('*')
@@ -76,6 +88,12 @@ export async function getRelatedPosts(
   limit: number = 3
 ): Promise<ContentItem[]> {
   const supabase = await createClient()
+  
+  // If Supabase client is null, return empty array gracefully
+  if (!supabase) {
+    console.warn('Supabase client unavailable - returning empty related posts')
+    return []
+  }
   
   const { data, error } = await supabase
     .from('content')

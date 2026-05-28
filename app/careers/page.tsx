@@ -19,6 +19,10 @@ export const metadata: Metadata = {
 async function getActiveJobs(): Promise<JobPosition[]> {
   const supabase = await createClient()
   
+  if (!supabase) {
+    return []
+  }
+  
   const { data, error } = await supabase
     .from('job_positions')
     .select('*')

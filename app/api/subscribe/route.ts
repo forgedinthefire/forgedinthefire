@@ -17,6 +17,10 @@ const getDefaultPreferences = (): SubscriberPreferences => ({
 export async function POST(request: Request) {
   try {
     const supabase = await createClient()
+    if (!supabase) {
+      return NextResponse.json({ error: 'Database not configured' }, { status: 503 })
+    }
+    
     const body: CreateSubscriberInput = await request.json()
     
     // Validation

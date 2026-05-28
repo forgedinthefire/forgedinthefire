@@ -30,6 +30,10 @@ interface JobPageProps {
 async function getJobBySlug(slug: string): Promise<JobPosition | null> {
   const supabase = await createClient()
   
+  if (!supabase) {
+    return null
+  }
+  
   const { data, error } = await supabase
     .from('job_positions')
     .select('*')

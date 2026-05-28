@@ -1,0 +1,679 @@
+'use client'
+
+import { useState, useEffect, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { 
+  getContentItem, 
+  updateContentItem, 
+  publishContentItem, 
+  unpublishContentItem 
+} from '@/src/features/content/store'
+import SEOPanel from '@/src/features/content/SEOPanel'
+import type { ContentItem, ContentBlock, ContentCategory, ContentCTA } from '@/src/features/content/types'
+import { 
+  ArrowLeft, 
+  Save, 
+  Eye, 
+  CheckCircle, 
+  Clock,
+  Plus,
+  Trash2,
+  GripVertical,
+  ArrowUp,
+  ArrowDown,
+  Star,
+  Mail,
+  Bell,
+  Send
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
+
+const categories: { value: ContentCategory; label: string }[] = [
+  { value: 'news', label: 'News' },
+  { value: 'events', label: 'Events' },
+  { value: 'impact-stories', label: 'Impact Stories' },
+  { value: 'volunteer', label: 'Volunteer' },
+  { value: 'donor-updates', label: 'Donor Updates' },
+  { value: 'resources', label: 'Resources' },
+  { value: 'partners', label: 'Partners' },
+  { value: 'fundraising', label: 'Fundraising' },
+]
+
+const ctaOptions = [
+  { value: 'donate', label: 'Donate', text: 'Donate Now', url: '/donate' },
+  { value: 'volunteer', label: 'Volunteer', text: 'Become a Volunteer', url: '/volunteer' },
+  { value: 'contact', label: 'Contact', text: 'Contact Us', url: '/contact' },
+  { value: 'event', label: 'Event', text: 'Learn More', url: '/events' },
+  { value: 'learn-more', label: 'Learn More', text: 'Learn More', url: '/about' },
+]
+
+export default function EditBlogPostPage({ params }: { params: Promise<{ id: string }> }) {
+  const [item, setItem] = useState<ContentItem | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [activeTab, setActiveTab] = useState<'content' | 'seo'>('content')
+  const router = useRouter()
+
+  useEffect(() => {
+    const loadItem = async () => {
+      const { id } = await params
+      const data = await getContentItem(id)
+      if (!data) {
+        router.push('/admin/blog')
+        return
+      }
+      setItem(data)
+      setLoading(false)
+    }
+    loadItem()
+  }, [params, router])
+
+  const handleSave = useCallback(async () => {
+    if (!item) return
+    setSaving(true)
+    try {
+      await updateContentItem(item.id, item)
+    } catch (err) {
+      console.error('Save failed:', err)
+    } finally {
+      setSaving(false)
+    }
+  }, [item])
+
+  const handlePublish = async () => {
+    if (!item) return
+    const updated = await publishContentItem(item.id)
+    if (updated) setItem(updated)
+  }
+
+  const handleUnpublish = async () => {
+    if (!item) return
+    const updated = await unpublishContentItem(item.id)
+    if (updated) setItem(updated)
+  }
+
+  const updateBlock = (index: number, newBlock: ContentBlock) => {
+    if (!item) return
+    const newBlocks = [...item.blocks]
+    newBlocks[index] = newBlock
+    setItem({ ...item, blocks: newBlocks })
+  }
+
+  const updateBlockData = (index: number, dataUpdates: Record<string, unknown>) => {
+    if (!item) return
+    const block = item.blocks[index]
+    // Use type assertion for discriminated union updates
+    const updatedBlock = { 
+      ...block, 
+      data: { ...block.data, ...dataUpdates } 
+    } as ContentBlock
+    updateBlock(index, updatedBlock)
+  }
+
+  const addBlock = (type: ContentBlock['type']) => {
+    if (!item) return
+    const newBlock: ContentBlock = 
+      type === 'hero' ? { type: 'hero', data: { title: '' } } :
+      type === 'text' ? { type: 'text', data: { content: '' } } :
+      type === 'imageText' ? { type: 'imageText', data: { image: '', imageAlt: '', imagePosition: 'left', content: '' } } :
+      type === 'quote' ? { type: 'quote', data: { text: '' } } :
+      type === 'cta' ? { type: 'cta', data: { text: 'Learn More', url: '/', style: 'primary' } } :
+      type === 'faq' ? { type: 'faq', data: { items: [{ question: '', answer: '' }] } } :
+      type === 'gallery' ? { type: 'gallery', data: { images: [] } } :
+      { type: 'video', data: { url: '' } }
+    
+    setItem({ ...item, blocks: [...item.blocks, newBlock] })
+  }
+
+  const removeBlock = (index: number) => {
+    if (!item) return
+    const newBlocks = item.blocks.filter((_, i) => i !== index)
+    setItem({ ...item, blocks: newBlocks })
+  }
+
+  const moveBlock = (index: number, direction: 'up' | 'down') => {
+    if (!item) return
+    const newBlocks = [...item.blocks]
+    const newIndex = direction === 'up' ? index - 1 : index + 1
+    if (newIndex < 0 || newIndex >= newBlocks.length) return
+    
+    const temp = newBlocks[index]
+    newBlocks[index] = newBlocks[newIndex]
+    newBlocks[newIndex] = temp
+    setItem({ ...item, blocks: newBlocks })
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1E6B73]" />
+      </div>
+    )
+  }
+
+  if (!item) return null
+
+  return (
+    <div className="max-w-4xl mx-auto">
+      {/* Header */}
+      <div className="flex items-start justify-between mb-6">
+        <div>
+          <Link 
+            href="/admin/blog" 
+            className="inline-flex items-center gap-2 text-sm text-[#8B5E3C] hover:text-[#C8A46B] transition-colors mb-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Blog
+          </Link>
+          <h1 className="text-2xl font-bold text-[#1E1714]">Edit Post</h1>
+          <p className="text-sm text-[#8B5E3C]">/{item.slug}</p>
+        </div>
+        <div className="flex items-center gap-2">
+          {item.status === 'published' ? (
+            <Button
+              variant="outline"
+              onClick={handleUnpublish}
+              className="border-amber-200 text-amber-700 hover:bg-amber-50"
+            >
+              <Clock className="w-4 h-4 mr-2" />
+              Unpublish
+            </Button>
+          ) : (
+            <Button
+              onClick={handlePublish}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+            >
+              <CheckCircle className="w-4 h-4 mr-2" />
+              Publish
+            </Button>
+          )}
+          <Button
+            onClick={handleSave}
+            disabled={saving}
+            className="bg-[#1E6B73] hover:bg-[#4C9AA3] text-white"
+          >
+            <Save className="w-4 h-4 mr-2" />
+            {saving ? 'Saving...' : 'Save'}
+          </Button>
+          {item.status === 'published' && (
+            <Link
+              href={`/blog/${item.slug}`}
+              target="_blank"
+              className="inline-flex items-center px-3 py-2 rounded-lg border border-[#3A2A24]/20 text-[#8B5E3C] hover:text-[#1E6B73] hover:border-[#1E6B73] transition-colors"
+            >
+              <Eye className="w-4 h-4" />
+            </Link>
+          )}
+        </div>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex gap-1 mb-6 bg-white rounded-xl p-1 border border-[#3A2A24]/20 w-fit">
+        <button
+          onClick={() => setActiveTab('content')}
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            activeTab === 'content'
+              ? 'bg-[#1E6B73] text-white'
+              : 'text-[#8B5E3C] hover:bg-[#3A2A24]/10'
+          }`}
+        >
+          Content
+        </button>
+        <button
+          onClick={() => setActiveTab('seo')}
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            activeTab === 'seo'
+              ? 'bg-[#1E6B73] text-white'
+              : 'text-[#8B5E3C] hover:bg-[#3A2A24]/10'
+          }`}
+        >
+          SEO & Settings
+        </button>
+      </div>
+
+      {/* Content Tab */}
+      {activeTab === 'content' && (
+        <div className="space-y-6">
+          {/* Title & Meta */}
+          <div className="bg-white rounded-xl border border-[#3A2A24]/20 p-6 space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-[#1E1714] mb-1.5">Title</label>
+              <input
+                type="text"
+                value={item.title}
+                onChange={(e) => setItem({ ...item, title: e.target.value })}
+                className="w-full text-xl font-semibold border border-[#3A2A24]/20 rounded-lg px-4 py-2 text-[#1E1714] focus:outline-none focus:border-[#1E6B73] transition-colors"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-[#1E1714] mb-1.5">Category</label>
+                <select
+                  value={item.category}
+                  onChange={(e) => setItem({ ...item, category: e.target.value as ContentCategory })}
+                  className="w-full border border-[#3A2A24]/20 rounded-lg px-3 py-2 text-[#1E1714] focus:outline-none focus:border-[#1E6B73]"
+                >
+                  {categories.map((cat) => (
+                    <option key={cat.value} value={cat.value}>{cat.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex items-center gap-3 pt-6">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={item.featured}
+                    onChange={(e) => setItem({ ...item, featured: e.target.checked })}
+                    className="rounded border-[#3A2A24]/20"
+                  />
+                  <span className="text-sm text-[#1E1714]">Featured post</span>
+                  <Star className={`w-4 h-4 ${item.featured ? 'text-[#C8A46B] fill-[#C8A46B]' : 'text-[#8B5E3C]'}`} />
+                </label>
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-[#1E1714] mb-1.5">Excerpt</label>
+              <textarea
+                value={item.excerpt}
+                onChange={(e) => setItem({ ...item, excerpt: e.target.value })}
+                placeholder="Brief summary for previews and search results..."
+                rows={2}
+                className="w-full border border-[#3A2A24]/20 rounded-lg px-3 py-2 text-[#1E1714] focus:outline-none focus:border-[#1E6B73] resize-none"
+              />
+            </div>
+          </div>
+
+          {/* Newsletter & Email Options */}
+          <div className="bg-white rounded-xl border border-[#3A2A24]/20 p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <Mail className="w-5 h-5 text-[#1E6B73]" />
+              <h3 className="font-medium text-[#1E1714]">Newsletter & Email Options</h3>
+            </div>
+            
+            <div className="space-y-4">
+              {/* Blog Notification Toggle */}
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={item.sendBlogNotification}
+                  onChange={(e) => setItem({ ...item, sendBlogNotification: e.target.checked })}
+                  className="mt-1 rounded border-[#3A2A24]/20"
+                />
+                <div className="flex-1">
+                  <span className="text-sm font-medium text-[#1E1714]">Notify subscribers when this post is published</span>
+                  <p className="text-xs text-[#8B5E3C] mt-0.5">
+                    Sends an email to subscribers who opted into New Blog Post Notifications.
+                    {item.notificationSentAt && (
+                      <span className="text-emerald-600 ml-1">
+                        • Notification sent {new Date(item.notificationSentAt).toLocaleDateString()}
+                      </span>
+                    )}
+                  </p>
+                </div>
+              </label>
+
+              {/* Include in Newsletter Toggle */}
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={item.includeInNewsletter}
+                  onChange={(e) => setItem({ ...item, includeInNewsletter: e.target.checked })}
+                  className="mt-1 rounded border-[#3A2A24]/20"
+                />
+                <div className="flex-1">
+                  <span className="text-sm font-medium text-[#1E1714]">Include this post in the monthly newsletter</span>
+                  <p className="text-xs text-[#8B5E3C] mt-0.5">
+                    Makes this post available for selection in monthly newsletters.
+                  </p>
+                </div>
+              </label>
+
+              {/* Featured in Newsletter Toggle */}
+              {item.includeInNewsletter && (
+                <label className="flex items-start gap-3 cursor-pointer ml-6">
+                  <input
+                    type="checkbox"
+                    checked={item.featuredInNewsletter}
+                    onChange={(e) => setItem({ ...item, featuredInNewsletter: e.target.checked })}
+                    className="mt-1 rounded border-[#3A2A24]/20"
+                  />
+                  <div className="flex-1">
+                    <span className="text-sm font-medium text-[#1E1714]">Feature prominently in newsletter</span>
+                    <Star className={`w-4 h-4 inline ml-1 ${item.featuredInNewsletter ? 'text-[#C8A46B] fill-[#C8A46B]' : 'text-[#8B5E3C]'}`} />
+                  </div>
+                </label>
+              )}
+
+              {/* Newsletter Category */}
+              {item.includeInNewsletter && (
+                <div className="ml-6">
+                  <label className="block text-sm font-medium text-[#1E1714] mb-1.5">
+                    Newsletter Section (optional)
+                  </label>
+                  <input
+                    type="text"
+                    value={item.newsletterCategory || ''}
+                    onChange={(e) => setItem({ ...item, newsletterCategory: e.target.value })}
+                    placeholder="e.g., Survivor Stories, Events, Volunteer Spotlight"
+                    className="w-full border border-[#3A2A24]/20 rounded-lg px-3 py-2 text-[#1E1714] focus:outline-none focus:border-[#1E6B73]"
+                  />
+                </div>
+              )}
+
+              {/* Email Subject Override */}
+              <div>
+                <label className="block text-sm font-medium text-[#1E1714] mb-1.5">
+                  Email Subject Override (optional)
+                </label>
+                <input
+                  type="text"
+                  value={item.emailSubject || ''}
+                  onChange={(e) => setItem({ ...item, emailSubject: e.target.value })}
+                  placeholder={`Default: "New from Forged in the Fire: ${item.title}"`}
+                  className="w-full border border-[#3A2A24]/20 rounded-lg px-3 py-2 text-[#1E1714] focus:outline-none focus:border-[#1E6B73]"
+                />
+              </div>
+
+              {/* Email Excerpt Override */}
+              <div>
+                <label className="block text-sm font-medium text-[#1E1714] mb-1.5">
+                  Email Excerpt Override (optional)
+                </label>
+                <textarea
+                  value={item.emailExcerpt || ''}
+                  onChange={(e) => setItem({ ...item, emailExcerpt: e.target.value })}
+                  placeholder={`Default: "${item.excerpt?.slice(0, 100)}..."`}
+                  rows={2}
+                  className="w-full border border-[#3A2A24]/20 rounded-lg px-3 py-2 text-[#1E1714] focus:outline-none focus:border-[#1E6B73] resize-none"
+                />
+                <p className="text-xs text-[#8B5E3C] mt-1">
+                  A shorter excerpt specifically for email notifications.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Featured Image */}
+          <div className="bg-white rounded-xl border border-[#3A2A24]/20 p-6">
+            <label className="block text-sm font-medium text-[#1E1714] mb-2">Featured Image</label>
+            <div className="flex gap-4">
+              <div className="flex-1 space-y-2">
+                <input
+                  type="text"
+                  value={item.featuredImage?.url || ''}
+                  onChange={(e) => setItem({ 
+                    ...item, 
+                    featuredImage: { 
+                      ...item.featuredImage, 
+                      id: item.featuredImage?.id || crypto.randomUUID(),
+                      url: e.target.value,
+                      alt: item.featuredImage?.alt || ''
+                    } 
+                  })}
+                  placeholder="Image URL"
+                  className="w-full border border-[#3A2A24]/20 rounded-lg px-3 py-2 text-[#1E1714] focus:outline-none focus:border-[#1E6B73]"
+                />
+                <input
+                  type="text"
+                  value={item.featuredImage?.alt || ''}
+                  onChange={(e) => setItem({ 
+                    ...item, 
+                    featuredImage: { 
+                      ...item.featuredImage,
+                      id: item.featuredImage?.id || crypto.randomUUID(),
+                      url: item.featuredImage?.url || '',
+                      alt: e.target.value 
+                    } 
+                  })}
+                  placeholder="Alt text (for accessibility)"
+                  className="w-full border border-[#3A2A24]/20 rounded-lg px-3 py-2 text-[#1E1714] focus:outline-none focus:border-[#1E6B73]"
+                />
+              </div>
+              {item.featuredImage?.url && (
+                <div className="w-24 h-24 rounded-lg bg-[#f4f6f9] flex items-center justify-center overflow-hidden">
+                  <img 
+                    src={item.featuredImage.url} 
+                    alt={item.featuredImage.alt} 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Blocks */}
+          <div className="space-y-4">
+            {item.blocks.map((block, index) => (
+              <div key={index} className="bg-white rounded-xl border border-[#3A2A24]/20 p-4">
+                <div className="flex items-center gap-2 mb-4 pb-2 border-b border-[#3A2A24]/10">
+                  <GripVertical className="w-4 h-4 text-[#8B5E3C]" />
+                  <span className="text-sm font-medium text-[#8B5E3C] uppercase">{block.type}</span>
+                  <div className="flex-1" />
+                  <button
+                    onClick={() => moveBlock(index, 'up')}
+                    disabled={index === 0}
+                    className="p-1 rounded hover:bg-[#3A2A24]/10 text-[#8B5E3C] disabled:opacity-30"
+                  >
+                    <ArrowUp className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => moveBlock(index, 'down')}
+                    disabled={index === item.blocks.length - 1}
+                    className="p-1 rounded hover:bg-[#3A2A24]/10 text-[#8B5E3C] disabled:opacity-30"
+                  >
+                    <ArrowDown className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => removeBlock(index)}
+                    className="p-1 rounded hover:bg-red-50 text-[#8B5E3C] hover:text-red-600"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+
+                {/* Block Editors */}
+                {block.type === 'hero' && (
+                  <div className="space-y-3">
+                    <input
+                      type="text"
+                      value={block.data.title || ''}
+                      onChange={(e) => updateBlockData(index, { title: e.target.value })}
+                      placeholder="Hero Title"
+                      className="w-full font-semibold border border-[#3A2A24]/20 rounded-lg px-3 py-2 text-[#1E1714] focus:outline-none focus:border-[#1E6B73]"
+                    />
+                    <input
+                      type="text"
+                      value={block.data.subtitle || ''}
+                      onChange={(e) => updateBlockData(index, { subtitle: e.target.value })}
+                      placeholder="Subtitle (optional)"
+                      className="w-full border border-[#3A2A24]/20 rounded-lg px-3 py-2 text-[#1E1714] focus:outline-none focus:border-[#1E6B73]"
+                    />
+                  </div>
+                )}
+
+                {block.type === 'text' && (
+                  <textarea
+                    value={block.data.content || ''}
+                    onChange={(e) => updateBlockData(index, { content: e.target.value })}
+                    placeholder="Enter your content here..."
+                    rows={6}
+                    className="w-full border border-[#3A2A24]/20 rounded-lg px-3 py-2 text-[#1E1714] focus:outline-none focus:border-[#1E6B73] resize-y"
+                  />
+                )}
+
+                {block.type === 'quote' && (
+                  <div className="space-y-3">
+                    <textarea
+                      value={block.data.text || ''}
+                      onChange={(e) => updateBlockData(index, { text: e.target.value })}
+                      placeholder="Quote text..."
+                      rows={3}
+                      className="w-full border border-[#3A2A24]/20 rounded-lg px-3 py-2 text-[#1E1714] italic focus:outline-none focus:border-[#1E6B73]"
+                    />
+                    <div className="flex gap-3">
+                      <input
+                        type="text"
+                        value={block.data.author || ''}
+                        onChange={(e) => updateBlockData(index, { author: e.target.value })}
+                        placeholder="Author name"
+                        className="flex-1 border border-[#3A2A24]/20 rounded-lg px-3 py-2 text-[#1E1714] focus:outline-none focus:border-[#1E6B73]"
+                      />
+                      <input
+                        type="text"
+                        value={block.data.role || ''}
+                        onChange={(e) => updateBlockData(index, { role: e.target.value })}
+                        placeholder="Role/Title"
+                        className="flex-1 border border-[#3A2A24]/20 rounded-lg px-3 py-2 text-[#1E1714] focus:outline-none focus:border-[#1E6B73]"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {block.type === 'cta' && (
+                  <div className="space-y-3">
+                    <input
+                      type="text"
+                      value={block.data.text || ''}
+                      onChange={(e) => updateBlockData(index, { text: e.target.value })}
+                      placeholder="Button text"
+                      className="w-full border border-[#3A2A24]/20 rounded-lg px-3 py-2 text-[#1E1714] focus:outline-none focus:border-[#1E6B73]"
+                    />
+                    <input
+                      type="text"
+                      value={block.data.url || ''}
+                      onChange={(e) => updateBlockData(index, { url: e.target.value })}
+                      placeholder="URL (e.g., /donate or https://...)"
+                      className="w-full border border-[#3A2A24]/20 rounded-lg px-3 py-2 text-[#1E1714] focus:outline-none focus:border-[#1E6B73]"
+                    />
+                    <select
+                      value={block.data.style || 'primary'}
+                      onChange={(e) => updateBlockData(index, { style: e.target.value })}
+                      className="w-full border border-[#3A2A24]/20 rounded-lg px-3 py-2 text-[#1E1714] focus:outline-none focus:border-[#1E6B73]"
+                    >
+                      <option value="primary">Primary (Teal)</option>
+                      <option value="secondary">Secondary (Gold)</option>
+                      <option value="outline">Outline</option>
+                    </select>
+                  </div>
+                )}
+
+                {block.type === 'imageText' && (
+                  <div className="space-y-3">
+                    <div className="flex gap-3">
+                      <input
+                        type="text"
+                        value={block.data.image || ''}
+                        onChange={(e) => updateBlockData(index, { image: e.target.value })}
+                        placeholder="Image URL"
+                        className="flex-1 border border-[#3A2A24]/20 rounded-lg px-3 py-2 text-[#1E1714] focus:outline-none focus:border-[#1E6B73]"
+                      />
+                      <select
+                        value={block.data.imagePosition || 'left'}
+                        onChange={(e) => updateBlockData(index, { imagePosition: e.target.value })}
+                        className="border border-[#3A2A24]/20 rounded-lg px-3 py-2 text-[#1E1714] focus:outline-none focus:border-[#1E6B73]"
+                      >
+                        <option value="left">Image Left</option>
+                        <option value="right">Image Right</option>
+                      </select>
+                    </div>
+                    <input
+                      type="text"
+                      value={block.data.imageAlt || ''}
+                      onChange={(e) => updateBlockData(index, { imageAlt: e.target.value })}
+                      placeholder="Image alt text"
+                      className="w-full border border-[#3A2A24]/20 rounded-lg px-3 py-2 text-[#1E1714] focus:outline-none focus:border-[#1E6B73]"
+                    />
+                    <input
+                      type="text"
+                      value={block.data.title || ''}
+                      onChange={(e) => updateBlockData(index, { title: e.target.value })}
+                      placeholder="Section title (optional)"
+                      className="w-full border border-[#3A2A24]/20 rounded-lg px-3 py-2 text-[#1E1714] focus:outline-none focus:border-[#1E6B73]"
+                    />
+                    <textarea
+                      value={block.data.content || ''}
+                      onChange={(e) => updateBlockData(index, { content: e.target.value })}
+                      placeholder="Content..."
+                      rows={4}
+                      className="w-full border border-[#3A2A24]/20 rounded-lg px-3 py-2 text-[#1E1714] focus:outline-none focus:border-[#1E6B73] resize-y"
+                    />
+                  </div>
+                )}
+
+                {(block.type === 'faq' || block.type === 'gallery' || block.type === 'video') && (
+                  <div className="p-4 bg-[#f4f6f9] rounded-lg text-sm text-[#8B5E3C]">
+                    {block.type === 'faq' && "FAQ block editor - expandable questions and answers"}
+                    {block.type === 'gallery' && "Gallery block - multiple images with captions"}
+                    {block.type === 'video' && "Video embed - YouTube or direct video URL"}
+                    <p className="mt-1 text-xs">Full editor coming in next iteration.</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Add Block */}
+          <div className="bg-[#f4f6f9] rounded-xl border border-[#3A2A24]/10 p-4">
+            <p className="text-sm font-medium text-[#8B5E3C] mb-3">Add Block</p>
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" size="sm" onClick={() => addBlock('text')} className="border-[#3A2A24]/20">
+                <Plus className="w-4 h-4 mr-1" /> Text
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => addBlock('quote')} className="border-[#3A2A24]/20">
+                <Plus className="w-4 h-4 mr-1" /> Quote
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => addBlock('imageText')} className="border-[#3A2A24]/20">
+                <Plus className="w-4 h-4 mr-1" /> Image + Text
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => addBlock('cta')} className="border-[#3A2A24]/20">
+                <Plus className="w-4 h-4 mr-1" /> CTA Button
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => addBlock('hero')} className="border-[#3A2A24]/20">
+                <Plus className="w-4 h-4 mr-1" /> Hero
+              </Button>
+            </div>
+          </div>
+
+          {/* CTA Section */}
+          <div className="bg-white rounded-xl border border-[#3A2A24]/20 p-6">
+            <label className="block text-sm font-medium text-[#1E1714] mb-2">Call to Action</label>
+            <select
+              value={item.cta?.type || ''}
+              onChange={(e) => {
+                const option = ctaOptions.find(o => o.value === e.target.value)
+                if (option) {
+                  setItem({ ...item, cta: { type: option.value as ContentCTA['type'], text: option.text, url: option.url } })
+                } else {
+                  setItem({ ...item, cta: undefined })
+                }
+              }}
+              className="w-full border border-[#3A2A24]/20 rounded-lg px-3 py-2 text-[#1E1714] focus:outline-none focus:border-[#1E6B73]"
+            >
+              <option value="">No CTA</option>
+              {ctaOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+            {item.cta && (
+              <div className="mt-3 p-3 bg-[#f4f6f9] rounded-lg text-sm">
+                <p className="text-[#1E1714] font-medium">{item.cta.text}</p>
+                <p className="text-[#8B5E3C]">{item.cta.url}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* SEO Tab */}
+      {activeTab === 'seo' && (
+        <div className="bg-white rounded-xl border border-[#3A2A24]/20 p-6">
+          <SEOPanel 
+            item={item} 
+            onChange={(seo) => setItem({ ...item, seo })} 
+          />
+        </div>
+      )}
+    </div>
+  )
+}

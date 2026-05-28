@@ -5,6 +5,7 @@ import { cookies } from 'next/headers'
  * Create a standard server-side Supabase client
  * Uses ANON key for regular operations (protected by RLS)
  * Safe for use in Server Components and API routes
+ * Returns null if environment variables are missing (for graceful degradation)
  */
 export async function createClient() {
   const cookieStore = await cookies()
@@ -13,9 +14,8 @@ export async function createClient() {
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   if (!url || !anonKey) {
-    throw new Error(
-      'Missing Supabase environment variables. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY'
-    )
+    console.warn('Missing Supabase environment variables. Blog/Content features will be unavailable.')
+    return null
   }
 
   return createServerClient(

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
-import { Eye, EyeOff, Flame } from 'lucide-react'
+import { Eye, EyeOff, Flame, AlertTriangle } from 'lucide-react'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -12,15 +12,17 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [supabase, setSupabase] = useState<ReturnType<typeof createClient> | null>(null)
+  const [configMissing, setConfigMissing] = useState(false)
   const router = useRouter()
 
   // Initialize Supabase client after mount (avoids build-time errors)
   useEffect(() => {
-    try {
-      setSupabase(createClient())
-    } catch (err) {
-      setError('Failed to initialize authentication. Please check your configuration.')
-      console.error('Supabase initialization error:', err)
+    const client = createClient()
+    if (!client) {
+      setConfigMissing(true)
+      setError('Authentication is not configured. Please contact the site administrator.')
+    } else {
+      setSupabase(client)
     }
   }, [])
 
@@ -64,7 +66,21 @@ export default function LoginPage() {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="bg-[#241B18] rounded-2xl p-8 border border-[#3A2A24]">
-          {error && (
+          {configMissing && (
+            <div className="mb-4 p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+              <div className="flex items-start gap-3">
+                <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-amber-400 font-medium text-sm mb-1">Authentication Not Configured</p>
+                  <p className="text-amber-400/80 text-sm">
+                    Supabase environment variables are missing. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {error && !configMissing && (
             <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm">
               {error}
             </div>
@@ -80,7 +96,8 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full bg-[#1E1714] border border-[#3A2A24] rounded-lg px-4 py-2.5 text-[#F6F0E8] placeholder-[#8B5E3C] focus:outline-none focus:border-[#C8A46B] transition-colors"
+                disabled={configMissing}
+                className="w-full bg-[#1E1714] border border-[#3A2A24] rounded-lg px-4 py-2.5 text-[#F6F0E8] placeholder-[#8B5E3C] focus:outline-none focus:border-[#C8A46B] transition-colors disabled:opacity-50"
                 placeholder="admin@forgedinthefireohio.org"
               />
             </div>
@@ -95,13 +112,15 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full bg-[#1E1714] border border-[#3A2A24] rounded-lg px-4 py-2.5 text-[#F6F0E8] placeholder-[#8B5E3C] focus:outline-none focus:border-[#C8A46B] transition-colors"
+                  disabled={configMissing}
+                  className="w-full bg-[#1E1714] border border-[#3A2A24] rounded-lg px-4 py-2.5 text-[#F6F0E8] placeholder-[#8B5E3C] focus:outline-none focus:border-[#C8A46B] transition-colors disabled:opacity-50"
                   placeholder="••••••••"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8B5E3C] hover:text-[#C8A46B] transition-colors"
+                  disabled={configMissing}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8B5E3C] hover:text-[#C8A46B] transition-colors disabled:opacity-50"
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -110,7 +129,7 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              disabled={loading || !supabase}
+              disabled={loading || !supabase || configMissing}
               className="w-full bg-[#1E6B73] hover:bg-[#4C9AA3] text-[#F6F0E8] font-medium py-2.5 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Signing in...' : !supabase ? 'Initializing...' : 'Sign In'}
