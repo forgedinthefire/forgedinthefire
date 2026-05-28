@@ -5,18 +5,15 @@ import Link from 'next/link'
 import { 
   Plus, 
   Search, 
-  Edit2, 
-  Eye, 
-  Trash2,
   FileText,
   CheckCircle,
   Clock,
   Archive,
-  Copy,
   Star
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import type { ContentStatus, PostTemplate, ContentCategory } from '@/src/features/content/types'
+import { PostActions } from './PostActions'
 
 const TEAL = '#1E6B73'
 const GOLD = '#C8A46B'
@@ -238,46 +235,11 @@ export default async function BlogPage({
                     {new Date(item.updated_at).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex items-center justify-end gap-2">
-                      <Link
-                        href={`/admin/blog/${item.id}`}
-                        className="p-2 rounded-lg hover:bg-[#3A2A24]/10 text-[#8B5E3C] hover:text-[#1E6B73] transition-colors"
-                        title="Edit"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </Link>
-                      {item.status === 'published' && (
-                        <Link
-                          href={`/blog/${item.slug}`}
-                          target="_blank"
-                          className="p-2 rounded-lg hover:bg-[#3A2A24]/10 text-[#8B5E3C] hover:text-[#C8A46B] transition-colors"
-                          title="View Live"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </Link>
-                      )}
-                      <button
-                        className="p-2 rounded-lg hover:bg-[#3A2A24]/10 text-[#8B5E3C] hover:text-[#1E6B73] transition-colors"
-                        title="Duplicate"
-                        onClick={async () => {
-                          // Handle duplicate via API
-                          const res = await fetch(`/api/admin/content/${item.id}/duplicate`, { method: 'POST' })
-                          if (res.ok) window.location.reload()
-                        }}
-                      >
-                        <Copy className="w-4 h-4" />
-                      </button>
-                      <form action={`/api/admin/content/${item.id}/delete`} method="POST" className="inline">
-                        <button
-                          type="submit"
-                          className="p-2 rounded-lg hover:bg-red-50 text-[#8B5E3C] hover:text-red-600 transition-colors"
-                          title="Delete"
-                          onClick={(e) => confirm('Delete this post?') ? null : e.preventDefault()}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </form>
-                    </div>
+                    <PostActions 
+                      postId={item.id} 
+                      slug={item.slug} 
+                      status={item.status} 
+                    />
                   </td>
                 </tr>
               ))}
