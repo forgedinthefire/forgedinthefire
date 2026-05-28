@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { FOOTER_LINKS, SOCIAL_LINKS, ORG, HOTLINES } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import { Heart, Facebook, Instagram, Twitter, Linkedin, Youtube, Mail, Phone, MapPin } from 'lucide-react';
@@ -13,7 +16,12 @@ const socialIcons: Record<string, React.ComponentType<{ className?: string }>> =
 };
 
 export function Footer() {
+  const pathname = usePathname();
   const currentYear = new Date().getFullYear();
+
+  // Hide footer on admin routes - admin has its own layout
+  const isAdminRoute = pathname?.startsWith('/admin') || pathname?.startsWith('/login') || pathname?.startsWith('/unauthorized');
+  if (isAdminRoute) return null;
 
   return (
     <footer className="bg-[#181210] border-t border-[#3A2A24]" role="contentinfo">

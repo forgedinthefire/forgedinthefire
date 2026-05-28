@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { quickEscape } from '@/lib/utils';
 import { LogOut } from 'lucide-react';
@@ -18,9 +19,14 @@ import { LogOut } from 'lucide-react';
  * - Redirects to weather.com or similar neutral site
  */
 export function QuickExit() {
+  const pathname = usePathname();
   const [isVisible, setIsVisible] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+
+  // Hide on admin routes - admin pages don't need the quick exit feature
+  const isAdminRoute = pathname?.startsWith('/admin') || pathname?.startsWith('/login') || pathname?.startsWith('/unauthorized');
+  if (isAdminRoute) return null;
 
   useEffect(() => {
     setIsMounted(true);

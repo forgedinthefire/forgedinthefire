@@ -29,6 +29,10 @@ export function Navbar() {
   const [isSubscribeOpen, setIsSubscribeOpen] = useState(false);
   const pathname = usePathname();
 
+  // Hide navbar on admin routes - admin has its own sidebar navigation
+  const isAdminRoute = pathname?.startsWith('/admin') || pathname?.startsWith('/login') || pathname?.startsWith('/unauthorized');
+  if (isAdminRoute) return null;
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
