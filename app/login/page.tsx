@@ -44,7 +44,12 @@ export default function LoginPage() {
     })
 
     if (signInError) {
-      setError(signInError.message)
+      // Provide clearer error messages
+      let errorMessage = signInError.message
+      if (signInError.message.includes('Invalid login credentials')) {
+        errorMessage = 'Invalid email or password. Please try again.'
+      }
+      setError(errorMessage)
       setLoading(false)
       return
     }
@@ -65,7 +70,7 @@ export default function LoginPage() {
     if (adminError || !adminUser || (adminUser.role !== 'admin' && adminUser.role !== 'owner')) {
       // Not an admin - sign them out and show error
       await supabase.auth.signOut()
-      setError('This account does not have admin privileges. Access denied.')
+      setError(`Access denied. The email "${user.email}" is not authorized as an admin. Contact the site owner to request access.`)
       setLoading(false)
       return
     }
