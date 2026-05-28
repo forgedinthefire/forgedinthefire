@@ -17,6 +17,7 @@ const navItems = [
   { label: 'Dashboard', href: '/admin', icon: LayoutDashboard },
   { label: 'Content', href: '/admin/content', icon: FileText },
   { label: 'Blog Studio', href: '/admin/blog', icon: PenSquare },
+  { label: 'Careers', href: '/admin/careers', icon: ExternalLink },
   { label: 'Subscribers', href: '/admin/subscribers', icon: Users },
   { label: 'Newsletters', href: '/admin/newsletters', icon: Mail },
   { label: 'SEO Center', href: '/admin/seo', icon: Search },
@@ -26,7 +27,7 @@ const navItems = [
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
   
-  // Handle missing Supabase configuration - middleware will handle the redirect
+  // Handle missing Supabase configuration
   if (!supabase) {
     return (
       <div className="min-h-screen bg-[#f4f6f9] flex items-center justify-center p-4">
@@ -40,8 +41,22 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     )
   }
   
+  // Check authentication
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
+  
+  // Check admin authorization - verify user exists in admin_users table
+  const { data: adminUser, error: adminError } = await supabase
+    .from('admin_users')
+    .select('role')
+    .eq('email', user.email)
+    .single()
+  
+  // If not an admin, redirect to unauthorized page
+  if (adminError || !adminUser || (adminUser.role !== 'admin' && adminUser.role !== 'owner')) {
+    console.warn(`Unauthorized admin layout access attempt: ${user.email}`)
+    redirect('/unauthorized')
+  }
 
   return (
     <div className="flex min-h-screen bg-[#f4f6f9]">

@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { requireAdmin } from '@/lib/admin/auth'
 import { NextResponse } from 'next/server'
 
 // GET /api/admin/content/[id] - Get single content item
@@ -12,8 +13,9 @@ export async function GET(
     if (!supabase) {
       return NextResponse.json({ error: 'Database not configured' }, { status: 503 })
     }
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    
+    // Verify admin access
+    await requireAdmin()
 
     const { data, error } = await supabase
       .from('content')
@@ -26,6 +28,9 @@ export async function GET(
     
     return NextResponse.json(data)
   } catch (err) {
+    if (err instanceof Error && err.message === 'Admin access required') {
+      return NextResponse.json({ error: 'Forbidden - Admin access required' }, { status: 403 })
+    }
     console.error('Content get error:', err)
     return NextResponse.json({ error: 'Failed to fetch content' }, { status: 500 })
   }
@@ -42,8 +47,9 @@ export async function PATCH(
     if (!supabase) {
       return NextResponse.json({ error: 'Database not configured' }, { status: 503 })
     }
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    
+    // Verify admin access
+    await requireAdmin()
 
     const body = await request.json()
     
@@ -57,6 +63,9 @@ export async function PATCH(
     if (error) throw error
     return NextResponse.json(data)
   } catch (err) {
+    if (err instanceof Error && err.message === 'Admin access required') {
+      return NextResponse.json({ error: 'Forbidden - Admin access required' }, { status: 403 })
+    }
     console.error('Content update error:', err)
     return NextResponse.json({ error: 'Failed to update content' }, { status: 500 })
   }
@@ -73,8 +82,9 @@ export async function DELETE(
     if (!supabase) {
       return NextResponse.json({ error: 'Database not configured' }, { status: 503 })
     }
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    
+    // Verify admin access
+    await requireAdmin()
 
     const { error } = await supabase
       .from('content')
@@ -84,6 +94,9 @@ export async function DELETE(
     if (error) throw error
     return NextResponse.json({ success: true })
   } catch (err) {
+    if (err instanceof Error && err.message === 'Admin access required') {
+      return NextResponse.json({ error: 'Forbidden - Admin access required' }, { status: 403 })
+    }
     console.error('Content delete error:', err)
     return NextResponse.json({ error: 'Failed to delete content' }, { status: 500 })
   }

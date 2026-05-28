@@ -4,6 +4,30 @@
 -- =====================================================
 
 -- ============================================
+-- 0. ADMIN USERS TABLE (Must be first for RLS)
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS admin_users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email TEXT NOT NULL UNIQUE,
+  role TEXT NOT NULL DEFAULT 'admin',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Insert owner user (salsbury.law@icloud.com)
+INSERT INTO admin_users (id, email, role, created_at, updated_at)
+VALUES (
+  gen_random_uuid(),
+  'salsbury.law@icloud.com',
+  'owner',
+  NOW(),
+  NOW()
+)
+ON CONFLICT (email) DO UPDATE 
+  SET role = 'owner', updated_at = NOW();
+
+-- ============================================
 -- BASE CONTENT TABLE (if not exists)
 -- ============================================
 
@@ -137,6 +161,7 @@ CREATE TABLE IF NOT EXISTS volunteer_applications (
 -- ENABLE ROW LEVEL SECURITY ON ALL TABLES
 -- ============================================
 
+ALTER TABLE admin_users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE content ENABLE ROW LEVEL SECURITY;
 ALTER TABLE newsletter_subscribers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE newsletters ENABLE ROW LEVEL SECURITY;
@@ -144,6 +169,38 @@ ALTER TABLE newsletter_posts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE job_positions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE contact_submissions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE volunteer_applications ENABLE ROW LEVEL SECURITY;
+
+-- ============================================
+-- ADMIN_USERS POLICIES
+-- ============================================
+
+DROP POLICY IF EXISTS "Allow public to check admin status" ON admin_users;
+DROP POLICY IF EXISTS "Allow admin full access on admin_users" ON admin_users;
+
+-- Allow public (authenticated) to check their own admin status
+CREATE POLICY "Allow public to check admin status"
+  ON admin_users FOR SELECT
+  TO authenticated
+  USING (true);
+
+-- Allow admin full access (must be owner or admin)
+CREATE POLICY "Allow admin full access on admin_users"
+  ON admin_users FOR ALL
+  TO authenticated
+  USING (
+    EXISTS (
+      SELECT 1 FROM admin_users 
+      WHERE admin_users.email = auth.jwt() ->> 'email' 
+      AND admin_users.role IN ('admin', 'owner')
+    )
+  )
+  WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM admin_users 
+      WHERE admin_users.email = auth.jwt() ->> 'email' 
+      AND admin_users.role IN ('admin', 'owner')
+    )
+  );
 
 -- ============================================
 -- CONTENT TABLE POLICIES
@@ -267,6 +324,10 @@ CREATE POLICY "Allow admin full access on volunteers"
 -- INDEXES
 -- ============================================
 
+-- Admin users indexes
+CREATE INDEX IF NOT EXISTS idx_admin_users_email ON admin_users(email);
+CREATE INDEX IF NOT EXISTS idx_admin_users_role ON admin_users(role);
+
 -- Content indexes
 CREATE INDEX IF NOT EXISTS idx_content_slug ON content(slug);
 CREATE INDEX IF NOT EXISTS idx_content_status ON content(status);
@@ -323,12 +384,18 @@ END;
 $$ language 'plpgsql';
 
 -- Apply to all tables
+DROP TRIGGER IF EXISTS update_admin_users_timestamp ON admin_users;
 DROP TRIGGER IF EXISTS update_content_timestamp ON content;
 DROP TRIGGER IF EXISTS update_newsletter_subscribers_timestamp ON newsletter_subscribers;
 DROP TRIGGER IF EXISTS update_newsletters_timestamp ON newsletters;
 DROP TRIGGER IF EXISTS update_job_positions_timestamp ON job_positions;
 DROP TRIGGER IF EXISTS update_contact_submissions_timestamp ON contact_submissions;
 DROP TRIGGER IF EXISTS update_volunteer_applications_timestamp ON volunteer_applications;
+
+CREATE TRIGGER update_admin_users_timestamp
+  BEFORE UPDATE ON admin_users
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_content_timestamp
   BEFORE UPDATE ON content

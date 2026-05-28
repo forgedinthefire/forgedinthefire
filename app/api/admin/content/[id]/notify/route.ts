@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { requireAdmin } from '@/lib/admin/auth'
 import { NextResponse } from 'next/server'
 import { sendBlogPostNotification, isEmailConfigured } from '@/src/lib/email/service'
 import type { ContentItem } from '@/src/features/content/types'
@@ -16,11 +17,8 @@ export async function POST(
       return NextResponse.json({ error: 'Database not configured' }, { status: 503 })
     }
     
-    // Check auth
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    // Verify admin access
+    await requireAdmin()
     
     // Check if email is configured
     if (!isEmailConfigured()) {
@@ -113,6 +111,9 @@ export async function POST(
     })
     
   } catch (err) {
+    if (err instanceof Error && err.message === 'Admin access required') {
+      return NextResponse.json({ error: 'Forbidden - Admin access required' }, { status: 403 })
+    }
     console.error('Blog notification error:', err)
     return NextResponse.json({ error: 'An unexpected error occurred' }, { status: 500 })
   }

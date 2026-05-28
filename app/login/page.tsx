@@ -37,17 +37,40 @@ export default function LoginPage() {
     setError('')
     setLoading(true)
 
-    const { error } = await supabase.auth.signInWithPassword({
+    // Sign in with Supabase Auth
+    const { error: signInError, data: { user } } = await supabase.auth.signInWithPassword({
       email,
       password,
     })
 
-    if (error) {
-      setError(error.message)
+    if (signInError) {
+      setError(signInError.message)
       setLoading(false)
       return
     }
 
+    if (!user) {
+      setError('Authentication failed. Please try again.')
+      setLoading(false)
+      return
+    }
+
+    // Check if user is an admin
+    const { data: adminUser, error: adminError } = await supabase
+      .from('admin_users')
+      .select('role')
+      .eq('email', user.email)
+      .single()
+
+    if (adminError || !adminUser || (adminUser.role !== 'admin' && adminUser.role !== 'owner')) {
+      // Not an admin - sign them out and show error
+      await supabase.auth.signOut()
+      setError('This account does not have admin privileges. Access denied.')
+      setLoading(false)
+      return
+    }
+
+    // User is authenticated and is an admin - redirect to admin
     router.push('/admin')
     router.refresh()
   }

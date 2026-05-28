@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { requireAdmin } from '@/lib/admin/auth'
 import { NextResponse } from 'next/server'
 import type { CreateJobPositionInput, UpdateJobPositionInput } from '@/src/features/careers/types'
 
@@ -9,8 +10,9 @@ export async function POST(request: Request) {
     if (!supabase) {
       return NextResponse.json({ error: 'Database not configured' }, { status: 503 })
     }
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    
+    // Verify admin access
+    await requireAdmin()
 
     const body = (await request.json()) as CreateJobPositionInput & { id?: string }
     
@@ -65,6 +67,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: true, id: data.id })
     }
   } catch (err) {
+    if (err instanceof Error && err.message === 'Admin access required') {
+      return NextResponse.json({ error: 'Forbidden - Admin access required' }, { status: 403 })
+    }
     console.error('Careers API error:', err)
     return NextResponse.json({ error: 'Internal server error.' }, { status: 500 })
   }
@@ -77,8 +82,9 @@ export async function DELETE(request: Request) {
     if (!supabase) {
       return NextResponse.json({ error: 'Database not configured' }, { status: 503 })
     }
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    
+    // Verify admin access
+    await requireAdmin()
 
     const url = new URL(request.url)
     const id = url.searchParams.get('id')
@@ -96,6 +102,9 @@ export async function DELETE(request: Request) {
     
     return NextResponse.json({ ok: true })
   } catch (err) {
+    if (err instanceof Error && err.message === 'Admin access required') {
+      return NextResponse.json({ error: 'Forbidden - Admin access required' }, { status: 403 })
+    }
     console.error('Careers delete error:', err)
     return NextResponse.json({ error: 'Internal server error.' }, { status: 500 })
   }

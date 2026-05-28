@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { requireAdmin } from '@/lib/admin/auth'
 import { NextResponse } from 'next/server'
 
 export async function POST(
@@ -11,8 +12,9 @@ export async function POST(
     if (!supabase) {
       return NextResponse.redirect(new URL('/admin/content?error=db_not_configured', process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'))
     }
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    
+    // Verify admin access
+    await requireAdmin()
 
     const { error } = await supabase
       .from('content')
@@ -22,6 +24,9 @@ export async function POST(
     if (error) throw error
     return NextResponse.redirect(new URL('/admin/content', process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'))
   } catch (err) {
+    if (err instanceof Error && err.message === 'Admin access required') {
+      return NextResponse.redirect(new URL('/unauthorized', process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'))
+    }
     console.error('Content delete error:', err)
     return NextResponse.redirect(new URL('/admin/content?error=delete_failed', process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'))
   }

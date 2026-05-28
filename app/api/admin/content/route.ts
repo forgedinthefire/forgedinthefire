@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { requireAdmin } from '@/lib/admin/auth'
 import { NextResponse } from 'next/server'
 
 // GET /api/admin/content - List all content
@@ -8,8 +9,9 @@ export async function GET(request: Request) {
     if (!supabase) {
       return NextResponse.json({ error: 'Database not configured' }, { status: 503 })
     }
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    
+    // Verify admin access
+    const user = await requireAdmin()
 
     const { searchParams } = new URL(request.url)
     const type = searchParams.get('type')
@@ -31,6 +33,9 @@ export async function GET(request: Request) {
     if (error) throw error
     return NextResponse.json(data)
   } catch (err) {
+    if (err instanceof Error && err.message === 'Admin access required') {
+      return NextResponse.json({ error: 'Forbidden - Admin access required' }, { status: 403 })
+    }
     console.error('Content list error:', err)
     return NextResponse.json({ error: 'Failed to fetch content' }, { status: 500 })
   }
@@ -43,8 +48,9 @@ export async function POST(request: Request) {
     if (!supabase) {
       return NextResponse.json({ error: 'Database not configured' }, { status: 503 })
     }
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    
+    // Verify admin access
+    const user = await requireAdmin()
 
     const body = await request.json()
     
@@ -61,6 +67,9 @@ export async function POST(request: Request) {
     if (error) throw error
     return NextResponse.json(data, { status: 201 })
   } catch (err) {
+    if (err instanceof Error && err.message === 'Admin access required') {
+      return NextResponse.json({ error: 'Forbidden - Admin access required' }, { status: 403 })
+    }
     console.error('Content create error:', err)
     return NextResponse.json({ error: 'Failed to create content' }, { status: 500 })
   }

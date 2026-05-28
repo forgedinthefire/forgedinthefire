@@ -46,18 +46,47 @@ export async function middleware(request: NextRequest) {
   // Refresh session — MUST call getUser() per Supabase SSR docs
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Protect all /admin/* routes
-  if (pathname.startsWith('/admin') && !user) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/login'
-    return NextResponse.redirect(url)
+  // Protect all /admin/* routes - requires both authentication AND admin role
+  if (pathname.startsWith('/admin')) {
+    // First check if user is authenticated
+    if (!user) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/login'
+      url.searchParams.set('redirect', pathname)
+      return NextResponse.redirect(url)
+    }
+    
+    // Then check if user is in admin_users table
+    const { data: adminUser, error: adminError } = await supabase
+      .from('admin_users')
+      .select('role')
+      .eq('email', user.email)
+      .single()
+    
+    // If not an admin, redirect to unauthorized page
+    if (adminError || !adminUser || (adminUser.role !== 'admin' && adminUser.role !== 'owner')) {
+      console.warn(`Non-admin user attempted access: ${user.email}`)
+      const url = request.nextUrl.clone()
+      url.pathname = '/unauthorized'
+      return NextResponse.redirect(url)
+    }
   }
 
-  // If already logged in, redirect /login → /admin
+  // If already logged in and is admin, redirect /login → /admin
   if (pathname === '/login' && user) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/admin'
-    return NextResponse.redirect(url)
+    // Check if user is an admin before redirecting
+    const { data: adminUser } = await supabase
+      .from('admin_users')
+      .select('role')
+      .eq('email', user.email)
+      .single()
+    
+    if (adminUser && (adminUser.role === 'admin' || adminUser.role === 'owner')) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/admin'
+      return NextResponse.redirect(url)
+    }
+    // If not an admin, let them stay on login page to see error
   }
 
   return supabaseResponse
@@ -67,5 +96,6 @@ export const config = {
   matcher: [
     '/admin/:path*',
     '/login',
+    '/unauthorized',
   ],
 }
