@@ -9,7 +9,13 @@ import {
   CheckCircle,
   Clock,
   Archive,
-  Star
+  Star,
+  TrendingUp,
+  Loader2,
+  Filter,
+  LayoutGrid,
+  Eye,
+  PenSquare
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import type { ContentStatus, PostTemplate, ContentCategory } from '@/src/features/content/types'
@@ -76,6 +82,49 @@ function CategoryBadge({ category }: { category: ContentCategory }) {
   )
 }
 
+// Stat Card Component
+function StatCard({ 
+  label, 
+  value, 
+  sub, 
+  href, 
+  accent, 
+  icon: Icon,
+  alert 
+}: { 
+  label: string; 
+  value: string | number; 
+  sub?: string; 
+  href: string; 
+  accent: string; 
+  icon: React.ElementType;
+  alert?: boolean 
+}) {
+  return (
+    <Link
+      href={href}
+      className="bg-white rounded-xl p-5 border border-[#3A2A24]/20 shadow-sm hover:shadow-md transition-all group relative overflow-hidden"
+    >
+      {alert && (
+        <span className="absolute top-3 right-3 w-2.5 h-2.5 rounded-full bg-red-500 ring-2 ring-white" />
+      )}
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-widest text-[#8B5E3C] mb-2">{label}</p>
+          <p className="text-3xl font-bold mb-1" style={{ color: accent }}>{value}</p>
+          {sub && <p className="text-xs text-[#B8A89A]">{sub}</p>}
+        </div>
+        <div 
+          className="w-10 h-10 rounded-lg flex items-center justify-center"
+          style={{ backgroundColor: `${accent}15` }}
+        >
+          <Icon className="w-5 h-5" style={{ color: accent }} />
+        </div>
+      </div>
+    </Link>
+  )
+}
+
 export default async function BlogPage({ 
   searchParams 
 }: { 
@@ -83,6 +132,7 @@ export default async function BlogPage({
     status?: ContentStatus | 'all'
     template?: PostTemplate | 'all'
     category?: ContentCategory | 'all'
+    search?: string
   } 
 }) {
   const supabase = await createClient()
@@ -101,6 +151,27 @@ export default async function BlogPage({
     )
   }
   
+  // Fetch stats
+  const { count: totalCount } = await supabase
+    .from('content')
+    .select('*', { count: 'exact', head: true })
+  
+  const { count: publishedCount } = await supabase
+    .from('content')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'published')
+  
+  const { count: draftCount } = await supabase
+    .from('content')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'draft')
+  
+  const { count: featuredCount } = await supabase
+    .from('content')
+    .select('*', { count: 'exact', head: true })
+    .eq('featured', true)
+  
+  // Build query
   let query = supabase
     .from('content')
     .select('*')
@@ -115,6 +186,9 @@ export default async function BlogPage({
   }
   if (searchParams.category && searchParams.category !== 'all') {
     query = query.eq('category', searchParams.category)
+  }
+  if (searchParams.search) {
+    query = query.or(`title.ilike.%${searchParams.search}%,excerpt.ilike.%${searchParams.search}%,slug.ilike.%${searchParams.search}%`)
   }
   
   const { data: items } = await query
@@ -135,12 +209,84 @@ export default async function BlogPage({
         </Button>
       </div>
 
-      {/* Filters */}
-      <Filters 
-        status={searchParams.status || 'all'}
-        category={searchParams.category || 'all'}
-        template={searchParams.template || 'all'}
-      />
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard
+          label="Total Posts"
+          value={totalCount ?? 0}
+          sub="All content"
+          href="/admin/blog"
+          accent={TEAL}
+          icon={LayoutGrid}
+        />
+        <StatCard
+          label="Published"
+          value={publishedCount ?? 0}
+          sub="Live on site"
+          href="/admin/blog?status=published"
+          accent="#10b981"
+          icon={Eye}
+        />
+        <StatCard
+          label="Drafts"
+          value={draftCount ?? 0}
+          sub="Awaiting publication"
+          href="/admin/blog?status=draft"
+          accent={GOLD}
+          icon={PenSquare}
+          alert={draftCount ? draftCount > 0 : false}
+        />
+        <StatCard
+          label="Featured"
+          value={featuredCount ?? 0}
+          sub="Highlighted posts"
+          href="/admin/blog"
+          accent="#C8A46B"
+          icon={Star}
+        />
+      </div>
+
+      {/* Search and Filters */}
+      <div className="bg-white rounded-xl border border-[#3A2A24]/20 p-4 space-y-4">
+        {/* Search Bar */}
+        <form className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8B5E3C]" />
+          <input
+            type="search"
+            name="search"
+            defaultValue={searchParams.search || ''}
+            placeholder="Search posts by title, excerpt, or URL..."
+            className="w-full pl-10 pr-4 py-2 border border-[#3A2A24]/20 rounded-lg text-[#1E1714] placeholder-[#8B5E3C] focus:outline-none focus:border-[#1E6B73] transition-colors"
+          />
+          <Button 
+            type="submit" 
+            size="sm"
+            className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#1E6B73] hover:bg-[#4C9AA3]"
+          >
+            Search
+          </Button>
+        </form>
+
+        <div className="border-t border-[#3A2A24]/10 pt-4">
+          <Filters 
+            status={searchParams.status || 'all'}
+            category={searchParams.category || 'all'}
+            template={searchParams.template || 'all'}
+          />
+        </div>
+      </div>
+
+      {/* Results Count */}
+      {items && items.length > 0 && (
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-[#8B5E3C]">
+            Showing <span className="font-medium text-[#1E1714]">{items.length}</span> post{items.length !== 1 ? 's' : ''}
+            {searchParams.search && (
+              <span> for &quot;<span className="font-medium">{searchParams.search}</span>&quot;</span>
+            )}
+          </p>
+        </div>
+      )}
 
       {/* Content List */}
       <div className="bg-white rounded-2xl border border-[#3A2A24]/20 overflow-hidden">
@@ -200,17 +346,34 @@ export default async function BlogPage({
           </table>
         ) : (
           <div className="p-12 text-center">
-            <div className="w-16 h-16 rounded-full bg-[#3A2A24]/10 flex items-center justify-center mx-auto mb-4">
-              <FileText className="w-8 h-8 text-[#8B5E3C]" />
+            <div className="w-20 h-20 rounded-2xl bg-[#3A2A24]/10 flex items-center justify-center mx-auto mb-5">
+              {searchParams.search ? (
+                <Search className="w-10 h-10 text-[#8B5E3C]" />
+              ) : (
+                <FileText className="w-10 h-10 text-[#8B5E3C]" />
+              )}
             </div>
-            <h3 className="text-lg font-medium text-[#1E1714] mb-1">No posts yet</h3>
-            <p className="text-sm text-[#8B5E3C] mb-4">Create your first blog post to get started.</p>
-            <Button asChild className="bg-[#1E6B73] hover:bg-[#4C9AA3]">
-              <Link href="/admin/blog/new">
-                <Plus className="w-4 h-4 mr-2" />
-                Create Post
-              </Link>
-            </Button>
+            <h3 className="text-lg font-medium text-[#1E1714] mb-2">
+              {searchParams.search ? 'No posts found' : 'No posts yet'}
+            </h3>
+            <p className="text-sm text-[#8B5E3C] mb-5 max-w-md mx-auto">
+              {searchParams.search 
+                ? `We couldn't find any posts matching "${searchParams.search}". Try a different search term.`
+                : 'Create your first blog post to share survivor stories, events, and updates with your community.'}
+            </p>
+            <div className="flex items-center justify-center gap-3">
+              {searchParams.search ? (
+                <Button asChild variant="outline" className="border-[#3A2A24]/20 text-[#8B5E3C]">
+                  <Link href="/admin/blog">Clear Search</Link>
+                </Button>
+              ) : null}
+              <Button asChild className="bg-[#1E6B73] hover:bg-[#4C9AA3]">
+                <Link href="/admin/blog/new">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Create Post
+                </Link>
+              </Button>
+            </div>
           </div>
         )}
       </div>
