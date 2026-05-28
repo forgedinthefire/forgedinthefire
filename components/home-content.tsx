@@ -212,24 +212,24 @@ export function HomeContent() {
             <div className="relative">
               <MissionMomentCardV2 />
               
-              {/* External glow effects - CARD ONLY */}
+              {/* External glow effects - refined and slimmer */}
               <motion.div 
-                className="absolute -top-4 -right-4 w-24 h-24 rounded-full pointer-events-none"
+                className="absolute -top-3 -right-3 w-20 h-20 rounded-full pointer-events-none"
                 style={{
-                  background: 'radial-gradient(circle, rgba(200,164,107,0.25) 0%, transparent 70%)',
-                  filter: 'blur(20px)',
+                  background: 'radial-gradient(circle, rgba(200,164,107,0.2) 0%, transparent 70%)',
+                  filter: 'blur(16px)',
                 }}
-                animate={{ opacity: [0.6, 0.9, 0.6] }}
-                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                animate={{ opacity: [0.5, 0.75, 0.5] }}
+                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
               />
               <motion.div 
-                className="absolute -bottom-4 -left-4 w-32 h-32 rounded-full pointer-events-none"
+                className="absolute -bottom-3 -left-3 w-24 h-24 rounded-full pointer-events-none"
                 style={{
-                  background: 'radial-gradient(circle, rgba(30,107,115,0.2) 0%, transparent 70%)',
-                  filter: 'blur(25px)',
+                  background: 'radial-gradient(circle, rgba(30,107,115,0.15) 0%, transparent 70%)',
+                  filter: 'blur(20px)',
                 }}
-                animate={{ opacity: [0.5, 0.8, 0.5] }}
-                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+                animate={{ opacity: [0.4, 0.65, 0.4] }}
+                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
               />
             </div>
           </div>

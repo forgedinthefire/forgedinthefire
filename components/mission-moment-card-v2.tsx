@@ -4,17 +4,17 @@ import { motion, useReducedMotion, useAnimation, Variants, AnimatePresence } fro
 import Image from 'next/image';
 import { useEffect, useState, useRef, useCallback } from 'react';
 
-// Smooth, flowing timing with gentle overlaps
+// Slower, calmer timing for elegance
 const TIMING = {
   sparkIn: 0,
-  sparkHold: 2800,      // Comfortable reading pace
-  sparkOut: 3500,       // Smooth exit overlap with logo
-  logoIgnite: 4000,     // Logo emerges as spark fades
-  missionIn: 6500,      // Pause to appreciate logo
-  missionHold: 9500,    // Contemplative hold
-  missionOut: 10500,    // Gentle fade
-  taglineIn: 11500,     // Graceful finale
-  sequenceComplete: 15000, // Settled, complete
+  sparkHold: 3500,      // Slower, more contemplative
+  sparkOut: 4500,       // Gentler overlap
+  logoIgnite: 5500,     // Slower emergence
+  missionIn: 9000,      // Longer pause to appreciate
+  missionHold: 14000,   // Extended contemplative hold
+  missionOut: 15500,    // Slower fade
+  taglineIn: 17000,     // Graceful, unhurried finale
+  sequenceComplete: 22000, // Calm, settled
 };
 
 // Silky smooth easing - more organic motion
@@ -81,28 +81,34 @@ export function MissionMomentCardV2() {
     setMissionWords("Now we stand resolute, to bring what's in darkness to light.".split(' '));
   }, []);
 
-  // Scroll-triggered restart using IntersectionObserver
+  // Scroll-triggered restart - only when section fully leaves and reenters
   useEffect(() => {
     if (prefersReducedMotion || !containerRef.current) return;
+
+    let wasFullyVisible = false;
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
-            // Card is 50%+ visible - restart animation
-            if (hasAnimatedRef.current) {
-              // Restart sequence
+          // Only restart when section becomes visible AND was previously hidden
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.3) {
+            if (!wasFullyVisible && hasAnimatedRef.current) {
+              // Section reentered after being hidden - restart
               setPhase(0);
               setShowBurst(false);
               setSequenceKey(prev => prev + 1);
             }
+            wasFullyVisible = true;
             hasAnimatedRef.current = true;
+          } else if (!entry.isIntersecting || entry.intersectionRatio < 0.1) {
+            // Section left viewport
+            wasFullyVisible = false;
           }
         });
       },
       {
-        threshold: [0, 0.5, 1],
-        rootMargin: '-10% 0px -10% 0px',
+        threshold: [0, 0.1, 0.3, 0.9],
+        rootMargin: '0px',
       }
     );
 
@@ -175,16 +181,16 @@ export function MissionMomentCardV2() {
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="aspect-square rounded-2xl p-1 relative cursor-default"
+      className="aspect-square rounded-xl p-[2px] relative cursor-default"
       style={{
-        background: 'linear-gradient(135deg, rgba(30,107,115,0.25) 0%, rgba(58,42,36,0.8) 50%, rgba(139,94,60,0.25) 100%)',
+        background: 'linear-gradient(135deg, rgba(30,107,115,0.18) 0%, rgba(58,42,36,0.6) 50%, rgba(139,94,60,0.18) 100%)',
       }}
     >
       <div 
-        className="w-full h-full rounded-xl flex items-center justify-center relative overflow-hidden"
+        className="w-full h-full rounded-[10px] flex items-center justify-center relative overflow-hidden"
         style={{
           background: '#241B18',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.45), inset 0 1px 0 rgba(200,164,107,0.1)',
+          boxShadow: '0 12px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(200,164,107,0.08)',
         }}
       >
         {/* Vignette overlay */}
@@ -208,17 +214,17 @@ export function MissionMomentCardV2() {
         <ParticleBurst show={showBurst && phase === 2} />
 
         {/* Content container */}
-        <div className="text-center px-6 py-8 relative z-10 flex flex-col items-center justify-center h-full max-w-[280px]">
+        <div className="text-center px-5 py-6 relative z-10 flex flex-col items-center justify-center h-full max-w-[260px]">
           
-          {/* Glass morphism text backdrop */}
+          {/* Glass morphism text backdrop - slimmer */}
           <motion.div
-            className="absolute inset-0 rounded-xl pointer-events-none"
+            className="absolute inset-0 rounded-[10px] pointer-events-none"
             initial={{ opacity: 0 }}
-            animate={{ opacity: phase >= 1 && phase <= 3 ? 0.3 : 0 }}
-            transition={{ duration: 0.5 }}
+            animate={{ opacity: phase >= 1 && phase <= 3 ? 0.25 : 0 }}
+            transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
             style={{
-              background: 'linear-gradient(180deg, rgba(36,27,24,0.6) 0%, rgba(30,107,115,0.1) 50%, rgba(36,27,24,0.6) 100%)',
-              backdropFilter: 'blur(8px)',
+              background: 'linear-gradient(180deg, rgba(36,27,24,0.5) 0%, rgba(30,107,115,0.08) 50%, rgba(36,27,24,0.5) 100%)',
+              backdropFilter: 'blur(6px)',
             }}
           />
 
@@ -250,27 +256,27 @@ export function MissionMomentCardV2() {
             )}
           </AnimatePresence>
 
-          {/* Phase 2 & 3 & 4: Logo with silk-smooth breathing */}
+          {/* Phase 2 & 3 & 4: Logo with calm, subtle breathing */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, filter: 'blur(4px)' }}
+            initial={{ opacity: 0, scale: 0.92, filter: 'blur(3px)' }}
             animate={{ 
               opacity: phase >= 2 ? 1 : 0,
-              scale: phase >= 2 ? 1 : 0.9,
-              filter: phase >= 2 ? 'blur(0px)' : 'blur(4px)',
+              scale: phase >= 2 ? 1 : 0.92,
+              filter: phase >= 2 ? 'blur(0px)' : 'blur(3px)',
             }}
-            transition={{ duration: 1.4, ease: EASE.cinematic }}
-            className="relative my-4"
-            style={{ width: '7.5rem', height: '11.25rem' }}
+            transition={{ duration: 1.8, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="relative my-3"
+            style={{ width: '7rem', height: '10.5rem' }}
           >
             <LogoGlow phase={phase} mousePos={mousePos} />
             
             <motion.div
               animate={phase >= 4 ? {
-                scale: [1, 1.012, 1],
-                opacity: [0.98, 1, 0.98],
+                scale: [1, 1.005, 1],
+                opacity: [0.99, 1, 0.99],
               } : {}}
               transition={{
-                duration: 6,
+                duration: 8,
                 repeat: Infinity,
                 ease: 'easeInOut',
               }}
@@ -280,7 +286,7 @@ export function MissionMomentCardV2() {
                 src="/forged-logo.png"
                 alt="Forged in the Fire"
                 fill
-                className="object-contain drop-shadow-2xl"
+                className="object-contain drop-shadow-xl"
                 priority
               />
             </motion.div>
@@ -306,26 +312,26 @@ export function MissionMomentCardV2() {
             )}
           </AnimatePresence>
 
-          {/* Phase 4: Final Tagline - Silky smooth entrance */}
+          {/* Phase 4: Final Tagline - Calm, elegant entrance */}
           <AnimatePresence mode="wait">
             {phase >= 4 && (
               <motion.div
                 key={`tagline-${sequenceKey}`}
-                initial={{ opacity: 0, y: 24, filter: 'blur(10px)' }}
+                initial={{ opacity: 0, y: 16, filter: 'blur(8px)' }}
                 animate={{ 
                   opacity: 1, 
                   y: 0,
                   filter: 'blur(0px)',
                 }}
                 transition={{ 
-                  duration: 1.4, 
-                  ease: EASE.silk,
+                  duration: 1.8, 
+                  ease: [0.25, 0.46, 0.45, 0.94],
                 }}
                 className="relative z-10"
               >
                 <p 
-                  className="font-serif text-2xl italic text-[#F6F0E8] leading-relaxed tracking-tight"
-                  style={{ textShadow: '0 4px 30px rgba(30,107,115,0.2)' }}
+                  className="font-serif text-xl italic text-[#F6F0E8] leading-relaxed tracking-tight"
+                  style={{ textShadow: '0 2px 20px rgba(30,107,115,0.15)' }}
                 >
                   "The fire that forges us
                   <br />
@@ -355,7 +361,7 @@ function MouseReactiveGlow({ mousePos, phase }: { mousePos: { x: number; y: numb
   );
 }
 
-// Ambient glow that intensifies with phases
+// Ambient glow - slimmer, more refined
 function AmbientGlow({ phase }: { phase: number }) {
   return (
     <>
@@ -363,45 +369,45 @@ function AmbientGlow({ phase }: { phase: number }) {
         className="absolute inset-0 pointer-events-none"
         initial={{ opacity: 0 }}
         animate={{ 
-          opacity: phase >= 1 ? (phase >= 4 ? 0.6 : 1) : 0,
+          opacity: phase >= 1 ? (phase >= 4 ? 0.4 : 0.7) : 0,
         }}
-        transition={{ duration: 1.2 }}
+        transition={{ duration: 1.5, ease: [0.25, 0.46, 0.45, 0.94] }}
         style={{
-          background: 'radial-gradient(circle at 30% 30%, rgba(30,107,115,0.2) 0%, transparent 50%)',
+          background: 'radial-gradient(circle at 30% 30%, rgba(30,107,115,0.15) 0%, transparent 55%)',
         }}
       />
       <motion.div
         className="absolute inset-0 pointer-events-none"
         initial={{ opacity: 0 }}
-        animate={{ opacity: phase >= 2 ? 0.6 : 0 }}
-        transition={{ duration: 1.5 }}
+        animate={{ opacity: phase >= 2 ? 0.4 : 0 }}
+        transition={{ duration: 1.8, ease: [0.25, 0.46, 0.45, 0.94] }}
         style={{
-          background: 'radial-gradient(circle at 70% 70%, rgba(139,94,60,0.15) 0%, transparent 45%)',
+          background: 'radial-gradient(circle at 70% 70%, rgba(139,94,60,0.1) 0%, transparent 50%)',
         }}
       />
       <motion.div
         className="absolute inset-0 pointer-events-none flex items-center justify-center"
-        initial={{ opacity: 0, scale: 0.8 }}
+        initial={{ opacity: 0, scale: 0.9 }}
         animate={{ 
-          opacity: phase >= 2 ? (phase >= 4 ? 0.5 : 0.8) : 0,
-          scale: phase >= 2 ? 1 : 0.8,
+          opacity: phase >= 2 ? (phase >= 4 ? 0.35 : 0.6) : 0,
+          scale: phase >= 2 ? 1 : 0.9,
         }}
-        transition={{ duration: 1.5 }}
+        transition={{ duration: 1.8, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
         <motion.div
-          className="w-56 h-56 rounded-full"
+          className="w-44 h-44 rounded-full"
           animate={phase >= 2 ? {
-            opacity: [0.3, 0.5, 0.3],
-            scale: [1, 1.08, 1],
+            opacity: [0.25, 0.4, 0.25],
+            scale: [1, 1.04, 1],
           } : {}}
           transition={{
-            duration: 4.5,
+            duration: 6,
             repeat: Infinity,
             ease: 'easeInOut',
           }}
           style={{
-            background: 'radial-gradient(circle, rgba(30,107,115,0.35) 0%, rgba(76,154,163,0.15) 40%, transparent 70%)',
-            filter: 'blur(35px)',
+            background: 'radial-gradient(circle, rgba(30,107,115,0.25) 0%, rgba(76,154,163,0.1) 40%, transparent 70%)',
+            filter: 'blur(28px)',
           }}
         />
       </motion.div>
@@ -409,66 +415,66 @@ function AmbientGlow({ phase }: { phase: number }) {
   );
 }
 
-// Logo glow with pulsing heart center - enhanced with mouse reactivity
+// Logo glow - slimmer, calmer, with subtle mouse reactivity
 function LogoGlow({ phase, mousePos }: { phase: number; mousePos: { x: number; y: number } }) {
   // Subtle parallax offset based on mouse
-  const parallaxX = (mousePos.x - 0.5) * 10;
-  const parallaxY = (mousePos.y - 0.5) * 10;
+  const parallaxX = (mousePos.x - 0.5) * 6;
+  const parallaxY = (mousePos.y - 0.5) * 6;
 
   return (
     <>
-      {/* Outer aura with parallax */}
+      {/* Outer aura with parallax - reduced spread */}
       <motion.div
-        className="absolute inset-0 -m-8 pointer-events-none"
+        className="absolute inset-0 -m-6 pointer-events-none"
         initial={{ opacity: 0 }}
         animate={{ 
-          opacity: phase >= 2 ? 0.6 : 0,
+          opacity: phase >= 2 ? 0.45 : 0,
           x: parallaxX,
           y: parallaxY,
         }}
-        transition={{ opacity: { duration: 1.2 }, x: { duration: 0.3 }, y: { duration: 0.3 } }}
+        transition={{ opacity: { duration: 1.5 }, x: { duration: 0.4 }, y: { duration: 0.4 } }}
       >
         <motion.div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full rounded-full"
           animate={phase >= 2 ? {
-            opacity: [0.3, 0.5, 0.3],
-            scale: [0.95, 1.02, 0.95],
+            opacity: [0.25, 0.4, 0.25],
+            scale: [0.98, 1.015, 0.98],
           } : {}}
           transition={{
-            duration: 3.5,
+            duration: 5,
             repeat: Infinity,
             ease: 'easeInOut',
           }}
           style={{
-            background: 'radial-gradient(circle, rgba(30,107,115,0.4) 0%, rgba(200,164,107,0.15) 50%, transparent 70%)',
-            filter: 'blur(20px)',
+            background: 'radial-gradient(circle, rgba(30,107,115,0.3) 0%, rgba(200,164,107,0.1) 50%, transparent 70%)',
+            filter: 'blur(16px)',
           }}
         />
       </motion.div>
 
-      {/* Heart/core pulse with parallax */}
+      {/* Heart/core glow - slimmer, calmer pulse */}
       <motion.div
-        className="absolute top-[35%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 pointer-events-none"
+        className="absolute top-[35%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 pointer-events-none"
         initial={{ opacity: 0 }}
         animate={{ 
-          opacity: phase >= 2 ? 1 : 0,
-          scale: phase >= 2 ? [1, 1.2, 1] : 1,
-          x: parallaxX * 1.5,
-          y: parallaxY * 1.5,
+          opacity: phase >= 2 ? 0.8 : 0,
+          scale: phase >= 2 ? [1, 1.1, 1] : 1,
+          x: parallaxX * 1.2,
+          y: parallaxY * 1.2,
         }}
         transition={{
-          opacity: { duration: 0.8 },
+          opacity: { duration: 1.2 },
           scale: {
-            duration: 2.2,
+            duration: 3.5,
             repeat: Infinity,
             ease: 'easeInOut',
           },
-          x: { duration: 0.3 },
-          y: { duration: 0.3 },
+          x: { duration: 0.4 },
+          y: { duration: 0.4 },
         }}
         style={{
-          background: 'radial-gradient(circle, rgba(30,107,115,0.5) 0%, rgba(76,154,163,0.25) 50%, transparent 70%)',
-          filter: 'blur(10px)',
+          background: 'radial-gradient(circle, rgba(30,107,115,0.4) 0%, rgba(76,154,163,0.2) 50%, transparent 70%)',
+          filter: 'blur(8px)',
         }}
       />
     </>
@@ -556,48 +562,49 @@ function EmberParticles() {
   );
 }
 
-// Reduced motion version
+// Reduced motion version - calm, static elegance
 function ReducedMotionCard() {
   return (
     <div 
-      className="aspect-square rounded-2xl p-1"
+      className="aspect-square rounded-xl p-[2px]"
       style={{
-        background: 'linear-gradient(135deg, rgba(30,107,115,0.25) 0%, rgba(58,42,36,0.8) 50%, rgba(139,94,60,0.25) 100%)',
+        background: 'linear-gradient(135deg, rgba(30,107,115,0.18) 0%, rgba(58,42,36,0.6) 50%, rgba(139,94,60,0.18) 100%)',
       }}
     >
       <div 
-        className="w-full h-full rounded-xl flex items-center justify-center relative overflow-hidden"
+        className="w-full h-full rounded-[10px] flex items-center justify-center relative overflow-hidden"
         style={{
           background: '#241B18',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.45), inset 0 1px 0 rgba(200,164,107,0.1)',
+          boxShadow: '0 12px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(200,164,107,0.08)',
         }}
       >
         <div 
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: 'radial-gradient(circle at 30% 30%, rgba(30,107,115,0.15) 0%, transparent 50%)',
+            background: 'radial-gradient(circle at 30% 30%, rgba(30,107,115,0.12) 0%, transparent 55%)',
           }}
         />
         
-        <div className="text-center p-8 relative z-10 flex flex-col items-center justify-center h-full">
-          <div className="relative mb-6" style={{ width: '7.5rem', height: '11.25rem' }}>
+        <div className="text-center px-5 py-6 relative z-10 flex flex-col items-center justify-center h-full max-w-[260px]">
+          <div className="relative mb-4" style={{ width: '7rem', height: '10.5rem' }}>
             <div 
-              className="absolute inset-0 -m-6 pointer-events-none"
+              className="absolute inset-0 -m-4 pointer-events-none"
               style={{
-                background: 'radial-gradient(circle, rgba(30,107,115,0.3) 0%, rgba(200,164,107,0.15) 50%, transparent 70%)',
-                filter: 'blur(15px)',
+                background: 'radial-gradient(circle, rgba(30,107,115,0.25) 0%, rgba(200,164,107,0.1) 50%, transparent 70%)',
+                filter: 'blur(12px)',
               }}
             />
             <Image
               src="/forged-logo.png"
               alt="Forged in the Fire"
               fill
-              className="object-contain drop-shadow-2xl"
+              className="object-contain drop-shadow-xl"
               priority
             />
           </div>
 
-          <p className="font-serif text-2xl italic text-[#F6F0E8] leading-tight">
+          <p className="font-serif text-xl italic text-[#F6F0E8] leading-relaxed tracking-tight"
+             style={{ textShadow: '0 2px 20px rgba(30,107,115,0.15)' }}>
             "The fire that forges us
             <br />
             also frees us."
