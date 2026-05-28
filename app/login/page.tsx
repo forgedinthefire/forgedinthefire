@@ -3,7 +3,11 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
-import { Eye, EyeOff, Flame, AlertTriangle } from 'lucide-react'
+import { Eye, EyeOff, Flame, AlertTriangle, KeyRound } from 'lucide-react'
+
+function normalizeEmail(email: string | undefined | null): string {
+  return (email || '').trim().toLowerCase()
+}
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -13,6 +17,9 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [supabase, setSupabase] = useState<ReturnType<typeof createClient> | null>(null)
   const [configMissing, setConfigMissing] = useState(false)
+  const [showResetForm, setShowResetForm] = useState(false)
+  const [resetSent, setResetSent] = useState(false)
+  const [debugInfo, setDebugInfo] = useState<string | null>(null)
   const router = useRouter()
 
   // Initialize Supabase client after mount (avoids build-time errors)
@@ -35,39 +42,64 @@ export default function LoginPage() {
     }
     
     setError('')
+    setDebugInfo(null)
     setLoading(true)
+
+    // Normalize email for consistent lookup
+    const normalizedEmail = normalizeEmail(email)
+    console.log('[Login] Attempting login for:', normalizedEmail)
 
     // Sign in with Supabase Auth
     const { error: signInError, data: { user } } = await supabase.auth.signInWithPassword({
-      email,
+      email: normalizedEmail,
       password,
     })
 
     if (signInError) {
+      console.error('[Login] Auth error:', signInError.code, signInError.message)
+      
       // Provide clearer error messages
       let errorMessage = signInError.message
+      let debugMsg = `Error code: ${signInError.code || 'unknown'}`
+      
       if (signInError.message.includes('Invalid login credentials')) {
         errorMessage = 'Invalid email or password. Please try again.'
+        debugMsg += ' | User may not exist or password is incorrect'
+      } else if (signInError.code === 'email_not_confirmed') {
+        errorMessage = 'Email not confirmed. Please check your inbox.'
+      } else if (signInError.code === 'user_not_found') {
+        errorMessage = 'User not found. Please check your email or contact an administrator.'
       }
+      
       setError(errorMessage)
+      setDebugInfo(debugMsg)
       setLoading(false)
       return
     }
 
     if (!user) {
+      console.error('[Login] No user returned after successful auth')
       setError('Authentication failed. Please try again.')
       setLoading(false)
       return
     }
 
-    // Check if user is an admin
+    console.log('[Login] Auth successful for:', user.email)
+
+    // Check if user is an admin (with normalized email)
+    const normalizedUserEmail = normalizeEmail(user.email)
     const { data: adminUser, error: adminError } = await supabase
       .from('admin_users')
       .select('role')
-      .eq('email', user.email)
+      .eq('email', normalizedUserEmail)
       .single()
 
+    if (adminError) {
+      console.error('[Login] admin_users lookup error:', adminError.message, '| Looking for:', normalizedUserEmail)
+    }
+
     if (adminError || !adminUser || (adminUser.role !== 'admin' && adminUser.role !== 'owner')) {
+      console.warn('[Login] User not in admin_users:', user.email, '(normalized:', normalizedUserEmail + ')')
       // Not an admin - sign them out and show error
       await supabase.auth.signOut()
       setError(`Access denied. The email "${user.email}" is not authorized as an admin. Contact the site owner to request access.`)
@@ -75,9 +107,41 @@ export default function LoginPage() {
       return
     }
 
+    console.log('[Login] Admin access granted, role:', adminUser.role)
+
     // User is authenticated and is an admin - redirect to admin dashboard
     router.push('/admin')
     router.refresh()
+  }
+
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!supabase) {
+      setError('Authentication not initialized.')
+      return
+    }
+
+    setError('')
+    setLoading(true)
+
+    const normalizedEmail = normalizeEmail(email)
+    console.log('[Login] Sending password reset to:', normalizedEmail)
+
+    const { error } = await supabase.auth.resetPasswordForEmail(normalizedEmail, {
+      redirectTo: `${window.location.origin}/login`,
+    })
+
+    if (error) {
+      console.error('[Login] Reset error:', error.message)
+      setError(`Failed to send reset email: ${error.message}`)
+      setLoading(false)
+      return
+    }
+
+    console.log('[Login] Reset email sent to:', normalizedEmail)
+    setResetSent(true)
+    setLoading(false)
   }
 
   return (
@@ -111,6 +175,15 @@ export default function LoginPage() {
           {error && !configMissing && (
             <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm">
               {error}
+              {debugInfo && (
+                <p className="mt-1 text-xs text-red-400/70 font-mono">{debugInfo}</p>
+              )}
+            </div>
+          )}
+
+          {resetSent && (
+            <div className="mb-4 p-3 bg-green-500/10 border border-green-500/30 rounded-lg text-green-400 text-sm">
+              Password reset email sent! Check your inbox at {normalizeEmail(email)}
             </div>
           )}
 
@@ -162,6 +235,37 @@ export default function LoginPage() {
             >
               {loading ? 'Signing in...' : !supabase ? 'Initializing...' : 'Sign In'}
             </button>
+
+            <div className="flex items-center justify-between pt-2">
+              <button
+                type="button"
+                onClick={() => setShowResetForm(!showResetForm)}
+                className="text-sm text-[#8B5E3C] hover:text-[#C8A46B] transition-colors"
+              >
+                {showResetForm ? 'Back to login' : 'Forgot password?'}
+              </button>
+              
+              <a 
+                href="/admin-setup" 
+                className="text-sm text-[#8B5E3C] hover:text-[#C8A46B] transition-colors"
+              >
+                Admin Setup →
+              </a>
+            </div>
+
+            {showResetForm && (
+              <div className="pt-4 border-t border-[#3A2A24]">
+                <button
+                  type="button"
+                  onClick={handleResetPassword}
+                  disabled={loading || !supabase || !email}
+                  className="w-full flex items-center justify-center gap-2 bg-transparent hover:bg-[#3A2A24] text-[#C8A46B] font-medium py-2.5 rounded-lg transition-colors border border-[#C8A46B]/30 disabled:opacity-50"
+                >
+                  <KeyRound size={16} />
+                  Send Password Reset Email
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="mt-6 pt-6 border-t border-[#3A2A24] text-center">

@@ -1,6 +1,10 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+function normalizeEmail(email: string | undefined): string {
+  return (email || '').trim().toLowerCase()
+}
+
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
   
@@ -56,16 +60,17 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(url)
     }
     
-    // Then check if user is in admin_users table
+    // Then check if user is in admin_users table (with normalized email)
+    const normalizedUserEmail = normalizeEmail(user.email)
     const { data: adminUser, error: adminError } = await supabase
       .from('admin_users')
-      .select('role')
-      .eq('email', user.email)
+      .select('email, role')
+      .eq('email', normalizedUserEmail)
       .single()
     
     // If not an admin, redirect to unauthorized page
     if (adminError || !adminUser || (adminUser.role !== 'admin' && adminUser.role !== 'owner')) {
-      console.warn(`Non-admin user attempted access: ${user.email}`)
+      console.warn(`Non-admin user attempted access: ${user.email} (normalized: ${normalizedUserEmail})`)
       const url = request.nextUrl.clone()
       url.pathname = '/unauthorized'
       return NextResponse.redirect(url)
@@ -74,11 +79,12 @@ export async function middleware(request: NextRequest) {
 
   // If already logged in and is admin, redirect /login → /admin
   if (pathname === '/login' && user) {
-    // Check if user is an admin before redirecting
+    // Check if user is an admin before redirecting (with normalized email)
+    const normalizedUserEmail = normalizeEmail(user.email)
     const { data: adminUser } = await supabase
       .from('admin_users')
       .select('role')
-      .eq('email', user.email)
+      .eq('email', normalizedUserEmail)
       .single()
     
     if (adminUser && (adminUser.role === 'admin' || adminUser.role === 'owner')) {

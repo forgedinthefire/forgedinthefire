@@ -3,6 +3,11 @@ export const dynamic = 'force-dynamic'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
+
+function normalizeEmail(email: string | undefined): string {
+  return (email || '').trim().toLowerCase()
+}
+
 import {
   LayoutDashboard,
   FileText,
@@ -48,16 +53,17 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
   
-  // Check admin authorization - verify user exists in admin_users table
+  // Check admin authorization - verify user exists in admin_users table (with normalized email)
+  const normalizedUserEmail = normalizeEmail(user.email)
   const { data: adminUser, error: adminError } = await supabase
     .from('admin_users')
     .select('role')
-    .eq('email', user.email)
+    .eq('email', normalizedUserEmail)
     .single()
   
   // If not an admin, redirect to unauthorized page
   if (adminError || !adminUser || (adminUser.role !== 'admin' && adminUser.role !== 'owner')) {
-    console.warn(`Unauthorized admin layout access attempt: ${user.email}`)
+    console.warn(`Unauthorized admin layout access attempt: ${user.email} (normalized: ${normalizedUserEmail})`)
     redirect('/unauthorized')
   }
 
