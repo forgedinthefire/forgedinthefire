@@ -277,6 +277,7 @@ export const NAV_LINKS = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
   { href: '/services', label: 'Services' },
+  { href: '/blog', label: 'Blog' },
   { href: '/get-help', label: 'Get Help', priority: true },
   { href: '/donate', label: 'Donate' },
   { href: '/volunteer', label: 'Volunteer' },
@@ -291,7 +292,7 @@ export const FOOTER_LINKS = {
     { href: '/about', label: 'About Us' },
     { href: '/about#team', label: 'Our Team' },
     { href: '/about#partners', label: 'Partners' },
-    { href: '/careers', label: 'Careers' },
+    { href: '/careers', label: 'Join Our Team' },
   ],
   resources: [
     { href: '/resources', label: 'Education Hub' },
