@@ -82,32 +82,32 @@ export function Navbar() {
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center gap-3 group"
+            className="flex items-center gap-2.5 group shrink-0"
             aria-label="Forged in the Fire - Home"
           >
-            <div className="relative w-8 h-12 overflow-hidden">
+            <div className="relative w-9 h-[52px] flex items-center justify-center">
               <Image
                 src="/forged-logo.png"
                 alt="Forged in the Fire"
                 fill
                 className="object-contain transition-all duration-500 ease-out group-hover:scale-105"
                 priority
-                sizes="32px"
+                sizes="36px"
               />
             </div>
-            <span className="font-serif text-xl font-semibold text-[#F6F0E8] hidden sm:block">
+            <span className="font-serif text-lg font-semibold text-[#F6F0E8] hidden sm:block whitespace-nowrap tracking-tight">
               Forged in the Fire
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-1">
+          <div className="hidden lg:flex items-center gap-0.5">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  'relative px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-md',
+                  'relative px-3 py-2 text-[13px] font-medium transition-colors duration-200 rounded-md tracking-wide',
                   isActive(link.href)
                     ? 'text-[#4C9AA3]'
                     : 'text-[#CDBDAF] hover:text-[#4C9AA3]',

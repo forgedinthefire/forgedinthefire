@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useAnimation } from 'framer-motion';
+import { motion, useAnimation, useMotionValue, useSpring } from 'framer-motion';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
@@ -11,6 +11,55 @@ interface HeroAnimationProps {
 export function HeroAnimation({ children }: HeroAnimationProps) {
   const [phase, setPhase] = useState(0);
   const controls = useAnimation();
+  
+  // Mouse tracking for teal glow effect
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  
+  // Smooth spring physics for delayed chase effect
+  const springConfig = { damping: 25, stiffness: 150, mass: 1 };
+  const glowX = useSpring(mouseX, springConfig);
+  const glowY = useSpring(mouseY, springConfig);
+  
+  // Check for reduced motion preference
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    // Check reduced motion preference
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setPrefersReducedMotion(mediaQuery.matches);
+    
+    // Check if mobile (disable on touch devices)
+    const checkMobile = () => {
+      setIsMobile(window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    // Mouse move handler
+    const handleMouseMove = (e: MouseEvent) => {
+      if (prefersReducedMotion || isMobile) return;
+      
+      // Calculate offset from center of viewport
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      
+      // Limit the movement range (subtle effect)
+      const offsetX = (e.clientX - centerX) * 0.08;
+      const offsetY = (e.clientY - centerY) * 0.08;
+      
+      mouseX.set(offsetX);
+      mouseY.set(offsetY);
+    };
+    
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [mouseX, mouseY, prefersReducedMotion, isMobile]);
 
   useEffect(() => {
     // Phase 1: Dark Ambient Intro (0-1s)
@@ -168,7 +217,7 @@ export function HeroAnimation({ children }: HeroAnimationProps) {
             ease: [0.25, 0.1, 0.25, 1],
           }}
         >
-          {/* Phase 3-5: Torch Glow Behind Logo */}
+          {/* Phase 3-5: Torch Glow Behind Logo with Mouse Tracking */}
           <motion.div
             className="absolute inset-0 -m-8 pointer-events-none"
             initial={{ opacity: 0 }}
@@ -177,7 +226,7 @@ export function HeroAnimation({ children }: HeroAnimationProps) {
             }}
             transition={{ duration: 1.5, ease: 'easeOut' }}
           >
-            {/* Inner flame glow */}
+            {/* Inner flame glow with mouse tracking */}
             <motion.div
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full rounded-full"
               animate={phase >= 4 ? {
@@ -192,15 +241,18 @@ export function HeroAnimation({ children }: HeroAnimationProps) {
               style={{
                 background: 'radial-gradient(circle, rgba(30, 107, 115, 0.3) 0%, rgba(61, 133, 139, 0.1) 40%, transparent 70%)',
                 filter: 'blur(20px)',
+                x: glowX,
+                y: glowY,
+                willChange: 'transform',
               }}
             />
           </motion.div>
 
-          {/* Logo Image */}
+          {/* Logo Image - 10% larger */}
           <div
             className="relative mx-auto mt-0 mb-3"
             style={{
-              width: 'clamp(220px, 28vw, 320px)',
+              width: 'clamp(242px, 31vw, 352px)',
               aspectRatio: '1024 / 1536',
             }}
           >
