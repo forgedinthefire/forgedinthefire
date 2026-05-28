@@ -25,7 +25,13 @@ import {
   Star,
   Mail,
   Bell,
-  Send
+  Send,
+  Loader2,
+  AlertCircle,
+  Tag,
+  Link as LinkIcon,
+  Calendar,
+  User
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -50,9 +56,13 @@ const ctaOptions = [
 
 export default function EditBlogPostPage({ params }: { params: Promise<{ id: string }> }) {
   const [item, setItem] = useState<ContentItem | null>(null)
+  const [originalItem, setOriginalItem] = useState<ContentItem | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [activeTab, setActiveTab] = useState<'content' | 'seo'>('content')
+  const [lastSaved, setLastSaved] = useState<Date | null>(null)
+  const [slugError, setSlugError] = useState<string | null>(null)
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
@@ -64,33 +74,90 @@ export default function EditBlogPostPage({ params }: { params: Promise<{ id: str
         return
       }
       setItem(data)
+      setOriginalItem(JSON.parse(JSON.stringify(data))) // Deep copy for comparison
+      setLastSaved(new Date(data.updatedAt))
       setLoading(false)
     }
     loadItem()
   }, [params, router])
 
+  // Track unsaved changes
+  useEffect(() => {
+    if (!item || !originalItem) return
+    const hasChanges = JSON.stringify(item) !== JSON.stringify(originalItem)
+    setHasUnsavedChanges(hasChanges)
+  }, [item, originalItem])
+
+  // Warn about unsaved changes when leaving
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault()
+        e.returnValue = ''
+      }
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [hasUnsavedChanges])
+
   const handleSave = useCallback(async () => {
-    if (!item) return
+    if (!item || slugError) return
     setSaving(true)
     try {
       await updateContentItem(item.id, item)
+      setOriginalItem(JSON.parse(JSON.stringify(item)))
+      setLastSaved(new Date())
+      setHasUnsavedChanges(false)
     } catch (err) {
       console.error('Save failed:', err)
+      alert('Failed to save changes. Please try again.')
     } finally {
       setSaving(false)
     }
-  }, [item])
+  }, [item, slugError])
 
   const handlePublish = async () => {
-    if (!item) return
+    if (!item || slugError) return
+    // Save first if there are unsaved changes
+    if (hasUnsavedChanges) {
+      await handleSave()
+    }
     const updated = await publishContentItem(item.id)
-    if (updated) setItem(updated)
+    if (updated) {
+      setItem(updated)
+      setOriginalItem(JSON.parse(JSON.stringify(updated)))
+      setLastSaved(new Date())
+    }
   }
 
   const handleUnpublish = async () => {
     if (!item) return
     const updated = await unpublishContentItem(item.id)
-    if (updated) setItem(updated)
+    if (updated) {
+      setItem(updated)
+      setOriginalItem(JSON.parse(JSON.stringify(updated)))
+      setLastSaved(new Date())
+    }
+  }
+
+  // Slug validation
+  const validateSlug = (slug: string) => {
+    if (!slug) {
+      setSlugError('Slug is required')
+      return false
+    }
+    if (!/^[a-z0-9-]+$/.test(slug)) {
+      setSlugError('Slug can only contain lowercase letters, numbers, and hyphens')
+      return false
+    }
+    setSlugError(null)
+    return true
+  }
+
+  const handleSlugChange = (newSlug: string) => {
+    if (!item) return
+    validateSlug(newSlug)
+    setItem({ ...item, slug: newSlug })
   }
 
   const updateBlock = (index: number, newBlock: ContentBlock) => {
@@ -146,13 +213,29 @@ export default function EditBlogPostPage({ params }: { params: Promise<{ id: str
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1E6B73]" />
+      <div className="flex items-center justify-center h-96">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin text-[#1E6B73] mx-auto mb-4" />
+          <p className="text-sm text-[#8B5E3C]">Loading post...</p>
+        </div>
       </div>
     )
   }
 
-  if (!item) return null
+  if (!item) {
+    return (
+      <div className="max-w-2xl mx-auto py-12">
+        <div className="bg-red-50 border border-red-200 rounded-2xl p-8 text-center">
+          <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-red-800 mb-2">Post Not Found</h2>
+          <p className="text-red-700 mb-4">The post you're looking for doesn't exist or has been deleted.</p>
+          <Button asChild className="bg-[#1E6B73] hover:bg-[#4C9AA3]">
+            <Link href="/admin/blog">Back to Blog</Link>
+          </Button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -166,14 +249,31 @@ export default function EditBlogPostPage({ params }: { params: Promise<{ id: str
             <ArrowLeft className="w-4 h-4" />
             Back to Blog
           </Link>
-          <h1 className="text-2xl font-bold text-[#1E1714]">Edit Post</h1>
-          <p className="text-sm text-[#8B5E3C]">/{item.slug}</p>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold text-[#1E1714]">Edit Post</h1>
+            {hasUnsavedChanges && (
+              <span className="px-2 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-medium flex items-center gap-1">
+                <AlertCircle className="w-3 h-3" />
+                Unsaved changes
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-3 mt-1">
+            <p className="text-sm text-[#8B5E3C]">/{item.slug}</p>
+            {lastSaved && (
+              <p className="text-xs text-[#8B5E3C]/70 flex items-center gap-1">
+                <Clock className="w-3 h-3" />
+                Last saved {lastSaved.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </p>
+            )}
+          </div>
         </div>
         <div className="flex items-center gap-2">
           {item.status === 'published' ? (
             <Button
               variant="outline"
               onClick={handleUnpublish}
+              disabled={saving}
               className="border-amber-200 text-amber-700 hover:bg-amber-50"
             >
               <Clock className="w-4 h-4 mr-2" />
@@ -182,6 +282,7 @@ export default function EditBlogPostPage({ params }: { params: Promise<{ id: str
           ) : (
             <Button
               onClick={handlePublish}
+              disabled={saving || slugError !== null}
               className="bg-emerald-600 hover:bg-emerald-700 text-white"
             >
               <CheckCircle className="w-4 h-4 mr-2" />
@@ -190,10 +291,14 @@ export default function EditBlogPostPage({ params }: { params: Promise<{ id: str
           )}
           <Button
             onClick={handleSave}
-            disabled={saving}
+            disabled={saving || slugError !== null}
             className="bg-[#1E6B73] hover:bg-[#4C9AA3] text-white"
           >
-            <Save className="w-4 h-4 mr-2" />
+            {saving ? (
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            ) : (
+              <Save className="w-4 h-4 mr-2" />
+            )}
             {saving ? 'Saving...' : 'Save'}
           </Button>
           {item.status === 'published' && (
@@ -280,6 +385,70 @@ export default function EditBlogPostPage({ params }: { params: Promise<{ id: str
                 placeholder="Brief summary for previews and search results..."
                 rows={2}
                 className="w-full border border-[#3A2A24]/20 rounded-lg px-3 py-2 text-[#1E1714] focus:outline-none focus:border-[#1E6B73] resize-none"
+              />
+              <p className="text-xs text-[#8B5E3C] mt-1">{item.excerpt?.length || 0}/160 characters</p>
+            </div>
+
+            {/* Slug */}
+            <div>
+              <label className="block text-sm font-medium text-[#1E1714] mb-1.5 flex items-center gap-1.5">
+                <LinkIcon className="w-4 h-4 text-[#8B5E3C]" />
+                URL Slug
+                <span className="text-xs font-normal text-[#8B5E3C]">(permanent URL)</span>
+              </label>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-[#8B5E3C]">/blog/</span>
+                <input
+                  type="text"
+                  value={item.slug}
+                  onChange={(e) => handleSlugChange(e.target.value)}
+                  className={`flex-1 border rounded-lg px-3 py-2 text-[#1E1714] focus:outline-none focus:border-[#1E6B73] transition-colors ${
+                    slugError ? 'border-red-300 bg-red-50' : 'border-[#3A2A24]/20'
+                  }`}
+                />
+              </div>
+              {slugError && (
+                <p className="text-xs text-red-600 mt-1">{slugError}</p>
+              )}
+            </div>
+
+            {/* Tags */}
+            <div>
+              <label className="block text-sm font-medium text-[#1E1714] mb-1.5 flex items-center gap-1.5">
+                <Tag className="w-4 h-4 text-[#8B5E3C]" />
+                Tags
+                <span className="text-xs font-normal text-[#8B5E3C]">(comma-separated)</span>
+              </label>
+              <input
+                type="text"
+                value={item.tags?.join(', ') || ''}
+                onChange={(e) => setItem({ ...item, tags: e.target.value.split(',').map(t => t.trim()).filter(Boolean) })}
+                placeholder="e.g., survivor stories, advocacy, cleveland, housing..."
+                className="w-full border border-[#3A2A24]/20 rounded-lg px-3 py-2 text-[#1E1714] focus:outline-none focus:border-[#1E6B73]"
+              />
+              {item.tags && item.tags.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mt-2">
+                  {item.tags.map((tag, i) => (
+                    <span key={i} className="px-2 py-0.5 bg-[#1E6B73]/10 text-[#1E6B73] text-xs rounded-full">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Author */}
+            <div>
+              <label className="block text-sm font-medium text-[#1E1714] mb-1.5 flex items-center gap-1.5">
+                <User className="w-4 h-4 text-[#8B5E3C]" />
+                Author
+              </label>
+              <input
+                type="text"
+                value={item.authorName || ''}
+                onChange={(e) => setItem({ ...item, authorName: e.target.value })}
+                placeholder="e.g., Jane Smith"
+                className="w-full border border-[#3A2A24]/20 rounded-lg px-3 py-2 text-[#1E1714] focus:outline-none focus:border-[#1E6B73]"
               />
             </div>
           </div>
