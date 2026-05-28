@@ -118,22 +118,29 @@ export function HomeContent() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 2.4 }}
-                className="mt-6 flex flex-wrap items-center justify-center gap-6 text-sm text-[#B8A89A]"
+                className="mt-6 flex flex-wrap items-baseline justify-center gap-x-6 gap-y-3 text-sm"
               >
-                <span className="flex flex-col items-center gap-0">
-                  <span className="flex items-center gap-1.5">
+                {/* 501(c)(3) Badge */}
+                <span className="flex flex-col items-center">
+                  <span className="flex items-center gap-1.5 font-medium text-[#E8DCCF] drop-shadow-sm">
                     <Shield className="w-4 h-4 text-[#4C9AA3]" />
                     501(c)(3) Nonprofit
                   </span>
-                  <span className="text-xs text-[#8B5E3C]/70"># 39-3438993</span>
+                  <span className="text-xs text-[#B8A89A] mt-0.5">39-3438993</span>
                 </span>
-                <span className="w-1 h-1 rounded-full bg-[#8B5E3C]/40" />
-                <span className="flex items-center gap-1.5">
+
+                <span className="w-1 h-1 rounded-full bg-[#8B5E3C]/50 self-center" />
+
+                {/* Survivor-Centered Badge */}
+                <span className="flex items-center gap-1.5 font-medium text-[#E8DCCF] drop-shadow-sm">
                   <Users className="w-4 h-4 text-[#4C9AA3]" />
                   Survivor-Centered
                 </span>
-                <span className="w-1 h-1 rounded-full bg-[#8B5E3C]/40" />
-                <span className="flex items-center gap-1.5">
+
+                <span className="w-1 h-1 rounded-full bg-[#8B5E3C]/50 self-center" />
+
+                {/* Trauma-Informed Badge */}
+                <span className="flex items-center gap-1.5 font-medium text-[#E8DCCF] drop-shadow-sm">
                   <HandHeart className="w-4 h-4 text-[#4C9AA3]" />
                   Trauma-Informed Care
                 </span>
