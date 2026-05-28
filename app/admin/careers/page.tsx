@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { createClient } from '@/lib/supabase/server'
 import CareersClient from './CareersClient'
 import type { JobPosition } from '@/src/features/careers/types'
