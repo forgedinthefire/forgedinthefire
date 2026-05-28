@@ -169,6 +169,60 @@ export default function NewsletterDetailPage({ params }: NewsletterDetailPagePro
     setSending(false)
   }
 
+  const handleSendToAll = async () => {
+    if (!newsletter) return
+    if (!emailConfigured) {
+      alert('Email delivery is not configured. Add RESEND_API_KEY to send emails.')
+      return
+    }
+    
+    if (!confirm(`Send "${newsletter.title}" to all active subscribers?`)) {
+      return
+    }
+    
+    setSending(true)
+    setSendResult(null)
+    
+    try {
+      const selectedPostData = posts.filter(p => selectedPosts.includes(p.id))
+      
+      // Call API to send newsletter to all subscribers
+      const res = await fetch(`/api/admin/newsletters/${newsletter.id}/send`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          introMessage,
+          closingMessage,
+          selectedPosts: selectedPostData
+        })
+      })
+      
+      const result = await res.json()
+      
+      if (res.ok) {
+        setSendResult({
+          success: true,
+          message: `Newsletter sent to ${result.recipientCount} subscribers!`
+        })
+        // Reload to show sent state
+        loadNewsletter()
+      } else {
+        setSendResult({
+          success: false,
+          message: result.error || 'Failed to send newsletter'
+        })
+      }
+    } catch (err) {
+      console.error('Send newsletter error:', err)
+      setSendResult({
+        success: false,
+        message: 'Failed to send newsletter. Please try again.'
+      })
+    } finally {
+      setSending(false)
+    }
+  }
+
   const togglePost = (postId: string) => {
     setSelectedPosts(prev => 
       prev.includes(postId) 
@@ -475,11 +529,16 @@ export default function NewsletterDetailPage({ params }: NewsletterDetailPagePro
                 This will send the newsletter to all subscribers who opted into the Monthly Newsletter.
               </p>
               <Button
-                disabled={!emailConfigured || selectedPosts.length === 0}
+                onClick={handleSendToAll}
+                disabled={sending || !emailConfigured || selectedPosts.length === 0}
                 className="bg-[#1E6B73] hover:bg-[#4C9AA3] text-white"
               >
-                <Send className="w-4 h-4 mr-2" />
-                Send to All Subscribers
+                {sending ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Send className="w-4 h-4 mr-2" />
+                )}
+                {sending ? 'Sending...' : 'Send to All Subscribers'}
               </Button>
               
               {!emailConfigured && (
