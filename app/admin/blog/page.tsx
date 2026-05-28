@@ -14,6 +14,7 @@ import {
 import { Button } from '@/components/ui/button'
 import type { ContentStatus, PostTemplate, ContentCategory } from '@/src/features/content/types'
 import { PostActions } from './PostActions'
+import { Filters } from './Filters'
 
 const TEAL = '#1E6B73'
 const GOLD = '#C8A46B'
@@ -118,10 +119,6 @@ export default async function BlogPage({
   
   const { data: items } = await query
 
-  const templates: PostTemplate[] = ['standard', 'event', 'impact-story', 'volunteer-opp', 'donor-update', 'resource-guide', 'partner-spotlight', 'fundraising']
-  const categories: ContentCategory[] = ['news', 'events', 'impact-stories', 'volunteer', 'donor-updates', 'resources', 'partners', 'fundraising']
-  const statuses: ContentStatus[] = ['draft', 'published', 'archived']
-
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       {/* Header */}
@@ -139,55 +136,11 @@ export default async function BlogPage({
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-3 bg-white rounded-xl p-4 border border-[#3A2A24]/20">
-        {/* Status Filter */}
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-[#8B5E3C]">Status:</span>
-          <div className="flex gap-1">
-            {['all', ...statuses].map((status) => (
-              <Link
-                key={status}
-                href={`/admin/blog?${new URLSearchParams({
-                  ...(searchParams.template && searchParams.template !== 'all' ? { template: searchParams.template } : {}),
-                  ...(searchParams.category && searchParams.category !== 'all' ? { category: searchParams.category } : {}),
-                  ...(status !== 'all' ? { status } : {}),
-                }).toString()}`}
-                className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                  searchParams.status === status || (!searchParams.status && status === 'all')
-                    ? 'bg-[#1E6B73] text-white'
-                    : 'text-[#8B5E3C] hover:bg-[#3A2A24]/10'
-                }`}
-              >
-                {status === 'all' ? 'All' : status.charAt(0).toUpperCase() + status.slice(1)}
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        <div className="w-px h-6 bg-[#3A2A24]/20" />
-
-        {/* Category Filter */}
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-[#8B5E3C]">Category:</span>
-          <select
-            className="text-sm border border-[#3A2A24]/20 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:border-[#1E6B73]"
-            value={searchParams.category || 'all'}
-            onChange={(e) => {
-              const params = new URLSearchParams()
-              if (searchParams.status && searchParams.status !== 'all') params.set('status', searchParams.status)
-              if (e.target.value !== 'all') params.set('category', e.target.value)
-              window.location.href = `/admin/blog?${params.toString()}`
-            }}
-          >
-            <option value="all">All Categories</option>
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat.charAt(0).toUpperCase() + cat.slice(1).replace('-', ' ')}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
+      <Filters 
+        status={searchParams.status || 'all'}
+        category={searchParams.category || 'all'}
+        template={searchParams.template || 'all'}
+      />
 
       {/* Content List */}
       <div className="bg-white rounded-2xl border border-[#3A2A24]/20 overflow-hidden">
