@@ -123,9 +123,12 @@ export default function AdminSetupCheck() {
   }
 
   const generateSQLScript = () => {
-    return `-- Run this in Supabase SQL Editor to fix admin access
+    return `-- ============================================
+-- FORGED IN THE FIRE - ADMIN SETUP FIX
+-- Run this ENTIRE script in Supabase SQL Editor
+-- ============================================
 
--- 1. Create admin_users table
+-- Step 1: Create admin_users table
 CREATE TABLE IF NOT EXISTS admin_users (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   email TEXT NOT NULL UNIQUE,
@@ -134,7 +137,13 @@ CREATE TABLE IF NOT EXISTS admin_users (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 2. Add owner user (salsbury.law@icloud.com)
+-- Step 2: Temporarily disable RLS to ensure insert works
+ALTER TABLE admin_users DISABLE ROW LEVEL SECURITY;
+
+-- Step 3: Delete any existing entries for this email (clean slate)
+DELETE FROM admin_users WHERE email = 'salsbury.law@icloud.com';
+
+-- Step 4: Insert owner (guaranteed to work with RLS disabled)
 INSERT INTO admin_users (id, email, role, created_at, updated_at)
 VALUES (
   gen_random_uuid(),
@@ -142,35 +151,35 @@ VALUES (
   'owner',
   NOW(),
   NOW()
-)
-ON CONFLICT (email) DO UPDATE 
-  SET role = 'owner', updated_at = NOW();
+);
 
--- 3. Enable RLS
+-- Step 5: Re-enable RLS
 ALTER TABLE admin_users ENABLE ROW LEVEL SECURITY;
 
--- 4. Drop existing policies to avoid conflicts
+-- Step 6: Drop ALL existing policies
 DROP POLICY IF EXISTS "Allow public to check admin status" ON admin_users;
 DROP POLICY IF EXISTS "Allow admin full access on admin_users" ON admin_users;
 DROP POLICY IF EXISTS "Allow owner full access on admin_users" ON admin_users;
 DROP POLICY IF EXISTS "Enable read access for authenticated users" ON admin_users;
+DROP POLICY IF EXISTS "Allow select for auth" ON admin_users;
+DROP POLICY IF EXISTS "anon_can_read_admin_users" ON admin_users;
+DROP POLICY IF EXISTS "auth_can_read_admin_users" ON admin_users;
 
--- 5. Create policy for owner (full access, no recursion)
--- Owner is identified by hardcoded email to avoid recursion
-CREATE POLICY "Allow owner full access on admin_users"
+-- Step 7: Create simple SELECT policy (allows auth users to read)
+CREATE POLICY "Allow select for auth"
+  ON admin_users FOR SELECT
+  TO authenticated
+  USING (true);
+
+-- Step 8: Create UPDATE/INSERT/DELETE policy for owner only
+CREATE POLICY "Allow owner modify"
   ON admin_users FOR ALL
   TO authenticated
   USING (email = 'salsbury.law@icloud.com')
   WITH CHECK (email = 'salsbury.law@icloud.com');
 
--- 6. Create policy for all authenticated users to read (for auth checks)
-CREATE POLICY "Enable read access for authenticated users"
-  ON admin_users FOR SELECT
-  TO authenticated
-  USING (true);
-
--- 7. Verify
-SELECT * FROM admin_users;`
+-- Step 9: Verify the insert worked
+SELECT * FROM admin_users WHERE email = 'salsbury.law@icloud.com';`
   }
 
   const getIcon = (status: CheckResult['status']) => {
