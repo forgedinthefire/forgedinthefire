@@ -42,11 +42,7 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
-      {
-        source: '/admin',
-        destination: '/admin/dashboard',
-        permanent: true,
-      },
+      // No redirects needed - /admin serves the dashboard directly
     ];
   },
 };
