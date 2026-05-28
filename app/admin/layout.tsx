@@ -25,6 +25,7 @@ const navItems = [
 ]
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  try {
   const supabase = await createClient()
   
   // Handle missing Supabase configuration
@@ -111,4 +112,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       </div>
     </div>
   )
+  } catch (error) {
+    console.error('Admin layout error:', error)
+    throw error
+  }
 }
