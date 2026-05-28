@@ -5,9 +5,10 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import { SubscribeModal } from '@/src/components/subscribe-modal';
 import { NAV_LINKS } from '@/lib/constants';
 import { cn } from '@/lib/utils';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X, ChevronDown, Mail } from 'lucide-react';
 import Image from 'next/image';
 
 const reducedMotionVariants = {
@@ -25,6 +26,7 @@ const defaultVariants = {
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isSubscribeOpen, setIsSubscribeOpen] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -61,15 +63,16 @@ export function Navbar() {
   };
 
   return (
-    <header
-      className={cn(
-        'fixed top-0 left-0 right-0 z-40 transition-all duration-300',
-        isScrolled
-          ? 'bg-[#181210]/95 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.4)] border-b border-[#3A2A24]'
-          : 'bg-[#181210]/80 backdrop-blur-sm'
-      )}
-      role="banner"
-    >
+    <>
+      <header
+        className={cn(
+          'fixed top-0 left-0 right-0 z-40 transition-all duration-300',
+          isScrolled
+            ? 'bg-[#181210]/95 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.4)] border-b border-[#3A2A24]'
+            : 'bg-[#181210]/80 backdrop-blur-sm'
+        )}
+        role="banner"
+      >
       <nav
         className="container-wide section-padding"
         role="navigation"
@@ -126,6 +129,15 @@ export function Navbar() {
 
           {/* Desktop CTA Buttons */}
           <div className="hidden lg:flex items-center gap-3">
+            <Button
+              onClick={() => setIsSubscribeOpen(true)}
+              variant="outline"
+              size="sm"
+              className="border-[#1E6B73] text-[#4C9AA3] hover:bg-[#1E6B73]/10 hover:text-[#4C9AA3]"
+            >
+              <Mail className="w-4 h-4 mr-2" />
+              Subscribe
+            </Button>
             <Button
               asChild
               variant="default"
@@ -213,6 +225,18 @@ export function Navbar() {
                     </Link>
                   </Button>
                   <Button
+                    onClick={() => {
+                      setIsOpen(false);
+                      setIsSubscribeOpen(true);
+                    }}
+                    variant="outline"
+                    size="lg"
+                    className="w-full border-[#1E6B73] text-[#4C9AA3] hover:bg-[#1E6B73]/10"
+                  >
+                    <Mail className="w-4 h-4 mr-2" />
+                    Subscribe to Updates
+                  </Button>
+                  <Button
                     asChild
                     variant="default"
                     size="lg"
@@ -245,5 +269,9 @@ export function Navbar() {
         )}
       </AnimatePresence>
     </header>
+    
+    {/* Subscribe Modal */}
+    <SubscribeModal isOpen={isSubscribeOpen} onClose={() => setIsSubscribeOpen(false)} />
+    </>
   );
 }
