@@ -2,13 +2,26 @@
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { AlertTriangle, CheckCircle, XCircle, Database, Shield, User } from 'lucide-react'
+import { AlertTriangle, CheckCircle, XCircle, Database, Shield, User, Bug } from 'lucide-react'
 
 interface CheckResult {
   name: string
   status: 'loading' | 'success' | 'error' | 'info'
   message: string
   details?: string
+}
+
+interface DebugInfo {
+  expectedOwnerEmail: string
+  signedInEmail: string | null
+  matchedRole: string | null
+  allAdminUsers: Array<{email: string, role: string}> | null
+}
+
+const EXPECTED_OWNER_EMAIL = 'salsbury.law@icloud.com'
+
+function normalizeEmail(email: string | null | undefined): string {
+  return (email || '').trim().toLowerCase()
 }
 
 export default function AdminSetupCheck() {
@@ -19,6 +32,7 @@ export default function AdminSetupCheck() {
     { name: 'Current User', status: 'loading', message: 'Checking...' },
   ])
   const [sqlScript, setSqlScript] = useState('')
+  const [debugInfo, setDebugInfo] = useState<DebugInfo | null>(null)
 
   useEffect(() => {
     runChecks()
@@ -47,35 +61,51 @@ export default function AdminSetupCheck() {
       updateCheck(1, 'error', 'admin_users table missing or inaccessible', tableError.message)
       updateCheck(2, 'error', 'Cannot check', 'Table does not exist')
       setSqlScript(generateSQLScript())
+      return
+    }
+    
+    updateCheck(1, 'success', 'admin_users table exists', 'Table is accessible')
+
+    // Get current user first
+    const { data: { user } } = await supabase.auth.getUser()
+    const signedInEmail = normalizeEmail(user?.email)
+
+    // Get all admin users for debugging and owner check
+    const { data: allAdminUsers, error: allAdminsError } = await supabase
+      .from('admin_users')
+      .select('email, role')
+
+    // Find owner by normalized email comparison
+    const normalizedExpected = normalizeEmail(EXPECTED_OWNER_EMAIL)
+    const ownerRecord = allAdminUsers?.find(
+      u => normalizeEmail(u.email) === normalizedExpected && normalizeEmail(u.role) === 'owner'
+    )
+
+    // Find current user's admin record
+    const userAdminRecord = allAdminUsers?.find(
+      u => normalizeEmail(u.email) === signedInEmail
+    )
+
+    // Set debug info
+    setDebugInfo({
+      expectedOwnerEmail: EXPECTED_OWNER_EMAIL,
+      signedInEmail: signedInEmail || null,
+      matchedRole: userAdminRecord?.role || null,
+      allAdminUsers: allAdminUsers?.map(u => ({ email: u.email, role: u.role })) || null
+    })
+
+    // Check owner account
+    if (ownerRecord) {
+      updateCheck(2, 'success', `Owner: ${ownerRecord.email}`, `Role: ${ownerRecord.role}`)
     } else {
-      updateCheck(1, 'success', 'admin_users table exists', 'Table is accessible')
-
-      // Check owner account
-      const { data: ownerData, error: ownerError } = await supabase
-        .from('admin_users')
-        .select('email, role')
-        .eq('role', 'owner')
-        .single()
-
-      if (ownerError || !ownerData) {
-        updateCheck(2, 'error', 'No owner account found', 'salsbury.law@icloud.com needs to be added as owner')
-        setSqlScript(generateSQLScript())
-      } else {
-        updateCheck(2, 'success', `Owner: ${ownerData.email}`, `Role: ${ownerData.role}`)
-      }
+      updateCheck(2, 'error', 'No owner account found', `${EXPECTED_OWNER_EMAIL} needs to be added as owner`)
+      setSqlScript(generateSQLScript())
     }
 
     // Check current user
-    const { data: { user } } = await supabase.auth.getUser()
     if (user) {
-      const { data: adminData } = await supabase
-        .from('admin_users')
-        .select('role')
-        .eq('email', user.email)
-        .single()
-      
-      if (adminData) {
-        updateCheck(3, 'success', `Signed in: ${user.email}`, `Role: ${adminData.role}`)
+      if (userAdminRecord) {
+        updateCheck(3, 'success', `Signed in: ${user.email}`, `Role: ${userAdminRecord.role}`)
       } else {
         updateCheck(3, 'error', `Signed in: ${user.email}`, 'NOT an admin - needs to be added to admin_users table')
       }
@@ -204,6 +234,43 @@ SELECT * FROM admin_users;`
             >
               Copy SQL to Clipboard
             </button>
+          </div>
+        )}
+
+        {debugInfo && (
+          <div className="mt-6 bg-[#241B18] rounded-xl border border-[#3A2A24] overflow-hidden">
+            <div className="flex items-center gap-2 px-4 py-3 bg-[#1E1714] border-b border-[#3A2A24]">
+              <Bug className="w-4 h-4 text-[#8B5E3C]" />
+              <span className="text-sm font-medium text-[#8B5E3C]">Debug Information</span>
+            </div>
+            <div className="p-4 text-xs text-[#B8A89A] font-mono space-y-2">
+              <div>
+                <span className="text-[#8B5E3C]">Expected Owner:</span>{' '}
+                <span className="text-[#CDBDAF]">{debugInfo.expectedOwnerEmail}</span>
+              </div>
+              <div>
+                <span className="text-[#8B5E3C]">Signed In User:</span>{' '}
+                <span className="text-[#CDBDAF]">{debugInfo.signedInEmail || '(not signed in)'}</span>
+              </div>
+              <div>
+                <span className="text-[#8B5E3C]">Matched Role:</span>{' '}
+                <span className="text-[#CDBDAF]">{debugInfo.matchedRole || '(none)'}</span>
+              </div>
+              <div className="pt-2 border-t border-[#3A2A24]">
+                <span className="text-[#8B5E3C]">All Admin Users in DB:</span>
+                {debugInfo.allAdminUsers && debugInfo.allAdminUsers.length > 0 ? (
+                  <ul className="mt-2 space-y-1 ml-4">
+                    {debugInfo.allAdminUsers.map((u, i) => (
+                      <li key={i} className="text-[#CDBDAF]">
+                        • {u.email} ({u.role})
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-[#CDBDAF] ml-4 mt-1">(none found)</p>
+                )}
+              </div>
+            </div>
           </div>
         )}
 
